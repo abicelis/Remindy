@@ -6,13 +6,13 @@ import ve.com.abicelis.remindy.enums.ReminderExtraType;
  * Created by abice on 3/3/2017.
  */
 
-public class ReminderExtraText extends ReminderExtra {
+public class ReminderExtraAudio extends ReminderExtra {
 
-    private String text;
+    private byte[] audio;
 
-    ReminderExtraText(int id, int reminderId, String text) {
+    ReminderExtraAudio(int id, int reminderId, byte[] audio) {
         super(id, reminderId);
-        this.text = text;
+        this.audio = audio;
     }
 
     @Override
@@ -20,11 +20,10 @@ public class ReminderExtraText extends ReminderExtra {
         return ReminderExtraType.AUDIO;
     }
 
-
-    public String getText() {
-        return text;
+    public byte[] getAudio() {
+        return audio;
     }
-    public void setText(String text) {
-        this.text = text;
+    public void setAudio(byte[] audio) {
+        this.audio = audio;
     }
 }

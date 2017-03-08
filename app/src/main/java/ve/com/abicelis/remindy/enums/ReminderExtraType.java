@@ -5,8 +5,8 @@ package ve.com.abicelis.remindy.enums;
  */
 
 public enum ReminderExtraType {
-    PHOTO,
+    IMAGE,
     LINK,
     TEXT,
-    RECORDING;
+    AUDIO;
 }
