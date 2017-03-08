@@ -10,4 +10,11 @@
     <color name="icons_disabled">#BDBDBD</color>
     <color name="icons_enabled">#212121</color>
     <color name="divider">#BDBDBD</color>
+
+
+    <color name="reminder_icon_1">#AB47BC</color>
+    <color name="reminder_icon_2">#5C6BC0</color>
+    <color name="reminder_icon_3">#009688</color>
+    <color name="reminder_icon_4">#43A047</color>
+    <color name="reminder_icon_5">#FB8C00</color>
 </resources>
