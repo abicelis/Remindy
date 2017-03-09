@@ -4,12 +4,10 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.TextureView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,23 +24,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.Date;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
 
 public class MainActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, AddressResultReceiver.AddressReceiverListener {
 
     //CONSTS
     private static final int REQ_CODE_GPS_FINE_PERMISSION = 2;                 // Permission request codes need to be < 256
@@ -52,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements
     //DATA
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+
     private LocationRequest mLocationRequest;
     private AddressResultReceiver mResultReceiver;
     private String mAddressOutput;
@@ -211,11 +203,23 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void startFetchAddressIntentService() {
         mResultReceiver = new AddressResultReceiver(new Handler());
+        mResultReceiver.setReceiverListener(this);
 
         Intent intent = new Intent(this, FetchAddressIntentService.class);
         intent.putExtra(FetchAddressIntentService.RECEIVER, mResultReceiver);
         intent.putExtra(FetchAddressIntentService.LOCATION_DATA_EXTRA, mLastLocation);
         startService(intent);
+    }
+
+    @Override
+    public void onReceiveAddressResult(int resultCode, Bundle resultData) {
+        mAddressOutput = resultData.getString(FetchAddressIntentService.RESULT_DATA_KEY);
+
+        if (resultCode == FetchAddressIntentService.SUCCESS_RESULT) {
+            mAddressText.setText(mAddressOutput);
+        } else {
+            Toast.makeText(this, "There was an error fetching the address...", Toast.LENGTH_SHORT).show();
+        }
     }
 
 //    protected void createLocationRequest() {
@@ -264,23 +268,5 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-    class AddressResultReceiver extends ResultReceiver {
 
-        AddressResultReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            mAddressOutput = resultData.getString(FetchAddressIntentService.RESULT_DATA_KEY);
-
-            // Show a toast message if an address was found.
-            if (resultCode == FetchAddressIntentService.SUCCESS_RESULT) {
-                mAddressText.setText(mAddressOutput);
-            } else {
-                showToast("There was an error fetching the address...");
-
-            }
-        }
-    }
 }
