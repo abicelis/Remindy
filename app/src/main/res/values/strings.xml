@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Remindy</string>
     <string name="action_settings">Settings</string>
+
+
+    /* FetchAddressIntentService */
+    <string name="service_not_available">Location service not available</string>
+    <string name="invalid_lat_long_used">Invalid latitude or longitude</string>
+    <string name="no_address_found">No address found</string>
+    <string name="address_found">Found address</string>
 </resources>

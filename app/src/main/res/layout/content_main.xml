@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,10 +14,65 @@
     tools:context="ve.com.abicelis.remindy.app.activities.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Latitude"-->
+            <!--android:text=""/>-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Longitude"-->
+            <!--android:text=""/>-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+
+
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/get_location_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:textColor="@color/white"
+        app:backgroundTint="@color/primary_dark"
+        android:text="Get Location"/>
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latitude:" />
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Longitude:" />
+    <TextView
+        android:id="@+id/extra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Extra:" />
 
 
-</RelativeLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/get_address_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/primary_dark"
+        android:text="Get Address"/>
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Extra:" />
+
+</LinearLayout>
