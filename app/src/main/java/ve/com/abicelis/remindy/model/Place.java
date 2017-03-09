@@ -6,15 +6,15 @@ package ve.com.abicelis.remindy.model;
 
 public class Place {
     private int id;
-    private String name;
+    private String alias;
     private String address;
     private double latitude;
     private double longitude;
     private float radius;
     private boolean isOneOff;
 
-    public Place(String name, String address, double latitude, double longitude, float radius, boolean isOneOff) {
-        this.name = name;
+    public Place(String alias, String address, double latitude, double longitude, float radius, boolean isOneOff) {
+        this.alias = alias;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -22,8 +22,8 @@ public class Place {
         this.isOneOff = isOneOff;
     }
 
-    public Place(int id, String name, String address, double latitude, double longitude, float radius, boolean isOneOff) {
-        this(name, address, latitude, longitude, radius, isOneOff);
+    public Place(int id, String alias, String address, double latitude, double longitude, float radius, boolean isOneOff) {
+        this(alias, address, latitude, longitude, radius, isOneOff);
         this.id = id;
     }
 
@@ -34,11 +34,11 @@ public class Place {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getAlias() {
+        return alias;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getAddress() {
@@ -74,7 +74,7 @@ public class Place {
     @Override
     public String toString() {
         return  "ID=" + id + "\r\n" +
-                " name=" + name + "\r\n" +
+                " alias=" + alias + "\r\n" +
                 " address=" + address + "\r\n" +
                 " latitude=" + latitude + "\r\n" +
                 " longitude=" + longitude + "\r\n" +
