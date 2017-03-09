@@ -11,17 +11,19 @@ public class Place {
     private double latitude;
     private double longitude;
     private float radius;
+    private boolean isOneOff;
 
-    public Place(String name, String address, double latitude, double longitude, float radius) {
+    public Place(String name, String address, double latitude, double longitude, float radius, boolean isOneOff) {
         this.name = name;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
+        this.isOneOff = isOneOff;
     }
 
-    public Place(int id, String name, String address, double latitude, double longitude, float radius) {
-        this(name, address, latitude, longitude, radius);
+    public Place(int id, String name, String address, double latitude, double longitude, float radius, boolean isOneOff) {
+        this(name, address, latitude, longitude, radius, isOneOff);
         this.id = id;
     }
 
