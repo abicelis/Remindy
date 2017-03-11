@@ -10,7 +10,7 @@ public class ReminderExtraText extends ReminderExtra {
 
     private String text;
 
-    ReminderExtraText(int id, int reminderId, String text) {
+    public ReminderExtraText(int id, int reminderId, String text) {
         super(id, reminderId);
         this.text = text;
     }

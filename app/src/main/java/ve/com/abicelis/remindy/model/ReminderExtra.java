@@ -6,7 +6,7 @@ import ve.com.abicelis.remindy.enums.ReminderExtraType;
  * Created by abice on 3/3/2017.
  */
 
-abstract class ReminderExtra {
+public abstract class ReminderExtra {
     private int id;
     private int reminderId;
 

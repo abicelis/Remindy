@@ -13,9 +13,9 @@ public class ReminderExtraLink extends ReminderExtra {
 
     private String link;
 
-    ReminderExtraLink(int id, int reminderId, String link) throws MalformedLinkException {
+    public ReminderExtraLink(int id, int reminderId, String link) {
         super(id, reminderId);
-        setLink(link);
+        this.link = link;
     }
 
     @Override
