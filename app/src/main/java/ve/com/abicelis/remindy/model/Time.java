@@ -1,5 +1,6 @@
 package ve.com.abicelis.remindy.model;
 
+import java.security.InvalidParameterException;
 import java.util.Locale;
 
 import ve.com.abicelis.remindy.enums.TimeFormat;
@@ -8,43 +9,55 @@ import ve.com.abicelis.remindy.enums.TimeFormat;
  * Created by abice on 8/3/2017.
  */
 
+
+/**
+ * Note: Internally handles time always as 24H time.
+ */
 public class Time implements Comparable<Time> {
     private int hour;
     private int minute;
-    private TimeFormat format = TimeFormat.FORMAT_24H;
+    private TimeFormat displayTimeFormat = TimeFormat.FORMAT_24H;
+
+    public Time(int timeInMinutes) {
+        setTimeInMinutes(timeInMinutes);
+    }
 
     public Time(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
-        format = TimeFormat.FORMAT_24H;
     }
 
-    public Time(int hour, int minute, TimeFormat format) {
+    public Time(int hour, int minute, TimeFormat displayTimeFormat) {
         this(hour, minute);
-        this.format = format;
+        this.displayTimeFormat = displayTimeFormat;
     }
 
-    public int getHour() {
+    public int getHour(){
         return hour;
     }
-    public void setHour(int hour) {
-        if(hour < 0 || hour > 24)
-        this.hour = hour;
+    public void setHour(int hour) throws InvalidParameterException {
+        if(hour >= 0 && hour <= 24)
+            this.hour = hour;
+        else
+            throw new InvalidParameterException("Value of parameter (" + hour + "), is outside 0-24");
     }
 
     public int getMinute() {
         return minute;
     }
-    public void setMinute(int minute) {
-        this.minute = minute;
+    public void setMinute(int minute) throws InvalidParameterException {
+        if(hour >= 0 && hour <= 24)
+            this.minute = minute;
+        else
+            throw new InvalidParameterException("Value of parameter (" + minute + "), is outside 0-60");
     }
 
 
-    public TimeFormat getFormat() {
-        return format;
+    public TimeFormat getDisplayTimeFormat() {
+        return displayTimeFormat;
     }
-    public void setFormat(TimeFormat format) {
-        this.format = format;
+    public void setDisplayTimeFormat(TimeFormat displayTimeFormat) {
+        this.displayTimeFormat = displayTimeFormat;
     }
 
 
@@ -65,6 +78,14 @@ public class Time implements Comparable<Time> {
     private int getTimeInMinutes() {
         return (hour*60) + minute;
     }
+    private void setTimeInMinutes(int minutes) {
+        if(minutes >= 0 && minutes <= 24*60) {
+            this.hour = minutes/60;
+            this.minute = minutes%60;
+        }
+        else
+            throw new InvalidParameterException("Value of parameter (" + minute + "), is outside 0-60");
+    }
 
     @Override
     public int compareTo(Time o) {
@@ -77,7 +98,7 @@ public class Time implements Comparable<Time> {
 
     @Override
     public String toString() {
-        switch (format) {
+        switch (displayTimeFormat) {
             case FORMAT_24H:
                 return String.format(Locale.getDefault(), "%1$01d:%2$01d", hour, minute);
             case FORMAT_12H:
@@ -89,7 +110,7 @@ public class Time implements Comparable<Time> {
                 }
                 return String.format(Locale.getDefault(), "%1$01d:%2$01d %3$s", hour12h, minute, amPm);
             default:
-                throw new IllegalArgumentException("Argument is null. Cannot toString()");
+                throw new IllegalArgumentException("displayTimeFormat is null. Cannot toString()");
         }
     }
 }
