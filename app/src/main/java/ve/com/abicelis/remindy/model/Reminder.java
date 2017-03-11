@@ -3,12 +3,12 @@ package ve.com.abicelis.remindy.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.List;
 
 import ve.com.abicelis.remindy.enums.ReminderCategory;
 import ve.com.abicelis.remindy.enums.ReminderDateType;
+import ve.com.abicelis.remindy.enums.ReminderStatus;
 import ve.com.abicelis.remindy.enums.ReminderTimeType;
 
 /**
@@ -18,7 +18,7 @@ import ve.com.abicelis.remindy.enums.ReminderTimeType;
 public class Reminder {
 
     private int id;
-    private boolean active;
+    private ReminderStatus status;
     private String title;
     private String description;
     private ReminderCategory category;
@@ -32,12 +32,12 @@ public class Reminder {
     private List<ReminderExtra> extras;
 
 
-    public Reminder(@NonNull int id, @NonNull boolean active, @NonNull String title,
+    public Reminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title,
                     @Nullable String description, @NonNull ReminderCategory category, @Nullable Place place,
                     @NonNull ReminderDateType dateType, @Nullable Calendar startDate, @Nullable Calendar endDate,
                     @NonNull ReminderTimeType timeType, @Nullable Time startTime, @Nullable Time endTime) {
         this.id = id;
-        this.active = active;
+        this.status = status;
         this.title = title;
         this.description = description;
         this.category = category;
@@ -57,11 +57,11 @@ public class Reminder {
         this.id = id;
     }
 
-    public boolean isActive() {
-        return active;
+    public ReminderStatus getStatus() {
+        return status;
     }
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setStatus(boolean active) {
+        this.status = status;
     }
 
     public String getTitle() {
@@ -145,9 +145,10 @@ public class Reminder {
     @Override
     public String toString() {
         return  "ID=" + id + "\r\n" +
-                " active=" + active + "\r\n" +
+                " status=" + status.getFriendlyName() + "\r\n" +
                 " title=" + title + "\r\n" +
                 " description=" + description + "\r\n" +
+                " category=" + category.getFriendlyName() + "\r\n" +
                 " place=" + place + "\r\n" +
                 " dateType=" + dateType + "\r\n" +
                 " startDate=" + startDate + "\r\n" +
