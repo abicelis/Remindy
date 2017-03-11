@@ -11,7 +11,8 @@ public class Place {
     private double latitude;
     private double longitude;
     private float radius;
-    private boolean isOneOff;
+    private boolean isOneOff;       //Places are one-off when a reminder is created with a Place = Other,
+                                    // The place is saved in the database but it isn't a frequent one nor will it appear in saved places
 
     public Place(String alias, String address, double latitude, double longitude, float radius, boolean isOneOff) {
         this.alias = alias;
