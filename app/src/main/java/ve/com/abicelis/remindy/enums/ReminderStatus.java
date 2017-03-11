@@ -7,8 +7,8 @@ package ve.com.abicelis.remindy.enums;
 public enum ReminderStatus {
     ARCHIVED("Archived"),
     ACTIVE("Active"),
-    DONE("Done");
-    //DELETED("Deleted"); ??
+    DONE("Done"),
+    OVERDUE("Overdue");
 
     private String friendlyName;
     ReminderStatus(String friendlyName) {
