@@ -10,12 +10,10 @@ public abstract class ReminderExtra {
     private int id;
     private int reminderId;
 
-    public ReminderExtra(int reminderId) {
-        this.reminderId = reminderId;
-    }
+    public ReminderExtra() {}   //id-less Constructor used when creating Extras
     public ReminderExtra(int id, int reminderId) {
-        this(reminderId);
         this.id = id;
+        this.reminderId = reminderId;
     }
 
     public abstract ReminderExtraType getType();
