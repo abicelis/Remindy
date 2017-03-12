@@ -49,6 +49,12 @@ public class RemindyDAO {
         mDatabaseHelper = new RemindyDbHelper(context);
     }
 
+
+
+
+
+    /* Get data from database */
+
     /**
      * Returns a List of OVERDUE Reminders.
      * These are reminders which have an Active status, but will never trigger because of their set dates
@@ -145,7 +151,7 @@ public class RemindyDAO {
     }
 
     /**
-     * Returns a List of Places.
+     * Returns a List of all the Places in the database.
      */
     public List<Place> getPlaces() {
         List<Place> places = new ArrayList<>();
@@ -166,7 +172,6 @@ public class RemindyDAO {
 
     /**
      * Returns a Place given a placeId.
-     *
      * @param placeId The id of the place
      */
     public Place getPlace(int placeId) throws PlaceNotFoundException, SQLiteConstraintException {
@@ -186,7 +191,6 @@ public class RemindyDAO {
 
     /**
      * Returns a List of Extras associated to a Reminder.
-     *
      * @param reminderId The id of the reminder, fk in ExtraTable
      */
     public List<ReminderExtra> getReminderExtras(int reminderId) {
@@ -219,7 +223,6 @@ public class RemindyDAO {
 
     /**
      * Deletes a single Place, given its ID
-     *
      * @param placeId The ID of the place to delete
      */
     public boolean deletePlace(int placeId) throws CouldNotDeleteDataException {
@@ -232,7 +235,6 @@ public class RemindyDAO {
 
     /**
      * Deletes a single Extra, given its ID
-     *
      * @param extraId The ID of the extra to delete
      */
     public boolean deleteExtra(int extraId) throws CouldNotDeleteDataException {
@@ -245,7 +247,6 @@ public class RemindyDAO {
 
     /**
      * Deletes all Extras linked to a Reminder, given the reminder's ID
-     *
      * @param reminderId The ID of the reminder whos extras will be deleted
      */
     public boolean deleteExtrasFromReminder(int reminderId) throws CouldNotDeleteDataException {
@@ -258,7 +259,6 @@ public class RemindyDAO {
 
     /**
      * Deletes a Reminder with its associated Extras, given the reminder's ID
-     *
      * @param reminderId The ID of the reminder o delete
      */
     public boolean deleteReminder(int reminderId) throws CouldNotDeleteDataException {
@@ -274,10 +274,17 @@ public class RemindyDAO {
 
 
 
+
+
+
+
+
+
     /* Update data on database */
 
     /**
      * Updates the information stored about a Place
+     * @param place The Place to update
      */
     public long updatePlace(Place place) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
@@ -300,6 +307,7 @@ public class RemindyDAO {
 
     /**
      * Updates the information stored about an Extra
+     * @param extra The ReminderExtra to update
      */
     public long updateReminderExtra(ReminderExtra extra) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
@@ -322,6 +330,7 @@ public class RemindyDAO {
 
     /**
      * Updates the information stored about a Reminder and its Extras.
+     * @param reminder The Reminder (and associated Extras) to update
      */
     public long updateReminder(Reminder reminder) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
@@ -357,8 +366,18 @@ public class RemindyDAO {
     }
 
 
+
+
+
+
+
+
     /* Insert data into database */
 
+    /**
+     * Inserts a new Place into the database.
+     * @param place The Place to be inserted
+     */
     public long insertPlace(Place place) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
@@ -373,6 +392,10 @@ public class RemindyDAO {
         return newRowId;
     }
 
+    /**
+     * Inserts a List of Extras into the database.
+     * @param extras The List of Extras to be inserted
+     */
     public long[] insertReminderExtras(List<ReminderExtra> extras) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
         long[] newRowIds = new long[extras.size()];
@@ -390,7 +413,11 @@ public class RemindyDAO {
         return newRowIds;
     }
 
-    public long insetReminder(Reminder reminder) throws CouldNotInsertDataException {
+    /**
+     * Inserts a new Reminder and its associated Extras into the database.
+     * @param reminder The Reminder (and associated Extras) to insert
+     */
+    public long insertReminder(Reminder reminder) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
         //Insert Extras
@@ -414,7 +441,14 @@ public class RemindyDAO {
     }
 
 
+
+
+
+
+
+
     /* Model to ContentValues */
+
     private ContentValues getValuesFromPlace(Place place) {
         ContentValues values = new ContentValues();
         values.put(RemindyContract.PlaceTable.COLUMN_NAME_ALIAS.getName(), place.getAlias());
@@ -506,7 +540,6 @@ public class RemindyDAO {
 
         return new Reminder(id, status, title, description, category, null, dateType, startDate, endDate, timeType, startTime, endTime);
     }
-
 
     private Place getPlaceFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.PlaceTable._ID));
