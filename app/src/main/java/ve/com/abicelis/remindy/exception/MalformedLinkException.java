@@ -1,7 +1,5 @@
 package ve.com.abicelis.remindy.exception;
 
-
-
 /**
  * Created by abice on 3/3/2017.
  */
