@@ -70,7 +70,12 @@ public class Place {
         this.radius = radius;
     }
 
-
+    public boolean isOneOff() {
+        return isOneOff;
+    }
+    public void setOneOff(boolean oneOff) {
+        isOneOff = oneOff;
+    }
 
     @Override
     public String toString() {
@@ -79,6 +84,7 @@ public class Place {
                 " address=" + address + "\r\n" +
                 " latitude=" + latitude + "\r\n" +
                 " longitude=" + longitude + "\r\n" +
-                " radius=" + radius;
+                " radius=" + radius + "\r\n" +
+                " isOneOff=" + isOneOff;
     }
 }
