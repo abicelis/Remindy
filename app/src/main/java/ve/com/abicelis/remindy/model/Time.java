@@ -75,10 +75,10 @@ public class Time implements Comparable<Time> {
         return this.getTimeInMinutes() > when.getTimeInMinutes();
     }
 
-    private int getTimeInMinutes() {
+    public int getTimeInMinutes() {
         return (hour*60) + minute;
     }
-    private void setTimeInMinutes(int minutes) {
+    public void setTimeInMinutes(int minutes) {
         if(minutes >= 0 && minutes <= 24*60) {
             this.hour = minutes/60;
             this.minute = minutes%60;
@@ -89,8 +89,6 @@ public class Time implements Comparable<Time> {
 
     @Override
     public int compareTo(Time o) {
-        if(o == null)
-            throw new IllegalArgumentException("Argument is null. Cannot compare");
         int thisTime = this.getTimeInMinutes();
         int thatTime = o.getTimeInMinutes();
         return (thisTime<thatTime ? -1 : (thisTime==thatTime ? 0 : 1));
