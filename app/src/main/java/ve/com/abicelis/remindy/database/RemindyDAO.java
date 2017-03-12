@@ -24,6 +24,7 @@ import ve.com.abicelis.remindy.enums.ReminderSortType;
 import ve.com.abicelis.remindy.enums.ReminderStatus;
 import ve.com.abicelis.remindy.enums.ReminderTimeType;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
+import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.exception.MalformedLinkException;
 import ve.com.abicelis.remindy.exception.PlaceNotFoundException;
 import ve.com.abicelis.remindy.model.Place;
@@ -202,6 +203,12 @@ public class RemindyDAO {
 
 
 
+
+
+
+
+
+
     /* Delete data from database */
     /**
      * Deletes a single Place, given its ID
@@ -257,8 +264,82 @@ public class RemindyDAO {
 
 
     /* Update data on database */
-    //TODO: Update Reminder with extras
-    //TODO: Update Place info
+
+    /**
+     * Updates the information stored about a Place
+     */
+    public long updatePlace (Place place) throws CouldNotUpdateDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        //Set values
+        ContentValues values = getValuesFromPlace(place);
+
+        //Which row to update
+        String selection = RemindyContract.PlaceTable._ID + " =? ";
+        String[] selectionArgs = { String.valueOf(place.getId()) };
+
+        int count = db.update(
+                RemindyContract.PlaceTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
+
+    /**
+     * Updates the information stored about an Extra
+     */
+    public long updateReminderExtra (ReminderExtra extra) throws CouldNotUpdateDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        //Set values
+        ContentValues values = getValuesFromExtra(extra);
+
+        //Which row to update
+        String selection = RemindyContract.ExtraTable._ID + " =? ";
+        String[] selectionArgs = { String.valueOf(extra.getId()) };
+
+        int count = db.update(
+                RemindyContract.ExtraTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
+
+    /**
+     * Updates the information stored about a Reminder and its Extras.
+     */
+    public long updateReminder (Reminder reminder) throws CouldNotUpdateDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        //Delete the extras
+        try {
+            deleteExtrasFromReminder(reminder.getId());
+        } catch (CouldNotDeleteDataException e) {
+            throw new CouldNotUpdateDataException("Failed trying to delete Extras associated with Reminder ID= " + reminder.getId());
+        }
+        //Insert new Extras
+        //TODO: Complete this here!!
+
+
+        //Set reminder values
+        ContentValues values = getValuesFromReminder(reminder);
+
+        //Which row to update
+        String selection = RemindyContract.ReminderTable._ID + " =? ";
+        String[] selectionArgs = { String.valueOf(reminder.getId()) };
+
+        int count = db.update(
+                RemindyContract.ReminderTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
 
 
     /* Insert data into database */
@@ -266,11 +347,59 @@ public class RemindyDAO {
     //TODO Insert a Place
 
 
+
+
     /* Model to ContentValues */
+    private ContentValues getValuesFromPlace(Place place) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.PlaceTable.COLUMN_NAME_ALIAS.getName(), place.getAlias());
+        values.put(RemindyContract.PlaceTable.COLUMN_NAME_ADDRESS.getName(), place.getAddress());
+        values.put(RemindyContract.PlaceTable.COLUMN_NAME_LATITUDE.getName(), place.getLatitude());
+        values.put(RemindyContract.PlaceTable.COLUMN_NAME_LONGITUDE.getName(), place.getLongitude());
+        values.put(RemindyContract.PlaceTable.COLUMN_NAME_RADIUS.getName(), place.getRadius());
+        values.put(RemindyContract.PlaceTable.COLUMN_NAME_IS_ONE_OFF.getName(), place.isOneOff());
+        return values;
+    }
+    private ContentValues getValuesFromExtra(ReminderExtra extra) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK.getName(), extra.getReminderId());
+        values.put(RemindyContract.ExtraTable.COLUMN_NAME_TYPE.getName(), extra.getType().name());
 
+        switch (extra.getType()) {
+            case AUDIO:
+                values.put(RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((ReminderExtraAudio)extra).getAudio());
+                break;
+            case IMAGE:
+                values.put(RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((ReminderExtraImage)extra).getThumbnail());
+                values.put(RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ReminderExtraImage)extra).getFullImagePath());
+                break;
+            case TEXT:
+                values.put(RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ReminderExtraText)extra).getText());
+                break;
+            case LINK:
+                values.put(RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ReminderExtraLink)extra).getLink());
+                break;
+            default:
+                throw new InvalidParameterException("ReminderExtraType is invalid. Value = " + extra.getType());
+        }
+        return values;
+    }
 
-
-
+    private ContentValues getValuesFromReminder(Reminder reminder) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_STATUS.getName(), reminder.getStatus().name());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_TITLE.getName(), reminder.getTitle());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_DESCRIPTION.getName(), reminder.getDescription());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY.getName(), reminder.getCategory().name());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_PLACE_FK.getName(), (reminder.getPlace() != null ? String.valueOf(reminder.getPlace().getId()) : "null"));
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_DATE_TYPE.getName(), reminder.getDateType().name());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_START_DATE.getName(), reminder.getStartDate().getTimeInMillis());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_END_DATE.getName(), reminder.getEndDate().getTimeInMillis());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_TIME_TYPE.getName(), reminder.getTimeType().name());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_START_TIME.getName(), reminder.getStartTime().getTimeInMinutes());
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_END_TIME.getName(), reminder.getEndTime().getTimeInMinutes());
+        return values;
+    }
 
 
 
