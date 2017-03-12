@@ -32,11 +32,10 @@ public class Reminder {
     private List<ReminderExtra> extras;
 
 
-    public Reminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title,
-                    @Nullable String description, @NonNull ReminderCategory category, @Nullable Place place,
-                    @NonNull ReminderDateType dateType, @Nullable Calendar startDate, @Nullable Calendar endDate,
-                    @NonNull ReminderTimeType timeType, @Nullable Time startTime, @Nullable Time endTime) {
-        this.id = id;
+    public Reminder(@NonNull ReminderStatus status, @NonNull String title, @Nullable String description,
+                    @NonNull ReminderCategory category, @Nullable Place place, @NonNull ReminderDateType dateType,
+                    @Nullable Calendar startDate, @Nullable Calendar endDate, @NonNull ReminderTimeType timeType,
+                    @Nullable Time startTime, @Nullable Time endTime) {
         this.status = status;
         this.title = title;
         this.description = description;
@@ -49,6 +48,16 @@ public class Reminder {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    public Reminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title,
+                    @Nullable String description, @NonNull ReminderCategory category, @Nullable Place place,
+                    @NonNull ReminderDateType dateType, @Nullable Calendar startDate, @Nullable Calendar endDate,
+                    @NonNull ReminderTimeType timeType, @Nullable Time startTime, @Nullable Time endTime) {
+        this(status, title, description, category, place, dateType, startDate, endDate, timeType, startTime, endTime);
+        this.id = id;
+    }
+
+
 
     public int getId() {
         return id;
@@ -140,7 +149,12 @@ public class Reminder {
     public void setExtras(List<ReminderExtra> extras) {
         this.extras = extras;
     }
-
+    public void addExtra(ReminderExtra extra) {
+        this.extras.add(extra);
+    }
+    public void clearExtras() {
+        extras.clear();
+    }
 
     @Override
     public String toString() {
