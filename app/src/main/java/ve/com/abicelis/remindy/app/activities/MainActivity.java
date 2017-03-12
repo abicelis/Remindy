@@ -28,10 +28,13 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Date;
+import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
+import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.model.Place;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, AddressResultReceiver.AddressReceiverListener {
@@ -89,6 +92,12 @@ public class MainActivity extends AppCompatActivity implements
                         .setAction("Action", null).show();
             }
         });
+
+
+        RemindyDAO mDao = new RemindyDAO(getApplicationContext());
+
+        List<Place> places = mDao.getPlaces();
+        Toast.makeText(this, "Places saved in db = " + places.size(), Toast.LENGTH_SHORT).show();
 
 
 
@@ -261,12 +270,5 @@ public class MainActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
-    public void showToast(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-    }
-
-
-
 
 }

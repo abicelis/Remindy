@@ -50,9 +50,6 @@ public class RemindyDAO {
     }
 
 
-
-
-
     /* Get data from database */
 
     /**

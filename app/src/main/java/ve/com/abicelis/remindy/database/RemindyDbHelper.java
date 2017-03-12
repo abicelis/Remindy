@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.util.FileUtils;
 
 
@@ -95,88 +96,87 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
     }
 
     private void insertMockData(SQLiteDatabase sqLiteDatabase) {
+        String statement;
 
-        //TODO: Complete this method
 
-//        String statement;
-//
-//        Calendar cal = Calendar.getInstance();
-//        // Set cal to be at midnight (start of day) today.
-//        cal.set(Calendar.HOUR_OF_DAY, 0);
-//        cal.set(Calendar.MINUTE, 0);
-//        cal.set(Calendar.SECOND, 0);
-//        cal.set(Calendar.MILLISECOND, 0);
-//
-//        cal.add(Calendar.DAY_OF_MONTH, -10);
-//        int closingDay = cal.get(Calendar.DAY_OF_MONTH);        //closingDay 10 days ago
-//        cal.add(Calendar.DAY_OF_MONTH, 20);
-//        int dueDay = cal.get(Calendar.DAY_OF_MONTH);            //dueDay in 10 days
-//        cal.add(Calendar.DAY_OF_MONTH, -10);
-//
-//
-//        statement = "INSERT INTO " + RemindyContract.CreditCardTable.TABLE_NAME + " (" +
-//                        RemindyContract.CreditCardTable._ID + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_CARD_ALIAS.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_BANK_NAME.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_CARD_NUMBER.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_CURRENCY.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_CARD_TYPE.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_CARD_EXPIRATION.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_CLOSING_DAY.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_DUE_DAY.getName() + COMMA_SEP +
-//                        RemindyContract.CreditCardTable.COLUMN_NAME_BACKGROUND.getName() +
-//                        ") VALUES (0, 'Shopping Card', 'Bank Of America', '1234-5678-1234-5678', 'USD', 'MASTERCARD', '0', " + closingDay + ", " + dueDay + ", 'DARK_RED'); ";
-//        sqLiteDatabase.execSQL(statement);
-//
-//        cal.add(Calendar.DAY_OF_MONTH, -9);
-//        long period1StartDate = cal.getTimeInMillis();
-//        cal.add(Calendar.MONTH, 1);
-//        long period2StartDate = cal.getTimeInMillis();
-//        cal.add(Calendar.MILLISECOND, -1);
-//        long period1EndDate = cal.getTimeInMillis();
-//        cal.add(Calendar.MONTH, 1);
-//        long period2EndDate = cal.getTimeInMillis();
-//
-//        statement = "INSERT INTO " + RemindyContract.CreditPeriodTable.TABLE_NAME + " (" +
-//                        RemindyContract.CreditPeriodTable._ID + COMMA_SEP +
-//                        RemindyContract.CreditPeriodTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_CARD.getName() + COMMA_SEP +
-//                        RemindyContract.CreditPeriodTable.COLUMN_NAME_PERIOD_NAME_STYLE.getName() + COMMA_SEP +
-//                        RemindyContract.CreditPeriodTable.COLUMN_NAME_START_DATE.getName() + COMMA_SEP +
-//                        RemindyContract.CreditPeriodTable.COLUMN_NAME_END_DATE.getName() + COMMA_SEP +
-//                        RemindyContract.CreditPeriodTable.COLUMN_NAME_CREDIT_LIMIT.getName() +
-//                        ") VALUES (0, 0, 0, '" + period1StartDate + "', '" + period1EndDate + "', '60000'), (1, 0, 0, '" + period2StartDate + "', '" + period2EndDate + "', '80000'); ";
-//        sqLiteDatabase.execSQL(statement);
-//
-//        cal = Calendar.getInstance();
-//        cal.add(Calendar.DAY_OF_MONTH, -6);
-//        long expense1period1 = cal.getTimeInMillis();
-//        cal.add(Calendar.DAY_OF_MONTH, 1);
-//        long expense2period1 = cal.getTimeInMillis();
-//        cal.add(Calendar.DAY_OF_MONTH, 2);
-//        long expense3period1 = cal.getTimeInMillis();
-//        long expense4period1 = cal.getTimeInMillis();
-//        cal.add(Calendar.DAY_OF_MONTH, 2);
-//        long expense5period1 = cal.getTimeInMillis();
-//
-//
-//        statement  = "INSERT INTO " + RemindyContract.ExpenseTable.TABLE_NAME + " (" +
-//                        RemindyContract.ExpenseTable._ID + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_FOREIGN_KEY_CREDIT_PERIOD.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_DESCRIPTION.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_THUMBNAIL.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_FULL_IMAGE_PATH.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_AMOUNT.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_CURRENCY.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_DATE.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_EXPENSE_CATEGORY.getName() + COMMA_SEP +
-//                        RemindyContract.ExpenseTable.COLUMN_NAME_EXPENSE_TYPE.getName() +
-//                        ") VALUES (0, 0, 'MockExpense 1', X'', 'mockpath', '5300', 'USD', '" + expense1period1 + "', 'FOOD', 'ORDINARY'), " +
-//                                 "(1, 0, 'MockExpense 2', X'', 'mockpath', '10000', 'USD', '" + expense2period1 + "', 'ENTERTAINMENT', 'EXTRAORDINARY')," +
-//                                 "(2, 0, 'MockExpense 3', X'', 'mockpath', '4500', 'USD', '" + expense3period1 + "', 'LEISURE', 'EXTRAORDINARY')," +
-//                                 "(3, 0, 'MockExpense 4', X'', 'mockpath', '2000', 'USD', '" + expense4period1 + "', 'EDUCATION', 'ORDINARY')," +
-//                                 "(4, 0, 'MockExpense 5', X'', 'mockpath', '12000', 'USD', '" + expense5period1 + "', 'CLOTHING', 'ORDINARY');";
-//        sqLiteDatabase.execSQL(statement);
-//
+        //Insert mock Places
+        statement = "INSERT INTO " + RemindyContract.PlaceTable.TABLE_NAME + " (" +
+                        RemindyContract.PlaceTable._ID + COMMA_SEP +
+                        RemindyContract.PlaceTable.COLUMN_NAME_ALIAS.getName() + COMMA_SEP +
+                        RemindyContract.PlaceTable.COLUMN_NAME_ADDRESS.getName() + COMMA_SEP +
+                        RemindyContract.PlaceTable.COLUMN_NAME_LATITUDE.getName() + COMMA_SEP +
+                        RemindyContract.PlaceTable.COLUMN_NAME_LONGITUDE.getName() + COMMA_SEP +
+                        RemindyContract.PlaceTable.COLUMN_NAME_RADIUS.getName() + COMMA_SEP +
+                        RemindyContract.PlaceTable.COLUMN_NAME_IS_ONE_OFF.getName() +
+                        ") VALUES ('0', 'Home', 'Av. El Milagro, Edif. Los Canales', 10.6682603, -71.5940929, 500, 'false')," +
+                        "('1', 'Vicky', 'Urb La Paragua, Edif. Caicara V', 10.693981, -71.623274, 250, 'false')," +
+                        "('2', 'PizzaHut', 'PizzaHut address...', 10.693981, -71.633300, 2000, 'false')," +
+                        "('3', 'Andromeda Galaxy', 'Galaxy far away', 11.0000000, -72.000000, 2000, 'true');";
+        sqLiteDatabase.execSQL(statement);
+
+
+
+
+
+        //Insert mock Reminders
+        Calendar cal = getZeroedCalendar();
+        cal.add(Calendar.DAY_OF_MONTH, -10);
+        long startDateWeekendPizza = cal.getTimeInMillis();     //startDateWeekendPizza = 10 days ago
+
+        cal.add(Calendar.DAY_OF_MONTH, +10);
+        cal.add(Calendar.MONTH, 3);
+        long endDateWeekendPizza = cal.getTimeInMillis();      //endDateWeekendPizza = 3 months from now
+
+
+        int weekendPizzaStartTime = new Time(18, 0).getTimeInMinutes();
+        int weekendPizzaEndTime = new Time(19, 30).getTimeInMinutes();
+
+
+        statement = "INSERT INTO " + RemindyContract.ReminderTable.TABLE_NAME + " (" +
+                RemindyContract.ReminderTable._ID + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_STATUS.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_TITLE.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_DESCRIPTION.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_PLACE_FK.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_DATE_TYPE.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_START_DATE.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_END_DATE.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_TIME_TYPE.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_START_TIME.getName() + COMMA_SEP +
+                RemindyContract.ReminderTable.COLUMN_NAME_END_TIME.getName() +
+                ") VALUES ('0', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
+                "('1', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
+                "('2', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"');";
+        sqLiteDatabase.execSQL(statement);
+
+
+
+
+
+
+        //Insert mock ReminderExtras
+        statement = "INSERT INTO " + RemindyContract.ExtraTable.TABLE_NAME + " (" +
+                RemindyContract.ExtraTable._ID + COMMA_SEP +
+                RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK.getName() + COMMA_SEP +
+                RemindyContract.ExtraTable.COLUMN_NAME_TYPE.getName() + COMMA_SEP +
+                RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + COMMA_SEP +
+                RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() +
+                ") VALUES ('0', '0', 'http://www.pizzahut.com', '')," +
+                "('1', '0', 'http://www.pizzahut.com.ve', '')," +
+                "('2', '0', 'http://www.pizzahut.ca', '');";
+        sqLiteDatabase.execSQL(statement);
+
+    }
+
+    private Calendar getZeroedCalendar() {
+        Calendar cal = Calendar.getInstance();
+        // Set cal to be at midnight (start of day) today.
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal;
     }
 
     private void createDatabase(SQLiteDatabase sqLiteDatabase) {
