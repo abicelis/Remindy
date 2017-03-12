@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class Reminder {
         this.timeType = timeType;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.extras = new ArrayList<>();
     }
 
     public Reminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title,
