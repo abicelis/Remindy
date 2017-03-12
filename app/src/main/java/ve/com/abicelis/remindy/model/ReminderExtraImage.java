@@ -11,6 +11,11 @@ public class ReminderExtraImage extends ReminderExtra {
     private byte[] thumbnail;
     private String fullImagePath;
 
+    public ReminderExtraImage(int reminderId, byte[] thumbnail, String fullImagePath) {
+        super(reminderId);
+        this.thumbnail = thumbnail;
+        this.fullImagePath = fullImagePath;
+    }
     public ReminderExtraImage(int id, int reminderId, byte[] thumbnail, String fullImagePath) {
         super(id, reminderId);
         this.thumbnail = thumbnail;

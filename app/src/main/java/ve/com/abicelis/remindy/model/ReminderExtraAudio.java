@@ -10,6 +10,10 @@ public class ReminderExtraAudio extends ReminderExtra {
 
     private byte[] audio;
 
+    public ReminderExtraAudio(int reminderId, byte[] audio) {
+        super(reminderId);
+        this.audio = audio;
+    }
     public ReminderExtraAudio(int id, int reminderId, byte[] audio) {
         super(id, reminderId);
         this.audio = audio;

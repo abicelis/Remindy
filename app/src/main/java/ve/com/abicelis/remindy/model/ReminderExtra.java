@@ -10,9 +10,12 @@ public abstract class ReminderExtra {
     private int id;
     private int reminderId;
 
-    public ReminderExtra(int id, int reminderId) {
-        this.id = id;
+    public ReminderExtra(int reminderId) {
         this.reminderId = reminderId;
+    }
+    public ReminderExtra(int id, int reminderId) {
+        this(reminderId);
+        this.id = id;
     }
 
     public abstract ReminderExtraType getType();

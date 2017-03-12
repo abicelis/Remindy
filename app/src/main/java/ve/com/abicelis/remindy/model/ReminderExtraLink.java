@@ -13,6 +13,10 @@ public class ReminderExtraLink extends ReminderExtra {
 
     private String link;
 
+    public ReminderExtraLink(int reminderId, String link) {
+        super(reminderId);
+        this.link = link;
+    }
     public ReminderExtraLink(int id, int reminderId, String link) {
         super(id, reminderId);
         this.link = link;
