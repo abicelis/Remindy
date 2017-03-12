@@ -23,6 +23,7 @@ import ve.com.abicelis.remindy.enums.ReminderExtraType;
 import ve.com.abicelis.remindy.enums.ReminderSortType;
 import ve.com.abicelis.remindy.enums.ReminderStatus;
 import ve.com.abicelis.remindy.enums.ReminderTimeType;
+import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
 import ve.com.abicelis.remindy.exception.MalformedLinkException;
 import ve.com.abicelis.remindy.exception.PlaceNotFoundException;
 import ve.com.abicelis.remindy.model.Place;
@@ -202,8 +203,57 @@ public class RemindyDAO {
 
 
     /* Delete data from database */
-    //TODO: Delete place
-    //TODO: Delete reminder with Extras
+    /**
+     * Deletes a single Place, given its ID
+     * @param placeId The ID of the place to delete
+     */
+    public boolean deletePlace(int placeId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        return db.delete(RemindyContract.PlaceTable.TABLE_NAME,
+                RemindyContract.PlaceTable._ID + " =?",
+                new String[]{String.valueOf(placeId)}) > 0;
+    }
+
+    /**
+     * Deletes a single Extra, given its ID
+     * @param extraId The ID of the extra to delete
+     */
+    public boolean deleteExtra(int extraId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        return db.delete(RemindyContract.ExtraTable.TABLE_NAME,
+                RemindyContract.ExtraTable._ID + " =?",
+                new String[]{String.valueOf(extraId)}) > 0;
+    }
+
+    /**
+     * Deletes all Extras linked to a Reminder, given the reminder's ID
+     * @param reminderId The ID of the reminder whos extras will be deleted
+     */
+    public boolean deleteExtrasFromReminder(int reminderId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        return db.delete(RemindyContract.ExtraTable.TABLE_NAME,
+                RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK + " =?",
+                new String[]{String.valueOf(reminderId)}) > 0;
+    }
+
+    /**
+     * Deletes a Reminder with its associated Extras, given the reminder's ID
+     * @param reminderId The ID of the reminder o delete
+     */
+    public boolean deleteReminder(int reminderId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        //Delete the extras
+        deleteExtrasFromReminder(reminderId);
+
+        return db.delete(RemindyContract.ReminderTable.TABLE_NAME,
+                RemindyContract.ReminderTable._ID + " =?",
+                new String[]{String.valueOf(reminderId)}) > 0;
+    }
+
 
 
     /* Update data on database */
