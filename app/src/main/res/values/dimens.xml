@@ -3,4 +3,18 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+
+    /*List item reminder */
+    <dimen name="item_reminder_icon_background_dimen">50dp</dimen>
+    <dimen name="item_reminder_category">20dp</dimen>
+    <dimen name="item_reminder_extra_icon_size">20dp</dimen>
+    <dimen name="item_reminder_other_icon_size">14dp</dimen>
+
+
+    /*Text sizes*/
+    <dimen name="text_size_huge">24sp</dimen>
+    <dimen name="text_size_big">16sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+
 </resources>

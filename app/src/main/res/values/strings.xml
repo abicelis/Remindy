@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Remindy</string>
+
+
+    /* Main Activity */
     <string name="action_settings">Settings</string>
+    <string name="action_about">About app</string>
+    <string name="action_rate">Rate app</string>
 
 
     /* FetchAddressIntentService */
