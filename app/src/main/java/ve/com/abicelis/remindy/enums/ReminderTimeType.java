@@ -5,8 +5,8 @@ package ve.com.abicelis.remindy.enums;
  */
 
 public enum ReminderTimeType {
-    ANYDAY("Anytime"),
-    SINGLE_DAY("Set time"),
+    ANYTIME("Anytime"),
+    SINGLE_TIME("Set time"),
     INTERVAL("Set interval");
 
     private String description;
