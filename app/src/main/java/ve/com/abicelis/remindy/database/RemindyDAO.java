@@ -107,17 +107,17 @@ public class RemindyDAO {
         String orderByClause = null;
         switch (sortType) {
             case DATE:
-                orderByClause = RemindyContract.ReminderTable.COLUMN_NAME_END_DATE + " DESC";
+                orderByClause = RemindyContract.ReminderTable.COLUMN_NAME_END_DATE.getName() + " DESC";
                 break;
             case PLACE:
                 //Cant sort here, need the Place's name, dont have it.
                 break;
             case CATEGORY:
-                orderByClause = RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY + " DESC";
+                orderByClause = RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY.getName() + " DESC";
         }
 
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.ReminderTable.TABLE_NAME, null, RemindyContract.ReminderTable.COLUMN_NAME_STATUS + "=?",
+        Cursor cursor = db.query(RemindyContract.ReminderTable.TABLE_NAME, null, RemindyContract.ReminderTable.COLUMN_NAME_STATUS.getName() + "=?",
                 new String[]{reminderStatus.name()}, null, null, orderByClause);
 
         try {
@@ -193,7 +193,7 @@ public class RemindyDAO {
     public List<ReminderExtra> getReminderExtras(int reminderId) {
         List<ReminderExtra> extras = new ArrayList<>();
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.ExtraTable.TABLE_NAME, null, RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK + "=?",
+        Cursor cursor = db.query(RemindyContract.ExtraTable.TABLE_NAME, null, RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK.getName() + "=?",
                 new String[]{String.valueOf(reminderId)}, null, null, null);
 
         try {
@@ -250,7 +250,7 @@ public class RemindyDAO {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
         return db.delete(RemindyContract.ExtraTable.TABLE_NAME,
-                RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK + " =?",
+                RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK.getName() + " =?",
                 new String[]{String.valueOf(reminderId)}) > 0;
     }
 
