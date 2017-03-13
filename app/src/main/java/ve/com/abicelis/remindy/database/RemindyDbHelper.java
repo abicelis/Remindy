@@ -108,7 +108,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                         RemindyContract.PlaceTable.COLUMN_NAME_LONGITUDE.getName() + COMMA_SEP +
                         RemindyContract.PlaceTable.COLUMN_NAME_RADIUS.getName() + COMMA_SEP +
                         RemindyContract.PlaceTable.COLUMN_NAME_IS_ONE_OFF.getName() +
-                        ") VALUES ('0', 'Home', 'Av. El Milagro, Edif. Los Canales', 10.6682603, -71.5940929, 500, 'false')," +
+                        ") VALUES " +
+                        "('0', 'Home', 'Av. El Milagro, Edif. Los Canales', 10.6682603, -71.5940929, 500, 'false')," +
                         "('1', 'Vicky', 'Urb La Paragua, Edif. Caicara V', 10.693981, -71.623274, 250, 'false')," +
                         "('2', 'PizzaHut', 'PizzaHut address...', 10.693981, -71.633300, 2000, 'false')," +
                         "('3', 'Andromeda Galaxy', 'Galaxy far away', 11.0000000, -72.000000, 2000, 'true');";
@@ -119,17 +120,31 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
 
 
         //Insert mock Reminders
-        Calendar cal = getZeroedCalendar();
-        cal.add(Calendar.DAY_OF_MONTH, -10);
-        long startDateWeekendPizza = cal.getTimeInMillis();     //startDateWeekendPizza = 10 days ago
+        Calendar cal = Calendar.getInstance();
+        // Set cal to be at midnight (start of day) today.
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
 
-        cal.add(Calendar.DAY_OF_MONTH, +10);
-        cal.add(Calendar.MONTH, 3);
-        long endDateWeekendPizza = cal.getTimeInMillis();      //endDateWeekendPizza = 3 months from now
 
-
+        //Pizza reminder
         int weekendPizzaStartTime = new Time(18, 0).getTimeInMinutes();
         int weekendPizzaEndTime = new Time(19, 30).getTimeInMinutes();
+
+        //English test reminder
+        cal.add(Calendar.DAY_OF_MONTH, -10);
+        long startDateEnglishTest = cal.getTimeInMillis();     //startDateEnglishTest = 10 days ago
+        cal.add(Calendar.DAY_OF_MONTH, +10);
+        int englishTestStartTime = new Time(7, 0).getTimeInMinutes();
+        int englishTestEndTime = new Time(7, 30).getTimeInMinutes();
+
+        //Pay landlord reminder (OVERDUE!)
+        cal.add(Calendar.DAY_OF_MONTH, -2);
+        long startDateLandlord = cal.getTimeInMillis();     //startDateLandlord = 2 days ago
+        cal.add(Calendar.DAY_OF_MONTH, +1);
+        long endDateLandlord = cal.getTimeInMillis();       //endDateLandlord = 1 days ago
+        cal.add(Calendar.DAY_OF_MONTH, +1);
 
 
         statement = "INSERT INTO " + RemindyContract.ReminderTable.TABLE_NAME + " (" +
@@ -145,9 +160,11 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.ReminderTable.COLUMN_NAME_TIME_TYPE.getName() + COMMA_SEP +
                 RemindyContract.ReminderTable.COLUMN_NAME_START_TIME.getName() + COMMA_SEP +
                 RemindyContract.ReminderTable.COLUMN_NAME_END_TIME.getName() +
-                ") VALUES ('0', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
-                "('1', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
-                "('2', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"');";
+                ") VALUES " +
+                "('0', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
+                "('1', 'DONE', 'Take english test', 'Take IELTS General Training test', 'BUSINESS', 'null', 'SINGLE_DAY', '" + startDateEnglishTest + "', '','INTERVAL', '"+englishTestStartTime+"', '"+englishTestEndTime+"')," +
+                "('2', 'ARCHIVED', 'Get some apples', 'Whenever at Vicky's, be sure to grab some', 'PERSONAL', 2, 'ANYDAY', '', '','ANYTIME', '', '')," +
+                "('3', 'ACTIVE', 'Pay landlord', '', 'PERSONAL', 0, 'INTERVAL', '" + startDateLandlord + "', '" + endDateLandlord + "','ANYTIME', '', '');";
         sqLiteDatabase.execSQL(statement);
 
 
@@ -162,21 +179,13 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.ExtraTable.COLUMN_NAME_TYPE.getName() + COMMA_SEP +
                 RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + COMMA_SEP +
                 RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() +
-                ") VALUES ('0', '0', 'http://www.pizzahut.com', '')," +
-                "('1', '0', 'http://www.pizzahut.com.ve', '')," +
-                "('2', '0', 'http://www.pizzahut.ca', '');";
+                ") VALUES " +
+                "('0', '0', 'LINK', 'http://www.pizzahut.com', '')," +
+                "('1', '1', 'TEXT', 'There are 4 tests. Listening, Reading, Writing and finally, Speaking. The Speaking test will probably be taken on a different day as the rest of the tests', '')," +
+                "('1', '3', 'TEXT', 'This month's bill is xxx USD', '')," +
+                "('2', '3', 'LINK', 'http://www.landlordpay.com', '');";
         sqLiteDatabase.execSQL(statement);
 
-    }
-
-    private Calendar getZeroedCalendar() {
-        Calendar cal = Calendar.getInstance();
-        // Set cal to be at midnight (start of day) today.
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal;
     }
 
     private void createDatabase(SQLiteDatabase sqLiteDatabase) {

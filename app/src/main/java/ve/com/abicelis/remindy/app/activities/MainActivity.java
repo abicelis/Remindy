@@ -34,7 +34,10 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.ReminderSortType;
 import ve.com.abicelis.remindy.model.Place;
+import ve.com.abicelis.remindy.model.Reminder;
+import ve.com.abicelis.remindy.model.ReminderExtra;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, AddressResultReceiver.AddressReceiverListener {
@@ -99,6 +102,16 @@ public class MainActivity extends AppCompatActivity implements
         List<Place> places = mDao.getPlaces();
         Toast.makeText(this, "Places saved in db = " + places.size(), Toast.LENGTH_SHORT).show();
 
+        List<Reminder> reminders = mDao.getActiveReminders(ReminderSortType.DATE);
+        Toast.makeText(this, "Reminders saved in db = " + reminders.size(), Toast.LENGTH_SHORT).show();
+
+        try {
+            List<ReminderExtra> reminderExtras = mDao.getReminderExtras(reminders.get(0).getId());
+            Toast.makeText(this, "There are " + reminderExtras.size() + " ReminderExtras for reminder named " + reminders.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+        }catch (Exception e) {
+            Toast.makeText(this, "Error catching extras!", Toast.LENGTH_SHORT).show();
+
+        }
 
 
         // Create an instance of GoogleAPIClient.
