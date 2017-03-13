@@ -5,24 +5,7 @@ package ve.com.abicelis.remindy.enums;
  */
 
 public enum ReminderSortType {
-    DATE("Date"),
-    PLACE("Place"),
-    CATEGORY("Category");
-
-    private String friendlyName;
-    ReminderSortType(String friendlyName) {
-        this.friendlyName = friendlyName;
-    }
-
-    public String getFriendlyName() {
-        return this.friendlyName;
-    }
-
-    public ReminderSortType getByFriendlyName(String friendlyName) {
-        for (ReminderSortType rc : ReminderSortType.values()) {
-            if(rc.getFriendlyName().equals(friendlyName))
-                return rc;
-        }
-        throw new IllegalArgumentException(friendlyName + " is not a valid ReminderSortType.");
-    }
+    DATE,
+    PLACE,
+    CATEGORY;
 }

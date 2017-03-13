@@ -5,24 +5,8 @@ package ve.com.abicelis.remindy.enums;
  */
 
 public enum ReminderDateType {
-    ANYDAY("Anyday"),
-    SINGLE_DAY("Set date"),
-    INTERVAL("Set interval");
+    ANYDAY,
+    SINGLE_DAY,
+    INTERVAL;
 
-    private String description;
-    ReminderDateType(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public ReminderDateType getByDescription(String description) {
-        for (ReminderDateType rc : ReminderDateType.values()) {
-            if(rc.getDescription().equals(description))
-                return rc;
-        }
-        throw new IllegalArgumentException(description + " is not a valid ReminderDateType.");
-    }
 }

@@ -5,23 +5,6 @@ package ve.com.abicelis.remindy.enums;
  */
 
 public enum ReminderCategory {
-    BUSINESS("Business"),
-    PERSONAL("Personal");
-
-    private String friendlyName;
-    ReminderCategory(String friendlyName) {
-        this.friendlyName = friendlyName;
-    }
-
-    public String getFriendlyName() {
-        return this.friendlyName;
-    }
-
-    public ReminderCategory getByFriendlyName(String friendlyName) {
-        for (ReminderCategory rc : ReminderCategory.values()) {
-            if(rc.getFriendlyName().equals(friendlyName))
-                return rc;
-        }
-        throw new IllegalArgumentException(friendlyName + " is not a valid ReminderCategory.");
-    }
+    BUSINESS,
+    PERSONAL;
 }
