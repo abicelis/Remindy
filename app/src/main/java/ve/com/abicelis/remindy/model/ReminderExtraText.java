@@ -20,7 +20,7 @@ public class ReminderExtraText extends ReminderExtra {
 
     @Override
     public ReminderExtraType getType() {
-        return ReminderExtraType.AUDIO;
+        return ReminderExtraType.TEXT;
     }
 
 
