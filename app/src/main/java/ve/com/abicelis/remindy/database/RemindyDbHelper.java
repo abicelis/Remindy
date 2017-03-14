@@ -162,8 +162,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.ReminderTable.COLUMN_NAME_END_TIME.getName() +
                 ") VALUES " +
                 "('0', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
-                "('1', 'DONE', 'Take english test', 'Take IELTS General Training test', 'BUSINESS', 'null', 'SINGLE_DAY', '" + startDateEnglishTest + "', '','INTERVAL', '"+englishTestStartTime+"', '"+englishTestEndTime+"')," +
-                "('2', 'ARCHIVED', 'Get some apples', 'Whenever at Vicky's, be sure to grab some', 'PERSONAL', 2, 'ANYDAY', '', '','ANYTIME', '', '')," +
+                "('1', 'DONE', 'Take english test', 'Take IELTS General Training test', 'BUSINESS', -1, 'SINGLE_DAY', '" + startDateEnglishTest + "', '','INTERVAL', '"+englishTestStartTime+"', '"+englishTestEndTime+"')," +
+                "('2', 'ARCHIVED', 'Get some apples', 'Whenever at Vickys, be sure to grab some', 'PERSONAL', 1, 'ANYDAY', '', '','ANYTIME', '', '')," +
                 "('3', 'ACTIVE', 'Pay landlord', '', 'PERSONAL', 0, 'INTERVAL', '" + startDateLandlord + "', '" + endDateLandlord + "','ANYTIME', '', '');";
         sqLiteDatabase.execSQL(statement);
 
@@ -182,8 +182,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 ") VALUES " +
                 "('0', '0', 'LINK', 'http://www.pizzahut.com', '')," +
                 "('1', '1', 'TEXT', 'There are 4 tests. Listening, Reading, Writing and finally, Speaking. The Speaking test will probably be taken on a different day as the rest of the tests', '')," +
-                "('1', '3', 'TEXT', 'This month's bill is xxx USD', '')," +
-                "('2', '3', 'LINK', 'http://www.landlordpay.com', '');";
+                "('2', '3', 'TEXT', 'This months bill is xxx USD', '')," +
+                "('3', '3', 'LINK', 'http://www.landlordpay.com', '');";
         sqLiteDatabase.execSQL(statement);
 
     }
