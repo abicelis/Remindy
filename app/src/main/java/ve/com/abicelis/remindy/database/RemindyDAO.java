@@ -52,56 +52,67 @@ public class RemindyDAO {
 
     /* Get data from database */
 
-    /**
-     * Returns a List of OVERDUE Reminders.
-     * These are reminders which have an Active status, but will never trigger because of their set dates
-     * Examples:
-     * 1. Reminder is set to end in the past:
-     * endDate < today
-     * 2. Reminder is set to end sometime in the future, but on a day of the week that have passed:
-     * Today=Tuesday, endDate=Friday but Reminder is set to trigger only Mondays.
-     */
-    public List<Reminder> getOverdueReminders() {
-        return getRemindersByStatus(ReminderStatus.OVERDUE, ReminderSortType.DATE);
-    }
-
-    /**
-     * Returns a List of ACTIVE Reminders.
-     * These are reminders which have an Active status, and will trigger sometime in the present or in the future
-     * Basically, all Reminders which are *NOT* OVERDUE (See function above)
-     *
-     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
-     */
-    public List<Reminder> getActiveReminders(@NonNull ReminderSortType sortType) {
-        return getRemindersByStatus(ReminderStatus.ACTIVE, sortType);
-    }
-
-    /**
-     * Returns a List of Reminders with a status of DONE.
-     *
-     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
-     */
-    public List<Reminder> getDoneReminders(@NonNull ReminderSortType sortType) {
-        return getRemindersByStatus(ReminderStatus.DONE, sortType);
-    }
-
-    /**
-     * Returns a List of Reminders with a status of ARCHIVED.
-     *
-     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
-     */
-    public List<Reminder> getArchivedReminders(@NonNull ReminderSortType sortType) {
-        return getRemindersByStatus(ReminderStatus.ARCHIVED, sortType);
-    }
+//    /**
+//     * Returns a List of OVERDUE Reminders.
+//     * These are reminders which have an Active status, but will never trigger because of their set dates
+//     * Examples:
+//     * 1. Reminder is set to end in the past:
+//     * endDate < today
+//     * 2. Reminder is set to end sometime in the future, but on a day of the week that have passed:
+//     * Today=Tuesday, endDate=Friday but Reminder is set to trigger only Mondays.
+//     */
+//    public List<Reminder> getOverdueReminders() {
+//        return getRemindersByStatus(ReminderStatus.OVERDUE, ReminderSortType.DATE);
+//    }
+//
+//    /**
+//     * Returns a List of ACTIVE Reminders.
+//     * These are reminders which have an Active status, and will trigger sometime in the present or in the future
+//     * Basically, all Reminders which are *NOT* OVERDUE (See function above)
+//     *
+//     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
+//     */
+//    public List<Reminder> getActiveReminders(@NonNull ReminderSortType sortType) {
+//        return getRemindersByStatus(ReminderStatus.ACTIVE, sortType);
+//    }
+//
+//    /**
+//     * Returns a List of Reminders with a status of DONE.
+//     *
+//     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
+//     */
+//    public List<Reminder> getDoneReminders(@NonNull ReminderSortType sortType) {
+//        return getRemindersByStatus(ReminderStatus.DONE, sortType);
+//    }
+//
+//    /**
+//     * Returns a List of Reminders with a status of ARCHIVED.
+//     *
+//     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
+//     */
+//    public List<Reminder> getArchivedReminders(@NonNull ReminderSortType sortType) {
+//        return getRemindersByStatus(ReminderStatus.ARCHIVED, sortType);
+//    }
 
 
     /**
      * Returns a List of Reminders given a specific ReminderStatus and ReminderSortType
+     * The available ReminderStatus are:
+     *   - ARCHIVED.
+     *   - DONE.
+     *   - ACTIVE:
+     *          These are reminders which have an Active status, and will trigger sometime in the present or in the future
+     *          Basically, all Reminders which are *NOT* OVERDUE (See below)
+     *   - OVERDUE:
+     *          These are reminders which have an Active status, but will never trigger because of their set dates
+     *          Examples:
+     *              1. Reminder is set to end in the past: endDate < today
+     *              2. Reminder is set to end sometime in the future, but on a day of the week that have passed: Today=Tuesday, endDate=Friday but Reminder is set to trigger only Mondays.
      *
      * @param reminderStatus ReminderStatus enum value with which to filter Reminders.
      * @param sortType       ReminderSortType enum value with which to sort results. By date, by category or by Location
      */
-    private List<Reminder> getRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
+    public List<Reminder> getRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
         List<Reminder> reminders = new ArrayList<>();
 
         String orderByClause = null;
@@ -127,7 +138,8 @@ public class RemindyDAO {
                 //Try to get the Place, if there is one
                 try {
                     int placeId = cursor.getInt(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_PLACE_FK.getName()));
-                    current.setPlace(getPlace(placeId));
+                    if(placeId != -1)
+                        current.setPlace(getPlace(placeId));
                 } catch (Exception e) {/*Thrown if COLUMN_NAME_PLACE_FK is null, so do nothing.*/}
 
                 //Try to get the Extras, if there are any
@@ -488,7 +500,7 @@ public class RemindyDAO {
         values.put(RemindyContract.ReminderTable.COLUMN_NAME_TITLE.getName(), reminder.getTitle());
         values.put(RemindyContract.ReminderTable.COLUMN_NAME_DESCRIPTION.getName(), reminder.getDescription());
         values.put(RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY.getName(), reminder.getCategory().name());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_PLACE_FK.getName(), (reminder.getPlace() != null ? String.valueOf(reminder.getPlace().getId()) : "null"));
+        values.put(RemindyContract.ReminderTable.COLUMN_NAME_PLACE_FK.getName(), (reminder.getPlace() != null ? String.valueOf(reminder.getPlace().getId()) : "-1"));
         values.put(RemindyContract.ReminderTable.COLUMN_NAME_DATE_TYPE.getName(), reminder.getDateType().name());
         values.put(RemindyContract.ReminderTable.COLUMN_NAME_START_DATE.getName(), reminder.getStartDate().getTimeInMillis());
         values.put(RemindyContract.ReminderTable.COLUMN_NAME_END_DATE.getName(), reminder.getEndDate().getTimeInMillis());
