@@ -98,7 +98,7 @@ public class Time implements Comparable<Time> {
     public String toString() {
         switch (displayTimeFormat) {
             case FORMAT_24H:
-                return String.format(Locale.getDefault(), "%1$01d:%2$01d", hour, minute);
+                return String.format(Locale.getDefault(), "%1$02d:%2$02d", hour, minute);
             case FORMAT_12H:
                 String amPm = "am";
                 int hour12h = hour;
@@ -106,7 +106,7 @@ public class Time implements Comparable<Time> {
                     amPm = "pm";
                     hour12h = hour - 12;
                 }
-                return String.format(Locale.getDefault(), "%1$01d:%2$01d %3$s", hour12h, minute, amPm);
+                return String.format(Locale.getDefault(), "%1$02d:%2$02d %3$s", hour12h, minute, amPm);
             default:
                 throw new IllegalArgumentException("displayTimeFormat is null. Cannot toString()");
         }
