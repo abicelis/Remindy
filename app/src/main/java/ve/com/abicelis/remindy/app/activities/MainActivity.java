@@ -35,6 +35,7 @@ import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.ReminderSortType;
+import ve.com.abicelis.remindy.enums.ReminderStatus;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Reminder;
 import ve.com.abicelis.remindy.model.ReminderExtra;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
         List<Place> places = mDao.getPlaces();
         Toast.makeText(this, "Places saved in db = " + places.size(), Toast.LENGTH_SHORT).show();
 
-        List<Reminder> reminders = mDao.getActiveReminders(ReminderSortType.DATE);
+        List<Reminder> reminders = mDao.getRemindersByStatus(ReminderStatus.ACTIVE, ReminderSortType.DATE);
         Toast.makeText(this, "Reminders saved in db = " + reminders.size(), Toast.LENGTH_SHORT).show();
 
         try {

@@ -161,10 +161,10 @@ public class Reminder {
     @Override
     public String toString() {
         return  "ID=" + id + "\r\n" +
-                " status=" + status.getFriendlyName() + "\r\n" +
+                " status=" + status.name() + "\r\n" +
                 " title=" + title + "\r\n" +
                 " description=" + description + "\r\n" +
-                " category=" + category.getFriendlyName() + "\r\n" +
+                " category=" + category.name() + "\r\n" +
                 " place=" + place + "\r\n" +
                 " dateType=" + dateType + "\r\n" +
                 " startDate=" + startDate + "\r\n" +

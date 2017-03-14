@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="10dp"
+    android:id="@+id/item_reminder_container"
+    android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="90dp">
+    android:layout_height="94dp">
 
         <ImageView
             android:id="@+id/item_reminder_icon_background"
@@ -39,6 +40,7 @@
         android:layout_toEndOf="@id/item_reminder_icon_background"
         android:layout_toLeftOf="@id/item_reminder_category"
         android:layout_toStartOf="@id/item_reminder_category"
+        android:includeFontPadding="false"
         android:lines="1"
         android:ellipsize="end"
         android:textColor="@color/primary_text"
@@ -91,7 +93,7 @@
         android:layout_toEndOf="@id/item_reminder_extra_audio"
         android:layout_below="@id/item_reminder_description"
         android:src="@drawable/icon_image"
-        android:tint="@color/icons_enabled"
+        android:tint="@color/icons_disabled"
         />
 
     <ImageView
@@ -132,7 +134,7 @@
         />
 
     <ImageView
-        android:id="@+id/item_reminder_place_icon"
+        android:id="@+id/item_reminder_address_icon"
         android:layout_width="@dimen/item_reminder_other_icon_size"
         android:layout_height="@dimen/item_reminder_other_icon_size"
         android:layout_alignParentBottom="true"
@@ -141,12 +143,12 @@
         />
 
     <TextView
-        android:id="@+id/item_reminder_place"
+        android:id="@+id/item_reminder_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/item_reminder_place_icon"
-        android:layout_toEndOf="@id/item_reminder_place_icon"
+        android:layout_toRightOf="@+id/item_reminder_address_icon"
+        android:layout_toEndOf="@id/item_reminder_address_icon"
         android:layout_toLeftOf="@id/item_reminder_time_icon"
         android:layout_toStartOf="@id/item_reminder_time_icon"
         android:layout_marginLeft="4dp"
