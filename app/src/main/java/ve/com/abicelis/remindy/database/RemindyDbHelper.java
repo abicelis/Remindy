@@ -229,11 +229,11 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 ") VALUES " +
                 "('0', 'ACTIVE', 'Simple reminder example', 'Today at 7am. No RPT', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple7Am+"', 'DISABLED', 0, '', 0, '')," +
                 "('1', 'ACTIVE', 'Simple reminder example', 'Today at 7am. RPT every 2 days, forever', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple7Am+"', 'DAILY', 2, 'FOREVER', 0, '')," +
-                "('3', 'ACTIVE', 'Simple reminder example', 'Today at 9am. RPT every 2 days, till 4 days from today', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DAILY', 2, 'UNTIL_DATE', 0, '" + dateSimpleFourDaysFromToday + "')," +
-                "('2', 'ACTIVE', 'Simple reminder example', 'Tomorrow at 9am. No RPT', 'PERSONAL', '" + dateSimpleTomorrow + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '')," +
-                "('3', 'ACTIVE', 'Simple reminder example', 'Tomorrow at 7am. RPT every 2 weeks, for 2 weeks', 'PERSONAL', '" + dateSimpleTomorrow + "', '"+timeSimple7Am+"', 'WEEKLY', 2, 'FOR_X_EVENTS', 2, '')," +
-                "('4', 'DONE', 'Simple reminder example', 'Simple reminder description', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '')," +
-                "('5', 'ARCHIVED', 'Simple reminder example', 'Simple reminder description', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '');";
+                "('2', 'ACTIVE', 'Simple reminder example', 'Today at 9am. RPT every 2 days, till 4 days from today', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DAILY', 2, 'UNTIL_DATE', 0, '" + dateSimpleFourDaysFromToday + "')," +
+                "('3', 'ACTIVE', 'Simple reminder example', 'Tomorrow at 9am. No RPT', 'PERSONAL', '" + dateSimpleTomorrow + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '')," +
+                "('4', 'ACTIVE', 'Simple reminder example', 'Tomorrow at 7am. RPT every 2 weeks, for 2 weeks', 'PERSONAL', '" + dateSimpleTomorrow + "', '"+timeSimple7Am+"', 'WEEKLY', 2, 'FOR_X_EVENTS', 2, '')," +
+                "('5', 'DONE', 'Simple reminder example', 'Simple reminder description', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '')," +
+                "('6', 'ARCHIVED', 'Simple reminder example', 'Simple reminder description', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '');";
         sqLiteDatabase.execSQL(statement);
 
 
