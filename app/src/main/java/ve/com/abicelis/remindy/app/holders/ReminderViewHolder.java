@@ -1,13 +1,7 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,7 +36,9 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
     private ImageView mExtraAudio;
     private ImageView mExtraImage;
     private ImageView mExtraText;
+    private ImageView mTimeIcon;
     private TextView mTime;
+    private ImageView mAddressIcon;
     private TextView mAddress;
 
     //DATA
@@ -62,7 +58,9 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
         mExtraAudio = (ImageView) itemView.findViewById(R.id.item_reminder_extra_audio);
         mExtraImage = (ImageView) itemView.findViewById(R.id.item_reminder_extra_image);
         mExtraText = (ImageView) itemView.findViewById(R.id.item_reminder_extra_text);
+        mTimeIcon = (ImageView) itemView.findViewById(R.id.item_reminder_time_icon);
         mTime = (TextView) itemView.findViewById(R.id.item_reminder_time);
+        mAddressIcon = (ImageView) itemView.findViewById(R.id.item_reminder_address_icon);
         mAddress = (TextView) itemView.findViewById(R.id.item_reminder_address);
     }
 
@@ -93,6 +91,8 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
         switch (mCurrent.getTimeType()) {
             case ANYTIME:
                 mTime.setText(R.string.reminder_time_type_anytime);
+                mTimeIcon.setColorFilter(ContextCompat.getColor(mActivity, R.color.icons_disabled));
+                mTime.setTextColor(ContextCompat.getColor(mActivity, R.color.icons_disabled));
                 break;
             case SINGLE_TIME:
                 mTime.setText(mCurrent.getStartTime().toString());
@@ -104,8 +104,11 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
 
         if(mCurrent.getPlace() != null)
             mAddress.setText(mCurrent.getPlace().getAddress());
-        else
+        else{
+            mAddressIcon.setColorFilter(ContextCompat.getColor(mActivity, R.color.icons_disabled));
+            mAddress.setTextColor(ContextCompat.getColor(mActivity, R.color.icons_disabled));
             mAddress.setText(R.string.fragment_reminder_list_place_anywhere);
+        }
     }
 
     private String getIconTextFromReminderTitle() {
