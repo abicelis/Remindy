@@ -47,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         mTabLayout = (TabLayout) findViewById(R.id.activity_home_tab_layout);
 
         mGraphsViewpager.setAdapter(adapter);
+        mGraphsViewpager.setCurrentItem(1);     //Start at page 2
         mTabLayout.setupWithViewPager(mGraphsViewpager);
     }
 
