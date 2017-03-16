@@ -36,6 +36,14 @@
     <string name="reminder_repeat_type_monthly">Monthly</string>
     <string name="reminder_repeat_type_yearly">Yearly</string>
 
+    /* ENUM ReminderRepeatEndType */
+    <string name="reminder_repeat_end_type_forever_spinner">Forever</string>
+    <string name="reminder_repeat_end_type_until_date_spinner">Until a date</string>
+    <string name="reminder_repeat_end_type_for_x_events_spinner">For a number of events</string>
+    <string name="reminder_repeat_end_type_until_date_display">Until</string>
+    <string name="reminder_repeat_end_type_for_x_events_display">For</string>
+    <string name="reminder_repeat_end_type_for_x_events_display_2">events</string>
+
 
 
     /* Main Activity */
