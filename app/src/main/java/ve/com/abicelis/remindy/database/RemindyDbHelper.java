@@ -119,7 +119,7 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
 
 
 
-        //Insert mock Reminders
+        //Insert mock AdvancedReminderTable
         Calendar cal = Calendar.getInstance();
         // Set cal to be at midnight (start of day) today.
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -177,22 +177,78 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(statement);
 
 
-
-
-
-
-        //Insert mock ReminderExtras
-        statement = "INSERT INTO " + RemindyContract.ExtraTable.TABLE_NAME + " (" +
-                RemindyContract.ExtraTable._ID + COMMA_SEP +
-                RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK.getName() + COMMA_SEP +
-                RemindyContract.ExtraTable.COLUMN_NAME_TYPE.getName() + COMMA_SEP +
-                RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + COMMA_SEP +
-                RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() +
+        //Insert mock AdvancedReminderExtraTable
+        statement = "INSERT INTO " + RemindyContract.AdvancedReminderExtraTable.TABLE_NAME + " (" +
+                RemindyContract.AdvancedReminderExtraTable._ID + COMMA_SEP +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + COMMA_SEP +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_TYPE.getName() + COMMA_SEP +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + COMMA_SEP +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() +
                 ") VALUES " +
                 "('0', '0', 'LINK', 'http://www.pizzahut.com', '')," +
                 "('1', '1', 'TEXT', 'There are 4 tests. Listening, Reading, Writing and finally, Speaking. The Speaking test will probably be taken on a different day as the rest of the tests', '')," +
                 "('2', '6', 'TEXT', 'This months bill is xxx USD', '')," +
                 "('3', '6', 'LINK', 'http://www.landlordpay.com', '');";
+        sqLiteDatabase.execSQL(statement);
+
+
+
+
+        //Insert mock SimpleReminderTable
+        Calendar ca = Calendar.getInstance();
+        // Set cal to be at midnight (start of day) today.
+        ca.set(Calendar.HOUR_OF_DAY, 0);
+        ca.set(Calendar.MINUTE, 0);
+        ca.set(Calendar.SECOND, 0);
+        ca.set(Calendar.MILLISECOND, 0);
+
+
+        long dateSimpleToday = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        long dateSimpleTomorrow = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_MONTH, 3);
+        long dateSimpleFourDaysFromToday = cal.getTimeInMillis();
+
+        int timeSimple7Am = new Time(7, 0).getTimeInMinutes();
+        int timeSimple9Am = new Time(9, 0).getTimeInMinutes();
+
+
+        statement = "INSERT INTO " + RemindyContract.SimpleReminderTable.TABLE_NAME + " (" +
+                RemindyContract.SimpleReminderTable._ID + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_STATUS.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_TITLE.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_DESCRIPTION.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_CATEGORY.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_TIME.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_TYPE.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName() +
+                ") VALUES " +
+                "('0', 'ACTIVE', 'Simple reminder example', 'Today at 7am. No RPT', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple7Am+"', 'DISABLED', 0, '', 0, '')," +
+                "('1', 'ACTIVE', 'Simple reminder example', 'Today at 7am. RPT every 2 days, forever', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple7Am+"', 'DAILY', 2, 'FOREVER', 0, '')," +
+                "('3', 'ACTIVE', 'Simple reminder example', 'Today at 9am. RPT every 2 days, till 4 days from today', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DAILY', 2, 'UNTIL_DATE', 0, '" + dateSimpleFourDaysFromToday + "')," +
+                "('2', 'ACTIVE', 'Simple reminder example', 'Tomorrow at 9am. No RPT', 'PERSONAL', '" + dateSimpleTomorrow + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '')," +
+                "('3', 'ACTIVE', 'Simple reminder example', 'Tomorrow at 7am. RPT every 2 weeks, for 2 weeks', 'PERSONAL', '" + dateSimpleTomorrow + "', '"+timeSimple7Am+"', 'WEEKLY', 2, 'FOR_X_EVENTS', 2, '')," +
+                "('4', 'DONE', 'Simple reminder example', 'Simple reminder description', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '')," +
+                "('5', 'ARCHIVED', 'Simple reminder example', 'Simple reminder description', 'PERSONAL', '" + dateSimpleToday + "', '"+timeSimple9Am+"', 'DISABLED', 0, '', 0, '');";
+        sqLiteDatabase.execSQL(statement);
+
+
+        //Insert mock SimpleReminderExtraTable
+        statement = "INSERT INTO " + RemindyContract.SimpleReminderExtraTable.TABLE_NAME + " (" +
+                RemindyContract.SimpleReminderExtraTable._ID + COMMA_SEP +
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_TYPE.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + COMMA_SEP +
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() +
+                ") VALUES " +
+                "('0', '0', 'LINK', 'http://www.pizzahut.com', '')," +
+                "('1', '1', 'TEXT', 'There are 4 tests. Listening, Reading, Writing and finally, Speaking. The Speaking test will probably be taken on a different day as the rest of the tests', '')," +
+                "('2', '3', 'TEXT', 'This months bill is xxx USD', '')," +
+                "('3', '4', 'LINK', 'http://www.landlordpay.com', '');";
         sqLiteDatabase.execSQL(statement);
 
     }
@@ -232,15 +288,46 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(statement);
 
 
-        statement = "CREATE TABLE " + RemindyContract.ExtraTable.TABLE_NAME + " (" +
-                RemindyContract.ExtraTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+        statement = "CREATE TABLE " + RemindyContract.AdvancedReminderExtraTable.TABLE_NAME + " (" +
+                RemindyContract.AdvancedReminderExtraTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
 
-                RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK.getName() + " " + RemindyContract.ExtraTable.COLUMN_NAME_REMINDER_FK.getDataType() +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + " " + RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getDataType() +
                 " REFERENCES " + RemindyContract.AdvancedReminderTable.TABLE_NAME + "(" + RemindyContract.AdvancedReminderTable._ID + ") " + COMMA_SEP +
 
-                RemindyContract.ExtraTable.COLUMN_NAME_TYPE.getName() + " " + RemindyContract.ExtraTable.COLUMN_NAME_TYPE.getDataType() + COMMA_SEP +
-                RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + " " + RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_TEXT.getDataType() + COMMA_SEP +
-                RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() + " " + RemindyContract.ExtraTable.COLUMN_NAME_CONTENT_BLOB.getDataType() +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_TYPE.getName() + " " + RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_TYPE.getDataType() + COMMA_SEP +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + " " + RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getDataType() + COMMA_SEP +
+                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() + " " + RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getDataType() +
+                " ); ";
+        sqLiteDatabase.execSQL(statement);
+
+
+        statement = "CREATE TABLE " + RemindyContract.SimpleReminderTable.TABLE_NAME + " (" +
+                RemindyContract.SimpleReminderTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_STATUS.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_STATUS.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_TITLE.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_TITLE.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_DESCRIPTION.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_DESCRIPTION.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_CATEGORY.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_CATEGORY.getDataType() + COMMA_SEP +
+
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_TIME.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_TIME.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_TYPE.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_TYPE.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName() + " " + RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getDataType() +
+                " ); ";
+        sqLiteDatabase.execSQL(statement);
+
+
+        statement = "CREATE TABLE " + RemindyContract.SimpleReminderExtraTable.TABLE_NAME + " (" +
+                RemindyContract.SimpleReminderExtraTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + " " + RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_REMINDER_FK.getDataType() +
+                " REFERENCES " + RemindyContract.SimpleReminderTable.TABLE_NAME + "(" + RemindyContract.SimpleReminderTable._ID + ") " + COMMA_SEP +
+
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_TYPE.getName() + " " + RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_TYPE.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName() + " " + RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getDataType() + COMMA_SEP +
+                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getName() + " " + RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getDataType() +
                 " ); ";
         sqLiteDatabase.execSQL(statement);
     }
@@ -248,7 +335,13 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
     private void deleteDatabase(SQLiteDatabase sqLiteDatabase) {
         String statement ;
 
-        statement = "DROP TABLE IF EXISTS " + RemindyContract.ExtraTable.TABLE_NAME + "; ";
+        statement = "DROP TABLE IF EXISTS " + RemindyContract.SimpleReminderExtraTable.TABLE_NAME + "; ";
+        sqLiteDatabase.execSQL(statement);
+
+        statement = "DROP TABLE IF EXISTS " + RemindyContract.SimpleReminderTable.TABLE_NAME + "; ";
+        sqLiteDatabase.execSQL(statement);
+
+        statement = "DROP TABLE IF EXISTS " + RemindyContract.AdvancedReminderExtraTable.TABLE_NAME + "; ";
         sqLiteDatabase.execSQL(statement);
 
         statement = "DROP TABLE IF EXISTS " + RemindyContract.AdvancedReminderTable.TABLE_NAME + "; ";
