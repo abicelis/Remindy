@@ -1,4 +1,4 @@
-package ve.com.abicelis.remindy.app;
+package ve.com.abicelis.remindy.app.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
