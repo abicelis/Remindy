@@ -27,14 +27,14 @@ public class SimpleReminder extends Reminder {
 
 
     public SimpleReminder(@NonNull ReminderStatus status, @NonNull String title, @NonNull String description, @NonNull ReminderCategory category,
-                          @NonNull Calendar date, @NonNull Time time, @Nullable ReminderRepeatType repeatType, int repeatInterval,
+                          @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
                           @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
         super(status, title, description, category);
         init(date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
     }
 
     public SimpleReminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title, @NonNull String description, @NonNull ReminderCategory category,
-                          @NonNull Calendar date, @NonNull Time time, @Nullable ReminderRepeatType repeatType, int repeatInterval,
+                          @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
                           @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
         super(id, status, title, description, category);
         init(date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
