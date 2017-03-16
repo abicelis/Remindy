@@ -32,6 +32,11 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderViewHolder> {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
+    @Override
     public ReminderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         view = mInflater.inflate(R.layout.list_item_reminder, parent, false);

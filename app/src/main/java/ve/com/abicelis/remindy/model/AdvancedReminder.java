@@ -24,6 +24,7 @@ public class AdvancedReminder extends Reminder {
     private ReminderTimeType timeType;
     private Time startTime;
     private Time endTime;
+    //TODO: private Weekday weekday!!!!!!!!!!!!!!
 
 
     public AdvancedReminder(@NonNull ReminderStatus status, @NonNull String title, @NonNull String description,

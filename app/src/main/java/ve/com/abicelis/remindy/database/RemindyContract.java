@@ -24,8 +24,8 @@ final class RemindyContract {
     }
 
     /* Reminder Table */
-    static abstract class ReminderTable implements BaseColumns {
-        static final String TABLE_NAME = "reminder";
+    static abstract class AdvancedReminderTable implements BaseColumns {
+        static final String TABLE_NAME = "reminder_advanced";
 
         static final TableColumn COLUMN_NAME_STATUS = new TableColumn(DataType.TEXT, "status");
         static final TableColumn COLUMN_NAME_TITLE = new TableColumn(DataType.TEXT, "title");

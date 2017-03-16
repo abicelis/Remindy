@@ -6,15 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import java.math.BigDecimal;
 import java.security.InvalidParameterException;
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import ve.com.abicelis.remindy.enums.ReminderCategory;
@@ -26,7 +22,6 @@ import ve.com.abicelis.remindy.enums.ReminderTimeType;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
-import ve.com.abicelis.remindy.exception.MalformedLinkException;
 import ve.com.abicelis.remindy.exception.PlaceNotFoundException;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Reminder;
@@ -118,17 +113,15 @@ public class RemindyDAO {
         String orderByClause = null;
         switch (sortType) {
             case DATE:
-                orderByClause = RemindyContract.ReminderTable.COLUMN_NAME_END_DATE.getName() + " DESC";
+                orderByClause = RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName() + " DESC";
                 break;
             case PLACE:
-                //Cant sort here, need the Place's name, dont have it.
+                //Cant sort here, need the Place's name, which we don't have yet.
                 break;
-            case CATEGORY:
-                orderByClause = RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY.getName() + " DESC";
         }
 
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.ReminderTable.TABLE_NAME, null, RemindyContract.ReminderTable.COLUMN_NAME_STATUS.getName() + "=?",
+        Cursor cursor = db.query(RemindyContract.AdvancedReminderTable.TABLE_NAME, null, RemindyContract.AdvancedReminderTable.COLUMN_NAME_STATUS.getName() + "=?",
                 new String[]{reminderStatus.name()}, null, null, orderByClause);
 
         try {
@@ -137,7 +130,7 @@ public class RemindyDAO {
 
                 //Try to get the Place, if there is one
                 try {
-                    int placeId = cursor.getInt(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_PLACE_FK.getName()));
+                    int placeId = cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_PLACE_FK.getName()));
                     if(placeId != -1)
                         current.setPlace(getPlace(placeId));
                 } catch (Exception e) {/*Thrown if COLUMN_NAME_PLACE_FK is null, so do nothing.*/}
@@ -276,8 +269,8 @@ public class RemindyDAO {
         //Delete the extras
         deleteExtrasFromReminder(reminderId);
 
-        return db.delete(RemindyContract.ReminderTable.TABLE_NAME,
-                RemindyContract.ReminderTable._ID + " =?",
+        return db.delete(RemindyContract.AdvancedReminderTable.TABLE_NAME,
+                RemindyContract.AdvancedReminderTable._ID + " =?",
                 new String[]{String.valueOf(reminderId)}) > 0;
     }
 
@@ -362,11 +355,11 @@ public class RemindyDAO {
         ContentValues values = getValuesFromReminder(reminder);
 
         //Which row to update
-        String selection = RemindyContract.ReminderTable._ID + " =? ";
+        String selection = RemindyContract.AdvancedReminderTable._ID + " =? ";
         String[] selectionArgs = {String.valueOf(reminder.getId())};
 
         int count = db.update(
-                RemindyContract.ReminderTable.TABLE_NAME,
+                RemindyContract.AdvancedReminderTable.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
@@ -441,7 +434,7 @@ public class RemindyDAO {
         ContentValues values = getValuesFromReminder(reminder);
 
         long newRowId;
-        newRowId = db.insert(RemindyContract.ReminderTable.TABLE_NAME, null, values);
+        newRowId = db.insert(RemindyContract.AdvancedReminderTable.TABLE_NAME, null, values);
 
         if (newRowId == -1)
             throw new CouldNotInsertDataException("There was a problem inserting the Reminder: " + reminder.toString());
@@ -496,17 +489,17 @@ public class RemindyDAO {
 
     private ContentValues getValuesFromReminder(Reminder reminder) {
         ContentValues values = new ContentValues();
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_STATUS.getName(), reminder.getStatus().name());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_TITLE.getName(), reminder.getTitle());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_DESCRIPTION.getName(), reminder.getDescription());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY.getName(), reminder.getCategory().name());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_PLACE_FK.getName(), (reminder.getPlace() != null ? String.valueOf(reminder.getPlace().getId()) : "-1"));
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_DATE_TYPE.getName(), reminder.getDateType().name());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_START_DATE.getName(), reminder.getStartDate().getTimeInMillis());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_END_DATE.getName(), reminder.getEndDate().getTimeInMillis());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_TIME_TYPE.getName(), reminder.getTimeType().name());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_START_TIME.getName(), reminder.getStartTime().getTimeInMinutes());
-        values.put(RemindyContract.ReminderTable.COLUMN_NAME_END_TIME.getName(), reminder.getEndTime().getTimeInMinutes());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_STATUS.getName(), reminder.getStatus().name());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TITLE.getName(), reminder.getTitle());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DESCRIPTION.getName(), reminder.getDescription());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_CATEGORY.getName(), reminder.getCategory().name());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_PLACE_FK.getName(), (reminder.getPlace() != null ? String.valueOf(reminder.getPlace().getId()) : "-1"));
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DATE_TYPE.getName(), reminder.getDateType().name());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_DATE.getName(), reminder.getStartDate().getTimeInMillis());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName(), reminder.getEndDate().getTimeInMillis());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getName(), reminder.getTimeType().name());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName(), reminder.getStartTime().getTimeInMinutes());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName(), reminder.getEndTime().getTimeInMinutes());
         return values;
     }
 
@@ -520,31 +513,31 @@ public class RemindyDAO {
     /* Cursor to Model */
 
     private Reminder getReminderFromCursor(Cursor cursor) {
-        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.ReminderTable._ID));
-        ReminderStatus status = ReminderStatus.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_STATUS.getName())));
-        String title = cursor.getString(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_TITLE.getName()));
-        String description = cursor.getString(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_DESCRIPTION.getName()));
-        ReminderCategory category = ReminderCategory.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_CATEGORY.getName())));
-        ReminderDateType dateType = ReminderDateType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_DATE_TYPE.getName())));
+        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable._ID));
+        ReminderStatus status = ReminderStatus.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_STATUS.getName())));
+        String title = cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TITLE.getName()));
+        String description = cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DESCRIPTION.getName()));
+        ReminderCategory category = ReminderCategory.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_CATEGORY.getName())));
+        ReminderDateType dateType = ReminderDateType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DATE_TYPE.getName())));
 
         Calendar startDate = null;
-        int startDateIndex = cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_START_TIME.getName());
+        int startDateIndex = cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName());
         if (!cursor.getString(startDateIndex).isEmpty()) {
             startDate = Calendar.getInstance();
             startDate.setTimeInMillis(cursor.getLong(startDateIndex));
         }
 
         Calendar endDate = null;
-        int endDateIndex = cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_END_DATE.getName());
+        int endDateIndex = cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName());
         if (!cursor.getString(endDateIndex).isEmpty()) {
             endDate = Calendar.getInstance();
             endDate.setTimeInMillis(cursor.getLong(endDateIndex));
         }
 
-        ReminderTimeType timeType = ReminderTimeType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_TIME_TYPE.getName())));
+        ReminderTimeType timeType = ReminderTimeType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getName())));
 
-        Time startTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_START_TIME.getName())));
-        Time endTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.ReminderTable.COLUMN_NAME_END_TIME.getName())));
+        Time startTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName())));
+        Time endTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName())));
 
 
         return new Reminder(id, status, title, description, category, null, dateType, startDate, endDate, timeType, startTime, endTime);
