@@ -7,5 +7,5 @@ package ve.com.abicelis.remindy.enums;
 public enum ReminderSortType {
     DATE,
     PLACE,
-    CATEGORY;
+//    CATEGORY;
 }
