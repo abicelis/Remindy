@@ -12,13 +12,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import ve.com.abicelis.remindy.enums.ReminderCategory;
 import ve.com.abicelis.remindy.enums.ReminderDateType;
 import ve.com.abicelis.remindy.enums.ReminderExtraType;
-import ve.com.abicelis.remindy.enums.ReminderItemViewType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
 import ve.com.abicelis.remindy.enums.ReminderSortType;
@@ -26,14 +23,13 @@ import ve.com.abicelis.remindy.enums.ReminderStatus;
 import ve.com.abicelis.remindy.enums.ReminderTimeType;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
-import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.exception.PlaceNotFoundException;
 import ve.com.abicelis.remindy.model.AdvancedReminder;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Reminder;
-import ve.com.abicelis.remindy.model.ReminderByPlaceComparator;
+import ve.com.abicelis.remindy.model.AdvancedReminderByPlaceComparator;
 import ve.com.abicelis.remindy.model.ReminderExtra;
 import ve.com.abicelis.remindy.model.ReminderExtraAudio;
 import ve.com.abicelis.remindy.model.ReminderExtraImage;
@@ -164,10 +160,10 @@ public class RemindyDAO {
             cursor.close();
         }
 
-        //Do sort by place if needed
-        if (sortType == ReminderSortType.PLACE) {
-            Collections.sort(reminders, new ReminderByPlaceComparator());
-        }
+//        //Do sort by place if needed
+//        if (sortType == ReminderSortType.PLACE) {
+//            Collections.sort(reminders, new AdvancedReminderByPlaceComparator());
+//        }
 
         return reminders;
     }
