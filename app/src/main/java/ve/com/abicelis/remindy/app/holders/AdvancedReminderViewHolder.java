@@ -13,6 +13,7 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.ReminderAdapter;
 import ve.com.abicelis.remindy.enums.ReminderCategory;
 import ve.com.abicelis.remindy.enums.ReminderExtraType;
+import ve.com.abicelis.remindy.model.AdvancedReminder;
 import ve.com.abicelis.remindy.model.Reminder;
 import ve.com.abicelis.remindy.model.ReminderExtra;
 
@@ -20,7 +21,7 @@ import ve.com.abicelis.remindy.model.ReminderExtra;
  * Created by abice on 13/3/2017.
  */
 
-public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private ReminderAdapter mAdapter;
     private Activity mActivity;
@@ -42,10 +43,10 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
     private TextView mAddress;
 
     //DATA
-    private Reminder mCurrent;
+    private AdvancedReminder mCurrent;
     private int mReminderPosition;
 
-    public ReminderViewHolder(View itemView) {
+    public AdvancedReminderViewHolder(View itemView) {
         super(itemView);
 
         mContainer = (RelativeLayout) itemView.findViewById(R.id.item_reminder_container);
@@ -65,7 +66,7 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
 
-    public void setData(ReminderAdapter adapter, Activity activity, Reminder current, int position) {
+    public void setData(ReminderAdapter adapter, Activity activity, AdvancedReminder current, int position) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -161,7 +162,7 @@ public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.
         int id = view.getId();
         switch (id) {
             case R.id.item_reminder_container:
-                Toast.makeText(mActivity, "Reminder '" + mCurrent.getTitle() + "' clicked! Pos=" + mReminderPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "ADV Reminder '" + mCurrent.getTitle() + "' clicked! Pos=" + mReminderPosition, Toast.LENGTH_SHORT).show();
 //                Pair[] pairs = new Pair[1];
 //                pairs[0] = new Pair<View, String>(mImage, mFragment.getResources().getString(R.string.transition_name_expense_detail_image));
 //                //pairs[1] = new Pair<View, String>(mAmount,  mActivity.getResources().getString(R.string.transition_name_expense_detail_amount));
