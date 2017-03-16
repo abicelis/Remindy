@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(this, "Reminders saved in db = " + reminders.size(), Toast.LENGTH_SHORT).show();
 
         try {
-            List<ReminderExtra> reminderExtras = mDao.getReminderExtras(reminders.get(0).getId());
+            List<ReminderExtra> reminderExtras = mDao.getAdvancedReminderExtras(reminders.get(0).getId());
             Toast.makeText(this, "There are " + reminderExtras.size() + " ReminderExtras for reminder named " + reminders.get(0).getTitle(), Toast.LENGTH_SHORT).show();
         }catch (Exception e) {
             Toast.makeText(this, "Error catching extras!", Toast.LENGTH_SHORT).show();
