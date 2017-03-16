@@ -26,18 +26,18 @@ public class AdvancedReminder extends Reminder {
     private Time endTime;
 
 
-    public AdvancedReminder(@NonNull ReminderStatus status, @NonNull String title, @Nullable String description,
-                    @NonNull ReminderCategory category, @Nullable Place place, @NonNull ReminderDateType dateType,
-                    @Nullable Calendar startDate, @Nullable Calendar endDate, @NonNull ReminderTimeType timeType,
-                    @Nullable Time startTime, @Nullable Time endTime) {
+    public AdvancedReminder(@NonNull ReminderStatus status, @NonNull String title, @NonNull String description,
+                            @NonNull ReminderCategory category, @Nullable Place place, @NonNull ReminderDateType dateType,
+                            @Nullable Calendar startDate, @Nullable Calendar endDate, @NonNull ReminderTimeType timeType,
+                            @Nullable Time startTime, @Nullable Time endTime) {
         super(status, title, description, category);
         init(place, dateType, startDate, endDate, timeType, startTime, endTime);
     }
 
-    public AdvancedReminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title,
-                            @Nullable String description, @NonNull ReminderCategory category, @Nullable Place place,
-                            @NonNull ReminderDateType dateType, @Nullable Calendar startDate, @Nullable Calendar endDate,
-                            @NonNull ReminderTimeType timeType, @Nullable Time startTime, @Nullable Time endTime) {
+    public AdvancedReminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title, @NonNull String description,
+                            @NonNull ReminderCategory category, @Nullable Place place, @NonNull ReminderDateType dateType,
+                            @Nullable Calendar startDate, @Nullable Calendar endDate, @NonNull ReminderTimeType timeType,
+                            @Nullable Time startTime, @Nullable Time endTime) {
         super(id, status, title, description, category);
         init(place, dateType, startDate, endDate, timeType, startTime, endTime);
     }
