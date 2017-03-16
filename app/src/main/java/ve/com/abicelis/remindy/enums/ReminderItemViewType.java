@@ -6,5 +6,6 @@ package ve.com.abicelis.remindy.enums;
 
 public enum ReminderItemViewType {
     HEADER_ITEM,
-    REMINDER_ITEM;
+    SIMPLE_REMINDER_ITEM,
+    ADVANCED_REMINDER_ITEM;
 }
