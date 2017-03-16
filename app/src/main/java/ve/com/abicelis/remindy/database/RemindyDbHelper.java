@@ -147,6 +147,12 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
         cal.add(Calendar.DAY_OF_MONTH, +1);
 
 
+        //Drink water reminder
+        int drinkWaterMorningStartTime = new Time(7, 0).getTimeInMinutes();
+        int drinkWaterMorningEndTime = new Time(9, 0).getTimeInMinutes();
+        int drinkWaterAfternoonStartTime = new Time(16, 0).getTimeInMinutes();
+        int drinkWaterAfternoonEndTime = new Time(18, 0).getTimeInMinutes();
+
         statement = "INSERT INTO " + RemindyContract.ReminderTable.TABLE_NAME + " (" +
                 RemindyContract.ReminderTable._ID + COMMA_SEP +
                 RemindyContract.ReminderTable.COLUMN_NAME_STATUS.getName() + COMMA_SEP +
@@ -162,9 +168,12 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.ReminderTable.COLUMN_NAME_END_TIME.getName() +
                 ") VALUES " +
                 "('0', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
-                "('1', 'DONE', 'Take english test', 'Take IELTS General Training test', 'BUSINESS', -1, 'SINGLE_DAY', '" + startDateEnglishTest + "', '','INTERVAL', '"+englishTestStartTime+"', '"+englishTestEndTime+"')," +
+                "('1', 'DONE', 'Take english test', 'Take IELTS General Training test', 'BUSINESS', -1, 'SINGLE_DAY', '" + startDateEnglishTest + "', '', 'INTERVAL', '"+englishTestStartTime+"', '"+englishTestEndTime+"')," +
                 "('2', 'ARCHIVED', 'Get some apples', 'Whenever at Vickys, be sure to grab some', 'PERSONAL', 1, 'ANYDAY', '', '','ANYTIME', '', '')," +
-                "('3', 'ACTIVE', 'Pay landlord', '', 'PERSONAL', 0, 'INTERVAL', '" + startDateLandlord + "', '" + endDateLandlord + "','ANYTIME', '', '');";
+                "('3', 'ACTIVE', 'Fetch millennium falcon', 'Yeah, its in the andromeda galaxy...', 'BUSINESS', 3, 'ANYDAY', '', '', 'ANYTIME', '', '')," +
+                "('4', 'ACTIVE', 'Morning water', 'Drink 1 whole glass of water', 'PERSONAL', -1, 'ANYDAY', '', '', 'INTERVAL', '"+drinkWaterMorningStartTime+"', '"+drinkWaterMorningEndTime+"')," +
+                "('5', 'ACTIVE', 'Afternoon water', 'Drink 1 whole glass of water', 'PERSONAL', -1, 'ANYDAY', '', '', 'INTERVAL', '"+drinkWaterAfternoonStartTime+"', '"+drinkWaterAfternoonEndTime+"')," +
+                "('6', 'ACTIVE', 'Pay landlord', '', 'PERSONAL', 0, 'INTERVAL', '" + startDateLandlord + "', '" + endDateLandlord + "','ANYTIME', '', '');";
         sqLiteDatabase.execSQL(statement);
 
 
@@ -182,8 +191,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 ") VALUES " +
                 "('0', '0', 'LINK', 'http://www.pizzahut.com', '')," +
                 "('1', '1', 'TEXT', 'There are 4 tests. Listening, Reading, Writing and finally, Speaking. The Speaking test will probably be taken on a different day as the rest of the tests', '')," +
-                "('2', '3', 'TEXT', 'This months bill is xxx USD', '')," +
-                "('3', '3', 'LINK', 'http://www.landlordpay.com', '');";
+                "('2', '6', 'TEXT', 'This months bill is xxx USD', '')," +
+                "('3', '6', 'LINK', 'http://www.landlordpay.com', '');";
         sqLiteDatabase.execSQL(statement);
 
     }
