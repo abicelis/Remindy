@@ -29,7 +29,12 @@
     <string name="reminder_time_type_single_time">Single time</string>
     <string name="reminder_time_type_interval">Interval</string>
 
-
+    /* ENUM ReminderRepeatType */
+    <string name="reminder_repeat_type_disabled">Disabled</string>
+    <string name="reminder_repeat_type_daily">Daily</string>
+    <string name="reminder_repeat_type_weekly">Weekly</string>
+    <string name="reminder_repeat_type_monthly">Monthly</string>
+    <string name="reminder_repeat_type_yearly">Yearly</string>
 
 
 
