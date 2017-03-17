@@ -1,10 +1,12 @@
 package ve.com.abicelis.remindy.app.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.dialogs.NewReminderDialogFragment;
 import ve.com.abicelis.remindy.app.fragments.ReminderListFragment;
 import ve.com.abicelis.remindy.app.adapters.RemindersViewPagerAdapter;
 import ve.com.abicelis.remindy.enums.ReminderStatus;
@@ -109,8 +112,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.activity_home_fab:
+                showAddReminderDialog();
                 break;
 
         }
+    }
+
+    private void showAddReminderDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        NewReminderDialogFragment dialog = NewReminderDialogFragment.newInstance();
+        dialog.show(fm, "NewReminderDialogFragment");
     }
 }
