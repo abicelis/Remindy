@@ -669,9 +669,9 @@ public class RemindyDAO {
         values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_TIME.getName(), reminder.getTime().getTimeInMinutes());
         values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_TYPE.getName(), reminder.getRepeatType().name());
         values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName(), reminder.getRepeatInterval());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName(), reminder.getRepeatEndType().name());
+        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName(), (reminder.getRepeatEndType() != null ? reminder.getRepeatEndType().name() : null));
         values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName(), reminder.getRepeatEndNumberOfEvents());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName(), reminder.getRepeatEndDate().getTimeInMillis());
+        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName(), (reminder.getRepeatEndDate() != null ? reminder.getRepeatEndDate().getTimeInMillis() : 0));
         return values;
     }
 
