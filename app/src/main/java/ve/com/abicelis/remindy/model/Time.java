@@ -18,6 +18,10 @@ public class Time implements Comparable<Time> {
     private int minute;
     private TimeFormat displayTimeFormat = TimeFormat.FORMAT_24H;
 
+    public Time() {
+        this.hour = 0;
+        this.minute = 0;
+    }
     public Time(int timeInMinutes) {
         setTimeInMinutes(timeInMinutes);
     }
