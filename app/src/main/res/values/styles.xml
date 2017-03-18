@@ -14,6 +14,10 @@
         <item name="color">@android:color/white</item> <!-- Text color of navigation drawer icon-->
     </style>
 
+    <style name="ToolbarTheme.SmallTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

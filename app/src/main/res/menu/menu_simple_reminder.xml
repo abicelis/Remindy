@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ve.com.abicelis.remindy.app.activities.MainActivity">
+    <item
+        android:id="@+id/action_add_extras"
+        android:orderInCategory="100"
+        android:icon="@drawable/icon_extra"
+        android:title="Add extras"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_save"
+        android:orderInCategory="100"
+        android:icon="@drawable/icon_save"
+        android:title="Save"
+        app:showAsAction="always" />
+</menu>

@@ -2,6 +2,11 @@
     <string name="app_name">Remindy</string>
 
 
+    /* Datepickers */
+    <string name="datepicker_cancel">CANCEL</string>
+    <string name="datepicker_ok">OK</string>
+
+
 
     /* ENUM ReminderCategory */
     <string name="reminder_category_business">Business</string>
@@ -37,12 +42,10 @@
     <string name="reminder_repeat_type_yearly">Yearly</string>
 
     /* ENUM ReminderRepeatEndType */
-    <string name="reminder_repeat_end_type_forever_spinner">Forever</string>
-    <string name="reminder_repeat_end_type_until_date_spinner">Until a date</string>
-    <string name="reminder_repeat_end_type_for_x_events_spinner">For a number of events</string>
-    <string name="reminder_repeat_end_type_until_date_display">Until</string>
-    <string name="reminder_repeat_end_type_for_x_events_display">For</string>
-    <string name="reminder_repeat_end_type_for_x_events_display_2">events</string>
+    <string name="reminder_repeat_end_type_forever">Forever</string>
+    <string name="reminder_repeat_end_type_until_date">Until a date</string>
+    <string name="reminder_repeat_end_type_for_x_events">For a number of events</string>
+
 
 
 
@@ -51,12 +54,55 @@
     <string name="action_about">About app</string>
     <string name="action_rate">Rate app</string>
 
+    /* Create/Edit Reminder Activities */
+    <string name="activity_reminder_toolbar_title">Simple Reminder</string>
+    <string name="activity_reminder_title">Title</string>
+    <string name="activity_reminder_title_hint">Enter a Title</string>
+    <string name="activity_reminder_description">Description</string>
+    <string name="activity_reminder_description_hint">Enter a Description</string>
+    <string name="activity_reminder_category">Category</string>
+    <string name="activity_reminder_simple_date_title">Date</string>
+    <string name="activity_reminder_simple_date_hint">Enter a date</string>
+    <string name="activity_reminder_simple_time_title">Time</string>
+    <string name="activity_reminder_simple_time_hint">Enter a time</string>
+
+    <string name="activity_reminder_simple_repeat_title">Repeat</string>
+
+    <string name="activity_reminder_simple_repeat_interval_every">Every</string>
+    <string name="activity_reminder_simple_repeat_interval_days">Day(s)</string>
+    <string name="activity_reminder_simple_repeat_interval_weeks">Week(s)</string>
+    <string name="activity_reminder_simple_repeat_interval_months">Month(s)</string>
+    <string name="activity_reminder_simple_repeat_interval_years">Year(s)</string>
+
+    <string name="activity_reminder_simple_repeat_end_until_date">Until</string>
+    <string name="activity_reminder_simple_repeat_end_for_x_events_1">For</string>
+    <string name="activity_reminder_simple_repeat_end_for_x_events_2">event(s)</string>
+
 
     /* Fragment Reminders */
     <string name="fragment_reminder_list_no_items">There are no reminders here!</string>
     <string name="fragment_reminder_list_place_anywhere">Anywhere</string>
 
+    /* New Reminder Dialog */
+    <string name="dialog_new_reminder_title">New Reminder</string>
+    <string name="dialog_new_reminder_simple_button">New Simple Reminder</string>
+    <string name="dialog_new_reminder_advanced_button">New Advanced Reminder</string>
+    <string name="dialog_new_reminder_cancel_button">CANCEL</string>
+    <string name="dialog_new_reminder_simple_description">-Simple one-time tasks\n-Simple Repetitive Tasks</string>
+    <string name="dialog_new_reminder_advanced_description">-Location-aware tasks\n-Custom dates and intervals</string>
 
+
+
+    /* Generic error/status toast/snackbar messages */
+    <string name="error_problem_inserting_reminder">There was a problem inserting the Reminder into the database</string>
+    <string name="error_invalid_title">Please enter a valid Title</string>
+    <string name="error_invalid_date">Please enter a valid Date</string>
+    <string name="error_invalid_time">Please enter a valid Time</string>
+    <string name="error_invalid_repeat_interval">Please enter a valid repeat Interval</string>
+    <string name="error_invalid_repeat_events">Please enter a valid repeat Event number</string>
+    <string name="error_invalid_repeat_until_date">Please enter a valid Repeat Until date</string>
+    <string name="error_repeat_until_date_after_reminder_date">Repeat Until date must be after Reminder date</string>
+    <string name="reminder_saved_successfully">The Reminder was saved successfully</string>
 
 
 

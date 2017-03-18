@@ -25,7 +25,11 @@
 
         <activity
             android:name=".app.activities.MainActivity"
-            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".app.activities.SimpleReminderActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
