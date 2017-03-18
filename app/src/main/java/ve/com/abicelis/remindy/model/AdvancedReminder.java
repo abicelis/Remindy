@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.BitSet;
 import java.util.Calendar;
 
 import ve.com.abicelis.remindy.enums.ReminderCategory;
@@ -24,6 +25,7 @@ public class AdvancedReminder extends Reminder {
     private ReminderTimeType timeType;
     private Time startTime;
     private Time endTime;
+    //private BitSet weekday;
     //TODO: private Weekday weekday!!!!!!!!!!!!!!
 
 
@@ -52,6 +54,8 @@ public class AdvancedReminder extends Reminder {
         this.timeType = timeType;
         this.startTime = startTime;
         this.endTime = endTime;
+
+
     }
 
 
