@@ -4,27 +4,33 @@ THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT
 
 
 ## About the app
-The android reminder app for power-users, set any kind of reminder. Supports all kinds of reminders, Daily, Weekly, Monthly and yearly reminders? Yes. Location-based reminders? Yes. Geofences? Yes. Timed reminders? Yes. Reminders ending at a specific date? Yes. Reminders which repeat a set amount of times? Yes.
+The android reminder app for power-users wanting set any kind of reminder. 
 
-Want to attach data to ur reminders? You can. You can attach images, record audios, insert links and add text to your reminders!
+Supports all kinds of reminders:
+
+* Daily, Weekly, Monthly and yearly reminders? Yes. 
+* Location-based reminders? Yes. 
+* Geofences? Yes. 
+* Timed reminders? Yes. 
+* Reminders ending at a specific date? Yes. 
+* Reminders which repeat a set amount of times? Yes.
+* Reminders with extra data attached such as images, audio, links and text? YES!
 
 This app will be available at the Google Play Store, soon!
 
 <!---
-<a target="_blank" href='https://play.google.com/store/apps/details?id=ve.com.abicelis.pingwidget&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="240px"/></a>
+<a target="_blank" href='https://play.google.com/store/apps/details?id=ve.com.abicelis.remindy&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="240px"/></a>
+-->
 
+## Features
 
-This app features:
-
-- Beautiful Material design!
-- Calculates Max / Min / Avg and Uptime
-- Live real-time line chart of pings!
+- A Beautiful Material design!
+- A service which handles the triggering of notification according to set dates, intervals, times and geofences.
 - Multiple configurable options
 - Ad-free
-- Automatically stops when device goes to sleep to conserve battery
-- Add multiple widgets to track as many servers as you like!
 
 
+<!---
 ## Screens
 
 <img alt='Widgets' src='https://github.com/abicelis/PingWidget/blob/master/graphics/play_store/screens/v1.3.0\xperiaZ3c/pingwidget_1.png ' width="260px"/>
@@ -37,6 +43,7 @@ This Project uses external SDK's
 
 * [Preference-v7-fix](https://github.com/Gericop/Android-Support-Preference-V7-Fix) - Fixes for preference-v7 support library
 * [BetterPickers](https://github.com/code-troopers/android-betterpickers) - Datepicker library by code-troopers
+* [TransitionsEverywhere](https://github.com/andkulikov/Transitions-Everywhere) - Backported Transitions library by andkulikov
 
 
 ## Software used
