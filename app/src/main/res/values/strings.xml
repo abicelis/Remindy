@@ -83,6 +83,13 @@
     <string name="activity_reminder_simple_exit_dialog_negative">Cancel</string>
 
 
+    /* Create/Edit Extras Activity */
+    <string name="list_item_extras_image_tap_to_add">Tap to add an image</string>
+    <string name="item_extra_text_content_hint">Enter some text</string>
+    <string name="item_extra_link_content_hint">Enter a link</string>
+
+
+
     /* Fragment Reminders */
     <string name="fragment_reminder_list_no_items">There are no reminders here!</string>
     <string name="fragment_reminder_list_place_anywhere">Anywhere</string>
@@ -108,7 +115,6 @@
     <string name="error_repeat_until_date_after_reminder_date">Repeat until date must be after reminder date</string>
     <string name="reminder_saved_successfully">The reminder was saved successfully</string>
     <string name="error_generic_reminder">There was a problem with the reminder data, please report this error</string>
-
 
 
     /* FetchAddressIntentService */
