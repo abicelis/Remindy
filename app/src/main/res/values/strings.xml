@@ -67,7 +67,6 @@
     <string name="activity_reminder_simple_time_hint">Enter a time</string>
 
     <string name="activity_reminder_simple_repeat_title">Repeat</string>
-
     <string name="activity_reminder_simple_repeat_interval_every">Every</string>
     <string name="activity_reminder_simple_repeat_interval_days">Day(s)</string>
     <string name="activity_reminder_simple_repeat_interval_weeks">Week(s)</string>
@@ -77,6 +76,11 @@
     <string name="activity_reminder_simple_repeat_end_until_date">Until</string>
     <string name="activity_reminder_simple_repeat_end_for_x_events_1">For</string>
     <string name="activity_reminder_simple_repeat_end_for_x_events_2">event(s)</string>
+
+    <string name="activity_reminder_simple_exit_dialog_title">Go back?</string>
+    <string name="activity_reminder_simple_exit_dialog_message">Go back and delete Reminder?</string>
+    <string name="activity_reminder_simple_exit_dialog_positive">Yes</string>
+    <string name="activity_reminder_simple_exit_dialog_negative">Cancel</string>
 
 
     /* Fragment Reminders */

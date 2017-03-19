@@ -1,8 +1,9 @@
 package ve.com.abicelis.remindy.app.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +19,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter;
@@ -40,6 +40,7 @@ import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.model.SimpleReminder;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.util.InputFilterMinMax;
+import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 16/3/2017.
@@ -51,6 +52,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
     final Calendar mToday = Calendar.getInstance();
     final Calendar mTomorrow = Calendar.getInstance();
     public static final String ARG_SIMPLE_REMINDER = "ARG_SIMPLE_REMINDER";
+    public static final String KEY_INSTANCE_STATE_SIMPLE_REMINDER = "KEY_INSTANCE_STATE_SIMPLE_REMINDER";
 
     //DATA
     private List<String> reminderCategories;
@@ -115,10 +117,16 @@ public class SimpleReminderActivity extends AppCompatActivity {
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.icon_back_material));
         setSupportActionBar(mToolbar);
 
-        //Try to get ARG_SIMPLE_REMINDER
+        //If activity was called to edit an existing reminder, check ARG_SIMPLE_REMINDER
         if(getIntent().hasExtra(ARG_SIMPLE_REMINDER)) {
             mNewReminder = (SimpleReminder) getIntent().getSerializableExtra(ARG_SIMPLE_REMINDER);
-            //TODO: restoreSimpleReminder();
+            restoreSimpleReminder();
+        }
+
+        //If screen was turned, restore state!
+        if(savedInstanceState != null && savedInstanceState.containsKey(KEY_INSTANCE_STATE_SIMPLE_REMINDER)) {
+            mNewReminder = (SimpleReminder) savedInstanceState.getSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER);
+            restoreSimpleReminder();
         }
 
         //Add a day to mTomorrow cal
@@ -129,17 +137,34 @@ public class SimpleReminderActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        //TODO: Save mNewReminder's data
-        //saveSimpleReminder();
+        //Screen was turned, save the state before killing the activity
+        saveSimpleReminder();
+        outState.putSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER, mNewReminder);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        //TODO: Restore mNewReminder's data
+    public void onBackPressed() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.activity_reminder_simple_exit_dialog_title))
+                .setMessage(getResources().getString(R.string.activity_reminder_simple_exit_dialog_message))
+                .setPositiveButton(getResources().getString(R.string.activity_reminder_simple_exit_dialog_positive),  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.activity_reminder_simple_exit_dialog_negative), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     private void setupSpinners() {
@@ -195,13 +220,6 @@ public class SimpleReminderActivity extends AppCompatActivity {
                                 mDateCal.set(year, monthOfYear, dayOfMonth);
                                 SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
                                 mDate.setText(formatter.format(mDateCal.getTime()));
-
-                                //TODO:Fix this, doesn't work. Also if mRepeatUntilDate < mDateCalPlusOne set to PlusOne.
-//                                Calendar mDateCalPlusOne = Calendar.getInstance();
-//                                mDateCalPlusOne.set(year, monthOfYear, dayOfMonth);
-//                                mDateCalPlusOne.add(Calendar.DAY_OF_MONTH, 1);
-//                                mRepeatUntilDatePicker.setDateRange(new MonthAdapter.CalendarDay(mDateCalPlusOne), null);
-
                             }
                         })
                         .setFirstDayOfWeek(Calendar.MONDAY)
@@ -353,24 +371,24 @@ public class SimpleReminderActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.action_add_extras:
-                if(valuesAreGood()) {
-                    saveSimpleReminderObject();
-                    //TODO: startActivityForResult() a AddExtrasActivity() and get extras.
-                    //Recover them in onActivityResult() bundle
-                    //Also restore reminder data into form
-                    //Add a little number on extras menu icon to indicate extras have been added?
-                }
-
+                saveSimpleReminder();
+                //TODO: startActivityForResult() a AddExtrasActivity() and get extras.
+                //Recover them in onActivityResult() bundle
+                //Also restore reminder data into form
+                //Add a little number on extras menu icon to indicate extras have been added?
                 break;
             case R.id.action_save:
                 if(valuesAreGood()) {
-                    saveSimpleReminderObject();
+                    saveSimpleReminder();
                     RemindyDAO dao = new RemindyDAO(this);
                     try {
                         dao.insertSimpleReminder(mNewReminder);
-                        Snackbar.make(mRepeatContainer, R.string.reminder_saved_successfully, Snackbar.LENGTH_LONG).show();
+
+
+                        SnackbarUtil.showSuccessSnackbar(mRepeatContainer, R.string.reminder_saved_successfully);
+
                     } catch (CouldNotInsertDataException e) {
-                        Snackbar.make(mRepeatContainer, R.string.error_problem_inserting_reminder, Snackbar.LENGTH_LONG).show();
+                        SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_problem_inserting_reminder);
                     }
                 }
                 break;
@@ -381,46 +399,40 @@ public class SimpleReminderActivity extends AppCompatActivity {
     private boolean valuesAreGood() {
         String title = mTitle.getText().toString();
         if(title.trim().isEmpty()) {
-
-            //TODO: add Snackbar with fancy icon!
-            //SpannableStringBuilder builder = new SpannableStringBuilder();
-            //builder.append( getResources().getString(R.string.error_invalid_title));
-            //builder.setSpan(new ImageSpan(SimpleReminderActivity.this, R.drawable.icon_error_snackbar), builder.length() -1, builder.length(), 0);
-            //Snackbar.make(mRepeatContainer, builder, Snackbar.LENGTH_LONG).show();
-            Snackbar.make(mRepeatContainer, R.string.error_invalid_title, Snackbar.LENGTH_LONG).show();
+            SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_title);
             return false;
         }
 
         if(mDateCal == null) {
-            Snackbar.make(mRepeatContainer, R.string.error_invalid_date, Snackbar.LENGTH_LONG).show();
+            SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_date);
             return false;
         }
         if(mTimeTime == null) {
-            Snackbar.make(mRepeatContainer, R.string.error_invalid_time, Snackbar.LENGTH_LONG).show();
+            SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_time);
             mTime.requestFocus();
             return false;
         }
 
         if(ReminderRepeatType.values()[mRepeatType.getSelectedItemPosition()] != ReminderRepeatType.DISABLED) {
             if(mRepeatInterval.getText().toString().isEmpty()){
-                Snackbar.make(mRepeatContainer, R.string.error_invalid_repeat_interval, Snackbar.LENGTH_LONG).show();
+                SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_repeat_interval);
                 return false;
             }
 
             if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.FOR_X_EVENTS) {
                 if(mRepeatEndForXEvents.getText().toString().isEmpty()){
-                    Snackbar.make(mRepeatContainer, R.string.error_invalid_repeat_events, Snackbar.LENGTH_LONG).show();
+                    SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_repeat_events);
                     return false;
                 }
             }
 
             if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.UNTIL_DATE) {
                 if(mRepeatUntilCal == null) {
-                    Snackbar.make(mRepeatContainer, R.string.error_invalid_repeat_until_date, Snackbar.LENGTH_LONG).show();
+                    SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_repeat_until_date);
                     return false;
                 }
-                if(mRepeatUntilCal.compareTo(mDateCal) >= 0) {
-                    Snackbar.make(mRepeatContainer, R.string.error_repeat_until_date_after_reminder_date, Snackbar.LENGTH_LONG).show();
+                if(mRepeatUntilCal.compareTo(mDateCal) <= 0) {
+                    SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_repeat_until_date_after_reminder_date);
                     return false;
                 }
             }
@@ -430,7 +442,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveSimpleReminderObject() {
+    private void saveSimpleReminder() {
         String title = mTitle.getText().toString();
         String description = mDescription.getText().toString();
         ReminderCategory category = ReminderCategory.values()[mCategory.getSelectedItemPosition()];
@@ -451,6 +463,52 @@ public class SimpleReminderActivity extends AppCompatActivity {
                 mRepeatUntilCal = null;
         }
         mNewReminder = new SimpleReminder(ReminderStatus.ACTIVE, title, description, category, mDateCal, mTimeTime, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, mRepeatUntilCal);
+    }
+
+    private void restoreSimpleReminder() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+
+
+        mTitle.setText(mNewReminder.getTitle());
+        mDescription.setText(mNewReminder.getDescription());
+
+        if(mNewReminder.getDate() != null) {
+            mDateCal = Calendar.getInstance();
+            mDateCal.setTimeInMillis(mNewReminder.getDate().getTimeInMillis());
+            mDate.setText(formatter.format(mDateCal.getTime()));
+        }
+
+        if(mNewReminder.getTime() != null) {
+            mTime.setText(mNewReminder.getTime().toString());
+            mTimeTime = new Time(mNewReminder.getTime().getTimeInMinutes());
+        }
+
+        mCategory.setSelection(mNewReminder.getCategory().ordinal());
+        mRepeatType.setSelection(mNewReminder.getRepeatType().ordinal());
+
+
+        if(mNewReminder.getRepeatType() != ReminderRepeatType.DISABLED) {
+            mRepeatInterval.setText(String.valueOf(mNewReminder.getRepeatInterval()));
+            mRepeatEndType.setSelection(mNewReminder.getRepeatEndType().ordinal());
+            handleRepeatTypeSelected(mNewReminder.getRepeatType().ordinal());
+
+            if(mNewReminder.getRepeatEndType() == ReminderRepeatEndType.FOR_X_EVENTS)
+                mRepeatEndForXEvents.setText(String.valueOf(mNewReminder.getRepeatEndNumberOfEvents()));
+
+            if(mNewReminder.getRepeatEndType() == ReminderRepeatEndType.UNTIL_DATE) {
+                if(mNewReminder.getRepeatEndDate() != null) {
+                    mRepeatUntilCal = Calendar.getInstance();
+                    mRepeatUntilCal.setTimeInMillis(mNewReminder.getRepeatEndDate().getTimeInMillis());
+                    mRepeatUntilDate.setText(formatter.format(mRepeatUntilCal.getTime()));
+                }
+            }
+
+            if(mNewReminder.getRepeatEndType() != ReminderRepeatEndType.FOREVER) {
+                handleRepeatEndTypeSelected(mNewReminder.getRepeatEndType().ordinal());
+
+            }
+
+        }
     }
 
 }

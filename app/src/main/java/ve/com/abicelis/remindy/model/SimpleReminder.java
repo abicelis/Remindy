@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import ve.com.abicelis.remindy.enums.ReminderCategory;
@@ -15,7 +16,7 @@ import ve.com.abicelis.remindy.enums.ReminderType;
  * Created by abice on 3/3/2017.
  */
 
-public class SimpleReminder extends Reminder {
+public class SimpleReminder extends Reminder implements Serializable {
 
     private Calendar date;
     private Time time;
