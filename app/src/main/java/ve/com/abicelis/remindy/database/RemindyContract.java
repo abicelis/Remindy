@@ -41,7 +41,7 @@ final class RemindyContract {
         static final TableColumn COLUMN_NAME_TIME_TYPE = new TableColumn(DataType.TEXT, "time_type");
         static final TableColumn COLUMN_NAME_START_TIME = new TableColumn(DataType.INTEGER, "start_time");
         static final TableColumn COLUMN_NAME_END_TIME = new TableColumn(DataType.INTEGER, "end_time");
-        //TODO: Weekday is missing here!
+        static final TableColumn COLUMN_NAME_WEEKDAYS = new TableColumn(DataType.INTEGER, "weekdays");
     }
 
     /* Extra Table for Advanced Reminders */

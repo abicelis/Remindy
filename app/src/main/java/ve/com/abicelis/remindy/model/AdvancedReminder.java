@@ -3,7 +3,6 @@ package ve.com.abicelis.remindy.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.BitSet;
 import java.util.Calendar;
 
 import ve.com.abicelis.remindy.enums.ReminderCategory;
@@ -25,28 +24,26 @@ public class AdvancedReminder extends Reminder {
     private ReminderTimeType timeType;
     private Time startTime;
     private Time endTime;
-    //private BitSet weekday;
-    //TODO: private Weekday weekday!!!!!!!!!!!!!!
-
+    private Weekdays weekdays;
 
     public AdvancedReminder(@NonNull ReminderStatus status, @NonNull String title, @NonNull String description,
                             @NonNull ReminderCategory category, @Nullable Place place, @NonNull ReminderDateType dateType,
                             @Nullable Calendar startDate, @Nullable Calendar endDate, @NonNull ReminderTimeType timeType,
-                            @Nullable Time startTime, @Nullable Time endTime) {
+                            @Nullable Time startTime, @Nullable Time endTime, @NonNull Weekdays weekdays) {
         super(status, title, description, category);
-        init(place, dateType, startDate, endDate, timeType, startTime, endTime);
+        init(place, dateType, startDate, endDate, timeType, startTime, endTime, weekdays);
     }
 
     public AdvancedReminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title, @NonNull String description,
                             @NonNull ReminderCategory category, @Nullable Place place, @NonNull ReminderDateType dateType,
                             @Nullable Calendar startDate, @Nullable Calendar endDate, @NonNull ReminderTimeType timeType,
-                            @Nullable Time startTime, @Nullable Time endTime) {
+                            @Nullable Time startTime, @Nullable Time endTime, @NonNull Weekdays weekdays) {
         super(id, status, title, description, category);
-        init(place, dateType, startDate, endDate, timeType, startTime, endTime);
+        init(place, dateType, startDate, endDate, timeType, startTime, endTime, weekdays);
     }
 
     private void init(Place place, ReminderDateType dateType, Calendar startDate, Calendar endDate,
-                      ReminderTimeType timeType, Time startTime, Time endTime) {
+                      ReminderTimeType timeType, Time startTime, Time endTime, Weekdays weekdays) {
         this.place = place;
         this.dateType = dateType;
         this.startDate = startDate;
@@ -116,6 +113,12 @@ public class AdvancedReminder extends Reminder {
         this.endTime = endTime;
     }
 
+    public Weekdays getWeekdays() {
+        return weekdays;
+    }
+    public void setWeekdays(Weekdays weekdays) {
+        this.weekdays = weekdays;
+    }
 
     @Override
     public String toString() {
@@ -131,6 +134,7 @@ public class AdvancedReminder extends Reminder {
                 " timeType=" + timeType + "\r\n" +
                 " startTime=" + startTime + "\r\n" +
                 " endTime=" + endTime + "\r\n" +
+                " weekDays=" + weekdays.toString() + "\r\n" +
                 " extras=" + extras;
     }
 }

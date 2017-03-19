@@ -165,15 +165,16 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName() + COMMA_SEP +
                 RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getName() + COMMA_SEP +
                 RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName() + COMMA_SEP +
-                RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName() +
+                RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName() + COMMA_SEP +
+                RemindyContract.AdvancedReminderTable.COLUMN_NAME_WEEKDAYS.getName() +
                 ") VALUES " +
-                "('0', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"')," +
-                "('1', 'DONE', 'Take english test', 'Take IELTS General Training test', 'BUSINESS', -1, 'SINGLE_DAY', '" + startDateEnglishTest + "', '', 'INTERVAL', '"+englishTestStartTime+"', '"+englishTestEndTime+"')," +
-                "('2', 'ARCHIVED', 'Get some apples', 'Whenever at Vickys, be sure to grab some', 'PERSONAL', 1, 'ANYDAY', '', '','ANYTIME', '', '')," +
-                "('3', 'ACTIVE', 'Fetch millennium falcon', 'Yeah, its in the andromeda galaxy...', 'BUSINESS', 3, 'ANYDAY', '', '', 'ANYTIME', '', '')," +
-                "('4', 'ACTIVE', 'Morning water', 'Drink 1 whole glass of water', 'PERSONAL', -1, 'ANYDAY', '', '', 'INTERVAL', '"+drinkWaterMorningStartTime+"', '"+drinkWaterMorningEndTime+"')," +
-                "('5', 'ACTIVE', 'Afternoon water', 'Drink 1 whole glass of water', 'PERSONAL', -1, 'ANYDAY', '', '', 'INTERVAL', '"+drinkWaterAfternoonStartTime+"', '"+drinkWaterAfternoonEndTime+"')," +
-                "('6', 'ACTIVE', 'Pay landlord', '', 'PERSONAL', 0, 'INTERVAL', '" + startDateLandlord + "', '" + endDateLandlord + "','ANYTIME', '', '');";
+                "('0', 'ACTIVE', 'Weekend Pizza', 'End of week pizza for vicky and myself', 'PERSONAL', 0, 'ANYDAY', '', '','INTERVAL', '"+weekendPizzaStartTime+"', '"+weekendPizzaEndTime+"', 0)," +
+                "('1', 'DONE', 'Take english test', 'Take IELTS General Training test', 'BUSINESS', -1, 'SINGLE_DAY', '" + startDateEnglishTest + "', '', 'INTERVAL', '"+englishTestStartTime+"', '"+englishTestEndTime+"', 0)," +
+                "('2', 'ARCHIVED', 'Get some apples', 'Whenever at Vickys, be sure to grab some', 'PERSONAL', 1, 'ANYDAY', '', '','ANYTIME', '', '', 0)," +
+                "('3', 'ACTIVE', 'Fetch millennium falcon', 'Yeah, its in the andromeda galaxy...', 'BUSINESS', 3, 'ANYDAY', '', '', 'ANYTIME', '', '', 0)," +
+                "('4', 'ACTIVE', 'Morning water', 'Drink 1 whole glass of water', 'PERSONAL', -1, 'ANYDAY', '', '', 'INTERVAL', '"+drinkWaterMorningStartTime+"', '"+drinkWaterMorningEndTime+"', 0)," +
+                "('5', 'ACTIVE', 'Afternoon water', 'Drink 1 whole glass of water', 'PERSONAL', -1, 'ANYDAY', '', '', 'INTERVAL', '"+drinkWaterAfternoonStartTime+"', '"+drinkWaterAfternoonEndTime+"', 0)," +
+                "('6', 'ACTIVE', 'Pay landlord', '', 'PERSONAL', 0, 'INTERVAL', '" + startDateLandlord + "', '" + endDateLandlord + "','ANYTIME', '', '', 0);";
         sqLiteDatabase.execSQL(statement);
 
 
@@ -283,7 +284,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName() + " " + RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getDataType() + COMMA_SEP +
                 RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getName() + " " + RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getDataType() + COMMA_SEP +
                 RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName() + " " + RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getDataType() + COMMA_SEP +
-                RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName() + " " + RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getDataType() +
+                RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName() + " " + RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getDataType() + COMMA_SEP +
+                RemindyContract.AdvancedReminderTable.COLUMN_NAME_WEEKDAYS.getName() + " " + RemindyContract.AdvancedReminderTable.COLUMN_NAME_WEEKDAYS.getDataType() +
                 " ); ";
         sqLiteDatabase.execSQL(statement);
 

@@ -37,6 +37,7 @@ import ve.com.abicelis.remindy.model.ReminderExtraLink;
 import ve.com.abicelis.remindy.model.ReminderExtraText;
 import ve.com.abicelis.remindy.model.SimpleReminder;
 import ve.com.abicelis.remindy.model.Time;
+import ve.com.abicelis.remindy.model.Weekdays;
 
 /**
  * Created by Alex on 9/3/2017.
@@ -655,6 +656,7 @@ public class RemindyDAO {
         values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getName(), reminder.getTimeType().name());
         values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName(), reminder.getStartTime().getTimeInMinutes());
         values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName(), reminder.getEndTime().getTimeInMinutes());
+        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_WEEKDAYS.getName(), reminder.getWeekdays().getIntValue());
         return values;
     }
 
@@ -709,9 +711,10 @@ public class RemindyDAO {
 
         Time startTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName())));
         Time endTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName())));
+        Weekdays weekdays = new Weekdays(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_WEEKDAYS.getName())));
 
 
-        return new AdvancedReminder(id, status, title, description, category, null, dateType, startDate, endDate, timeType, startTime, endTime);
+        return new AdvancedReminder(id, status, title, description, category, null, dateType, startDate, endDate, timeType, startTime, endTime, weekdays);
     }
 
 
