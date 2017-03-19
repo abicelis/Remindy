@@ -1,9 +1,13 @@
 package ve.com.abicelis.remindy.app.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -49,8 +53,7 @@ import ve.com.abicelis.remindy.util.SnackbarUtil;
 public class SimpleReminderActivity extends AppCompatActivity {
 
     //CONST
-    final Calendar mToday = Calendar.getInstance();
-    final Calendar mTomorrow = Calendar.getInstance();
+    public static final int INTENT_ADD_EXTRAS_REQUEST_CODE = 293;
     public static final String ARG_SIMPLE_REMINDER = "ARG_SIMPLE_REMINDER";
     public static final String KEY_INSTANCE_STATE_SIMPLE_REMINDER = "KEY_INSTANCE_STATE_SIMPLE_REMINDER";
 
@@ -90,7 +93,6 @@ public class SimpleReminderActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_reminder);
-        Log.d("SUPERTAG", "onCreate");
 
 
         mToolbar = (Toolbar) findViewById(R.id.activity_reminder_simple_toolbar);
@@ -117,30 +119,29 @@ public class SimpleReminderActivity extends AppCompatActivity {
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.icon_back_material));
         setSupportActionBar(mToolbar);
 
-        //If activity was called to edit an existing reminder, check ARG_SIMPLE_REMINDER
+
+        setupSpinners();
+        setupDateAndTimePickers();
+
+        //If editing a reminder, then intent contains a SimpleReminder extra with key ARG_SIMPLE_REMINDER
+        //Get the reminder and restore its data
         if(getIntent().hasExtra(ARG_SIMPLE_REMINDER)) {
             mNewReminder = (SimpleReminder) getIntent().getSerializableExtra(ARG_SIMPLE_REMINDER);
             restoreSimpleReminder();
         }
 
-        //If screen was turned, restore state!
+        //If a state was saved (such as when rotating the device), restore the state!
         if(savedInstanceState != null && savedInstanceState.containsKey(KEY_INSTANCE_STATE_SIMPLE_REMINDER)) {
             mNewReminder = (SimpleReminder) savedInstanceState.getSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER);
             restoreSimpleReminder();
         }
-
-        //Add a day to mTomorrow cal
-        mTomorrow.add(Calendar.DAY_OF_MONTH, 1);
-
-        setupSpinners();
-        setupDateAndTimePickers();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        //Screen was turned, save the state before killing the activity
+        //Save the state before killing the activity (maybe the device rotated?)
         saveSimpleReminder();
         outState.putSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER, mNewReminder);
     }
@@ -169,12 +170,12 @@ public class SimpleReminderActivity extends AppCompatActivity {
 
     private void setupSpinners() {
         reminderCategories = ReminderCategory.getFriendlyValues(this);
-        ArrayAdapter reminderCategoryAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, reminderCategories);
+        ArrayAdapter reminderCategoryAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, reminderCategories);
         reminderCategoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         mCategory.setAdapter(reminderCategoryAdapter);
 
         reminderRepeatTypes = ReminderRepeatType.getFriendlyValues(this);
-        ArrayAdapter reminderRepeatTypeAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, reminderRepeatTypes);
+        ArrayAdapter reminderRepeatTypeAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, reminderRepeatTypes);
         reminderRepeatTypeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         mRepeatType.setAdapter(reminderRepeatTypeAdapter);
         mRepeatType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -202,6 +203,10 @@ public class SimpleReminderActivity extends AppCompatActivity {
     }
 
     private void setupDateAndTimePickers() {
+
+        final Calendar mToday = Calendar.getInstance();
+        final Calendar mTomorrow = Calendar.getInstance();
+        mTomorrow.add(Calendar.DAY_OF_MONTH, 1);
 
         mDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,6 +377,9 @@ public class SimpleReminderActivity extends AppCompatActivity {
                 return true;
             case R.id.action_add_extras:
                 saveSimpleReminder();
+                Intent addExtrasIntent = new Intent(this, ReminderExtrasActivity.class);
+                addExtrasIntent.putExtra(ReminderExtrasActivity.ARG_REMINDER, mNewReminder);
+                startActivityForResult(addExtrasIntent, INTENT_ADD_EXTRAS_REQUEST_CODE);
                 //TODO: startActivityForResult() a AddExtrasActivity() and get extras.
                 //Recover them in onActivityResult() bundle
                 //Also restore reminder data into form
@@ -384,11 +392,17 @@ public class SimpleReminderActivity extends AppCompatActivity {
                     try {
                         dao.insertSimpleReminder(mNewReminder);
 
-
-                        SnackbarUtil.showSuccessSnackbar(mRepeatContainer, R.string.reminder_saved_successfully);
+                        BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
+                                finish();
+                            }
+                        };
+                        SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.reminder_saved_successfully, SnackbarUtil.SnackbarDuration.SHORT, callback);
 
                     } catch (CouldNotInsertDataException e) {
-                        SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_problem_inserting_reminder);
+                        SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_inserting_reminder, null, null);
                     }
                 }
                 break;
@@ -396,43 +410,69 @@ public class SimpleReminderActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == INTENT_ADD_EXTRAS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if(data.hasExtra(ReminderExtrasActivity.ARG_REMINDER)){
+                mNewReminder = (SimpleReminder) data.getSerializableExtra(ReminderExtrasActivity.ARG_REMINDER);
+                restoreSimpleReminder();
+                //TODO: Maybe change add extras menu icon with amount of extras added?
+
+            }
+            else {
+                BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        finish();
+                    }
+                };
+                SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_generic_reminder, SnackbarUtil.SnackbarDuration.SHORT, callback);
+
+            }
+
+        }
+    }
+
     private boolean valuesAreGood() {
         String title = mTitle.getText().toString();
         if(title.trim().isEmpty()) {
-            SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_title);
+            SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_title, null, null);
             return false;
         }
 
         if(mDateCal == null) {
-            SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_date);
+            SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_date, null, null);
             return false;
         }
         if(mTimeTime == null) {
-            SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_time);
+            SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_time, null, null);
             mTime.requestFocus();
             return false;
         }
 
         if(ReminderRepeatType.values()[mRepeatType.getSelectedItemPosition()] != ReminderRepeatType.DISABLED) {
             if(mRepeatInterval.getText().toString().isEmpty()){
-                SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_repeat_interval);
+                SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_interval, null, null);
                 return false;
             }
 
             if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.FOR_X_EVENTS) {
                 if(mRepeatEndForXEvents.getText().toString().isEmpty()){
-                    SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_repeat_events);
+                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_events, null, null);
                     return false;
                 }
             }
 
             if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.UNTIL_DATE) {
                 if(mRepeatUntilCal == null) {
-                    SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_invalid_repeat_until_date);
+                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_until_date, null, null);
                     return false;
                 }
                 if(mRepeatUntilCal.compareTo(mDateCal) <= 0) {
-                    SnackbarUtil.showErrorSnackbar(mRepeatContainer, R.string.error_repeat_until_date_after_reminder_date);
+                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_repeat_until_date_after_reminder_date, null, null);
                     return false;
                 }
             }
