@@ -37,6 +37,11 @@
     <color name="swipe_refresh_yellow">#fdd835</color>
 
 
+    <color name="snackbar_error_background">#e53935</color>
+    <color name="snackbar_notice_background">#fdd835</color>
+    <color name="snackbar_success_background">#43A047</color>
+
+
     /* Home Activity */
 
 </resources>
