@@ -4,8 +4,11 @@ THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT
 
 
 ## About the app
-Android app, where one can add metadata-filled reminders based on time or location
-Keep track of stuff you need to get done by adding reminders which trigger based on either a set time or a specific location. YOu just got home? Remember to take out the trash!.. or something. This app will be available at the Google Play Store, soon!
+The android reminder app for power-users, set any kind of reminder. Supports all kinds of reminders, Daily, Weekly, Monthly and yearly reminders? Yes. Location-based reminders? Yes. Geofences? Yes. Timed reminders? Yes. Reminders ending at a specific date? Yes. Reminders which repeat a set amount of times? Yes.
+
+Want to attach data to ur reminders? You can. You can attach images, record audios, insert links and add text to your reminders!
+
+This app will be available at the Google Play Store, soon!
 
 <!---
 <a target="_blank" href='https://play.google.com/store/apps/details?id=ve.com.abicelis.pingwidget&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="240px"/></a>
@@ -32,15 +35,13 @@ This app features:
 
 This Project uses external SDK's
 
-
-* [Butterknife](https://github.com/JakeWharton/butterknife) - Bind Android views and callbacks to fields and methods.
 * [Preference-v7-fix](https://github.com/Gericop/Android-Support-Preference-V7-Fix) - Fixes for preference-v7 support library
-
+* [BetterPickers](https://github.com/code-troopers/android-betterpickers) - Datepicker library by code-troopers
 
 
 ## Software used
 
-* [Android Studio 2.2.3 IDE](https://developer.android.com/studio/index.html) - IDE
+* [Android Studio 2.3 IDE](https://developer.android.com/studio/index.html) - IDE
 
 ## Authors
 
