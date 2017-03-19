@@ -98,15 +98,16 @@
 
 
     /* Generic error/status toast/snackbar messages */
-    <string name="error_problem_inserting_reminder">There was a problem inserting the Reminder into the database</string>
-    <string name="error_invalid_title">Please enter a valid Title</string>
-    <string name="error_invalid_date">Please enter a valid Date</string>
-    <string name="error_invalid_time">Please enter a valid Time</string>
-    <string name="error_invalid_repeat_interval">Please enter a valid repeat Interval</string>
-    <string name="error_invalid_repeat_events">Please enter a valid repeat Event number</string>
-    <string name="error_invalid_repeat_until_date">Please enter a valid Repeat Until date</string>
-    <string name="error_repeat_until_date_after_reminder_date">Repeat Until date must be after Reminder date</string>
-    <string name="reminder_saved_successfully">The Reminder was saved successfully</string>
+    <string name="error_problem_inserting_reminder">There was a problem inserting the reminder into the database</string>
+    <string name="error_invalid_title">Please enter a valid title</string>
+    <string name="error_invalid_date">Please enter a valid date</string>
+    <string name="error_invalid_time">Please enter a valid time</string>
+    <string name="error_invalid_repeat_interval">Please enter a valid repeat interval</string>
+    <string name="error_invalid_repeat_events">Please enter a valid repeat event number</string>
+    <string name="error_invalid_repeat_until_date">Please enter a valid repeat until date</string>
+    <string name="error_repeat_until_date_after_reminder_date">Repeat until date must be after reminder date</string>
+    <string name="reminder_saved_successfully">The reminder was saved successfully</string>
+    <string name="error_generic_reminder">There was a problem with the reminder data, please report this error</string>
 
 
 
