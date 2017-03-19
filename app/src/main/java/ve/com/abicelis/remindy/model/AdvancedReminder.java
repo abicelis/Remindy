@@ -51,8 +51,7 @@ public class AdvancedReminder extends Reminder {
         this.timeType = timeType;
         this.startTime = startTime;
         this.endTime = endTime;
-
-
+        this.weekdays = weekdays;
     }
 
 
