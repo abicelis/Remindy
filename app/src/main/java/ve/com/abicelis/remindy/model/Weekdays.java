@@ -95,8 +95,6 @@ public class Weekdays {
                 intValue = intValue % divisor;
             }
         }
-        boolean a = value.get(3);
-
     }
 
     public int getIntValue() {
