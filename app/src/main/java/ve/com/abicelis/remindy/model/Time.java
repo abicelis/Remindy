@@ -1,5 +1,6 @@
 package ve.com.abicelis.remindy.model;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.Locale;
 
@@ -13,7 +14,7 @@ import ve.com.abicelis.remindy.enums.TimeFormat;
 /**
  * Note: Internally handles time always as 24H time.
  */
-public class Time implements Comparable<Time> {
+public class Time implements Comparable<Time>, Serializable {
     private int hour;
     private int minute;
     private TimeFormat displayTimeFormat = TimeFormat.FORMAT_24H;
