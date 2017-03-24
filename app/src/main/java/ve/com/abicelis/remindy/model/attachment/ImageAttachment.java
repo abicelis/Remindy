@@ -1,29 +1,29 @@
-package ve.com.abicelis.remindy.model;
+package ve.com.abicelis.remindy.model.attachment;
 
-import ve.com.abicelis.remindy.enums.ReminderExtraType;
+import ve.com.abicelis.remindy.enums.AttachmentType;
 
 /**
  * Created by abice on 3/3/2017.
  */
 
-public class ReminderExtraImage extends ReminderExtra {
+public class ImageAttachment extends Attachment {
 
     private byte[] thumbnail;
     private String fullImagePath;
 
-    public ReminderExtraImage(byte[] thumbnail, String fullImagePath) {
+    public ImageAttachment(byte[] thumbnail, String fullImagePath) {
         this.thumbnail = thumbnail;
         this.fullImagePath = fullImagePath;
     }
-    public ReminderExtraImage(int id, int reminderId, byte[] thumbnail, String fullImagePath) {
+    public ImageAttachment(int id, int reminderId, byte[] thumbnail, String fullImagePath) {
         super(id, reminderId);
         this.thumbnail = thumbnail;
         this.fullImagePath = fullImagePath;
     }
 
     @Override
-    public ReminderExtraType getType() {
-        return ReminderExtraType.IMAGE;
+    public AttachmentType getType() {
+        return AttachmentType.IMAGE;
     }
 
 

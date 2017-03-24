@@ -1,29 +1,29 @@
-package ve.com.abicelis.remindy.model;
+package ve.com.abicelis.remindy.model.attachment;
 
 import java.util.regex.Pattern;
 
-import ve.com.abicelis.remindy.enums.ReminderExtraType;
+import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.exception.MalformedLinkException;
 
 /**
  * Created by abice on 3/3/2017.
  */
 
-public class ReminderExtraLink extends ReminderExtra {
+public class LinkAttachment extends Attachment {
 
     private String link;
 
-    public ReminderExtraLink(String link) {
+    public LinkAttachment(String link) {
         this.link = link;
     }
-    public ReminderExtraLink(int id, int reminderId, String link) {
+    public LinkAttachment(int id, int reminderId, String link) {
         super(id, reminderId);
         this.link = link;
     }
 
     @Override
-    public ReminderExtraType getType() {
-        return ReminderExtraType.LINK;
+    public AttachmentType getType() {
+        return AttachmentType.LINK;
     }
 
 

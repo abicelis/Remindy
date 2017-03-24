@@ -1,4 +1,4 @@
-package ve.com.abicelis.remindy.model;
+package ve.com.abicelis.remindy.model.reminder;
 
 import java.util.Comparator;
 
@@ -6,9 +6,9 @@ import java.util.Comparator;
  * Created by abice on 11/3/2017.
  */
 
-public class AdvancedReminderByPlaceComparator implements Comparator<AdvancedReminder> {
+public class LocationBasedReminderByPlaceComparator implements Comparator<LocationBasedReminder> {
     @Override
-    public int compare(AdvancedReminder o1, AdvancedReminder o2) {
+    public int compare(LocationBasedReminder o1, LocationBasedReminder o2) {
         if(o1.getPlace() == null)
             return -1;
         if(o2.getPlace() == null)

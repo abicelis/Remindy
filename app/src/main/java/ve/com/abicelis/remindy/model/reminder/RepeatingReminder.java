@@ -1,4 +1,4 @@
-package ve.com.abicelis.remindy.model;
+package ve.com.abicelis.remindy.model.reminder;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,17 +6,16 @@ import android.support.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import ve.com.abicelis.remindy.enums.ReminderCategory;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
-import ve.com.abicelis.remindy.enums.ReminderStatus;
 import ve.com.abicelis.remindy.enums.ReminderType;
+import ve.com.abicelis.remindy.model.Time;
 
 /**
  * Created by abice on 3/3/2017.
  */
 
-public class SimpleReminder extends Reminder implements Serializable {
+public class RepeatingReminder extends Reminder implements Serializable {
 
     private Calendar date;
     private Time time;
@@ -27,22 +26,20 @@ public class SimpleReminder extends Reminder implements Serializable {
     private Calendar repeatEndDate;
 
 
-    public SimpleReminder(@NonNull ReminderStatus status, @NonNull String title, @NonNull String description, @NonNull ReminderCategory category,
-                          @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
-                          @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
-        super(status, title, description, category);
+    public RepeatingReminder(@NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
+                             @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
         init(date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
     }
 
-    public SimpleReminder(@NonNull int id, @NonNull ReminderStatus status, @NonNull String title, @NonNull String description, @NonNull ReminderCategory category,
-                          @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
-                          @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
-        super(id, status, title, description, category);
+    public RepeatingReminder(int id, @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
+                             @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
+        super(id);
         init(date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
+
     }
 
-    private void init(Calendar date, Time time, ReminderRepeatType repeatType, int repeatInterval,
-                      ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, Calendar repeatEndDate) {
+    private void init(@NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
+                      @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
         this.date = date;
         this.time = time;
         this.repeatType = repeatType;
@@ -55,7 +52,7 @@ public class SimpleReminder extends Reminder implements Serializable {
 
     @Override
     public ReminderType getType() {
-        return ReminderType.ADVANCED;
+        return ReminderType.REPEATING;
     }
 
 
@@ -113,18 +110,15 @@ public class SimpleReminder extends Reminder implements Serializable {
 
     @Override
     public String toString() {
-        String                      res = "ID=" + id + "\r\n title=" + title + "\r\n description=" + description + "\r\n";
-
-        if(status != null)          res += " status=" + status.name() + "\r\n";
-        if(category != null)        res +=  " category=" + category.name() + "\r\n";
-        if(date != null)            res +=  " date=" + date.toString() + "\r\n";
-        if(time != null)            res +=  " time=" + time.toString() + "\r\n";
-        if(repeatType != null)      res +=  " repeatType=" + repeatType.toString() + "\r\n";
-                                    res +=  " repeatInterval=" + repeatInterval + "\r\n";
-        if(repeatEndType != null)   res +=  " repeatEndType=" + repeatEndType.toString() + "\r\n";
-                                    res +=  " repeatEndNumberOfEvents=" + repeatEndNumberOfEvents + "\r\n";
-        if(repeatEndDate != null)   res +=  " repeatEndDate=" + repeatEndDate.toString() + "\r\n";
-        if(extras != null)          res +=  " #extras=" + extras.size();
+        String                      res = "Reminder ID=" + getId() + "\r\n";
+                                    res += " Type=" + getType().name() + "\r\n";
+        if(date != null)            res +=  " Date=" + date.toString() + "\r\n";
+        if(time != null)            res +=  " Time=" + time.toString() + "\r\n";
+        if(repeatType != null)      res +=  " RepeatType=" + repeatType.toString() + "\r\n";
+                                    res +=  " RepeatInterval=" + repeatInterval + "\r\n";
+        if(repeatEndType != null)   res +=  " RepeatEndType=" + repeatEndType.toString() + "\r\n";
+                                    res +=  " RepeatEndNumberOfEvents=" + repeatEndNumberOfEvents + "\r\n";
+        if(repeatEndDate != null)   res +=  " RepeatEndDate=" + repeatEndDate.toString();
         return res;
     }
 }
