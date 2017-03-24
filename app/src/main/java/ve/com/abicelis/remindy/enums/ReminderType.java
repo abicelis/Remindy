@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public enum ReminderType implements Serializable {
-    ADVANCED,
-    SIMPLE,
-    HEADER;
+    ONE_TIME,
+    REPEATING,
+    LOCATION_BASED;
 }
