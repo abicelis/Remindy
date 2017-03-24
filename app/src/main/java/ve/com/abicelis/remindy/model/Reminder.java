@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +15,16 @@ import ve.com.abicelis.remindy.enums.ReminderType;
  * Created by abice on 3/3/2017.
  */
 
-public abstract class Reminder {
+public abstract class Reminder implements Serializable {
 
     int id;
     ReminderStatus status;
     String title;
     String description;
     ReminderCategory category;
-    List<ReminderExtra> extras;
+    ArrayList<ReminderExtra> extras;
 
+    public Reminder() {/*Used only by ReminderHeader*/}
 
     public Reminder(@NonNull ReminderStatus status, @NonNull String title, @Nullable String description, @NonNull ReminderCategory category) {
         this.status = status;
@@ -81,10 +83,10 @@ public abstract class Reminder {
     }
 
 
-    public List<ReminderExtra> getExtras() {
+    public ArrayList<ReminderExtra> getExtras() {
         return extras;
     }
-    public void setExtras(List<ReminderExtra> extras) {
+    public void setExtras(ArrayList<ReminderExtra> extras) {
         this.extras = extras;
     }
     public void addExtra(ReminderExtra extra) {

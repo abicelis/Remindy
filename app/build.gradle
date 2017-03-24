@@ -35,4 +35,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.2.0'
     compile 'com.andkulikov:transitionseverywhere:1.7.0'
     compile 'com.android.support:recyclerview-v7:25.2.0'
+    compile 'com.github.clans:fab:1.6.4'
+
 }

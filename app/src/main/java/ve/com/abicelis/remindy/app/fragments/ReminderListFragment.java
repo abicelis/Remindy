@@ -38,11 +38,11 @@ public class ReminderListFragment extends Fragment {
     private RemindyDAO mDao;
 
     //UI
-    RecyclerView mRecyclerView;
-    LinearLayoutManager mLayoutManager;
-    ReminderAdapter mAdapter;
-    SwipeRefreshLayout mSwipeRefresh;
-    RelativeLayout mNoItemsContainer;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private ReminderAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private RelativeLayout mNoItemsContainer;
 
 
     @Override

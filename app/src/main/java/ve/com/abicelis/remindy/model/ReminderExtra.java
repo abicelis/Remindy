@@ -1,12 +1,16 @@
 package ve.com.abicelis.remindy.model;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 import ve.com.abicelis.remindy.enums.ReminderExtraType;
 
 /**
  * Created by abice on 3/3/2017.
  */
 
-public abstract class ReminderExtra {
+public abstract class ReminderExtra implements Serializable {
     private int id;
     private int reminderId;
 

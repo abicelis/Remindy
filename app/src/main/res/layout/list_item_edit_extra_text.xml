@@ -23,6 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/item_extra_text_content_hint"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         />
 </LinearLayout>

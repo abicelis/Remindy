@@ -113,18 +113,18 @@ public class SimpleReminder extends Reminder implements Serializable {
 
     @Override
     public String toString() {
-        return  "ID=" + id + "\r\n" +
-                " status=" + status.name() + "\r\n" +
-                " title=" + title + "\r\n" +
-                " description=" + description + "\r\n" +
-                " category=" + category.name() + "\r\n" +
-                " date=" + date + "\r\n" +
-                " time=" + time + "\r\n" +
-                " repeatType=" + repeatType.toString() + "\r\n" +
-                " repeatInterval=" + repeatInterval + "\r\n" +
-                " repeatEndType=" + repeatEndType.toString() + "\r\n" +
-                " repeatEndNumberOfEvents=" + repeatEndNumberOfEvents + "\r\n" +
-                " repeatEndDate=" + repeatEndDate + "\r\n" +
-                " extras=" + extras;
+        String                      res = "ID=" + id + "\r\n title=" + title + "\r\n description=" + description + "\r\n";
+
+        if(status != null)          res += " status=" + status.name() + "\r\n";
+        if(category != null)        res +=  " category=" + category.name() + "\r\n";
+        if(date != null)            res +=  " date=" + date.toString() + "\r\n";
+        if(time != null)            res +=  " time=" + time.toString() + "\r\n";
+        if(repeatType != null)      res +=  " repeatType=" + repeatType.toString() + "\r\n";
+                                    res +=  " repeatInterval=" + repeatInterval + "\r\n";
+        if(repeatEndType != null)   res +=  " repeatEndType=" + repeatEndType.toString() + "\r\n";
+                                    res +=  " repeatEndNumberOfEvents=" + repeatEndNumberOfEvents + "\r\n";
+        if(repeatEndDate != null)   res +=  " repeatEndDate=" + repeatEndDate.toString() + "\r\n";
+        if(extras != null)          res +=  " #extras=" + extras.size();
+        return res;
     }
 }

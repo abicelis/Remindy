@@ -30,6 +30,7 @@ import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFra
 import com.transitionseverywhere.TransitionManager;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -40,7 +41,9 @@ import ve.com.abicelis.remindy.enums.ReminderCategory;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
 import ve.com.abicelis.remindy.enums.ReminderStatus;
+import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
+import ve.com.abicelis.remindy.model.ReminderExtra;
 import ve.com.abicelis.remindy.model.SimpleReminder;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.util.InputFilterMinMax;
@@ -53,7 +56,7 @@ import ve.com.abicelis.remindy.util.SnackbarUtil;
 public class SimpleReminderActivity extends AppCompatActivity {
 
     //CONST
-    public static final int INTENT_ADD_EXTRAS_REQUEST_CODE = 293;
+    public static final int INTENT_EDIT_EXTRAS_REQUEST_CODE = 293;
     public static final String ARG_SIMPLE_REMINDER = "ARG_SIMPLE_REMINDER";
     public static final String KEY_INSTANCE_STATE_SIMPLE_REMINDER = "KEY_INSTANCE_STATE_SIMPLE_REMINDER";
 
@@ -65,7 +68,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
     Calendar mDateCal;
     Time mTimeTime;
     Calendar mRepeatUntilCal;
-    SimpleReminder mNewReminder = null;
+    SimpleReminder mReminder = null;
 
 
     //UI
@@ -126,15 +129,16 @@ public class SimpleReminderActivity extends AppCompatActivity {
         //If editing a reminder, then intent contains a SimpleReminder extra with key ARG_SIMPLE_REMINDER
         //Get the reminder and restore its data
         if(getIntent().hasExtra(ARG_SIMPLE_REMINDER)) {
-            mNewReminder = (SimpleReminder) getIntent().getSerializableExtra(ARG_SIMPLE_REMINDER);
+            mReminder = (SimpleReminder) getIntent().getSerializableExtra(ARG_SIMPLE_REMINDER);
             restoreSimpleReminder();
         }
 
         //If a state was saved (such as when rotating the device), restore the state!
         if(savedInstanceState != null && savedInstanceState.containsKey(KEY_INSTANCE_STATE_SIMPLE_REMINDER)) {
-            mNewReminder = (SimpleReminder) savedInstanceState.getSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER);
+            mReminder = (SimpleReminder) savedInstanceState.getSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER);
             restoreSimpleReminder();
         }
+
     }
 
     @Override
@@ -143,7 +147,8 @@ public class SimpleReminderActivity extends AppCompatActivity {
 
         //Save the state before killing the activity (maybe the device rotated?)
         saveSimpleReminder();
-        outState.putSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER, mNewReminder);
+
+        outState.putSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER, mReminder);
     }
 
     @Override
@@ -377,20 +382,17 @@ public class SimpleReminderActivity extends AppCompatActivity {
                 return true;
             case R.id.action_add_extras:
                 saveSimpleReminder();
-                Intent addExtrasIntent = new Intent(this, ReminderExtrasActivity.class);
-                addExtrasIntent.putExtra(ReminderExtrasActivity.ARG_REMINDER, mNewReminder);
-                startActivityForResult(addExtrasIntent, INTENT_ADD_EXTRAS_REQUEST_CODE);
-                //TODO: startActivityForResult() a AddExtrasActivity() and get extras.
-                //Recover them in onActivityResult() bundle
-                //Also restore reminder data into form
-                //Add a little number on extras menu icon to indicate extras have been added?
+                Intent editExtrasIntent = new Intent(this, ReminderExtrasActivity.class);
+                if(mReminder.getExtras().size() > 0)
+                    editExtrasIntent.putExtra(ReminderExtrasActivity.ARG_EXTRAS, mReminder.getExtras());
+                startActivityForResult(editExtrasIntent, INTENT_EDIT_EXTRAS_REQUEST_CODE);
                 break;
             case R.id.action_save:
                 if(valuesAreGood()) {
                     saveSimpleReminder();
                     RemindyDAO dao = new RemindyDAO(this);
                     try {
-                        dao.insertSimpleReminder(mNewReminder);
+                        dao.insertSimpleReminder(mReminder);
 
                         BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                             @Override
@@ -414,25 +416,13 @@ public class SimpleReminderActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == INTENT_ADD_EXTRAS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if(data.hasExtra(ReminderExtrasActivity.ARG_REMINDER)){
-                mNewReminder = (SimpleReminder) data.getSerializableExtra(ReminderExtrasActivity.ARG_REMINDER);
+        if(requestCode == INTENT_EDIT_EXTRAS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if(data.hasExtra(ReminderExtrasActivity.ARG_EXTRAS)){
+                ArrayList<ReminderExtra> extras = ( ArrayList<ReminderExtra>) data.getExtras().getSerializable(ReminderExtrasActivity.ARG_EXTRAS);
+                mReminder.setExtras(extras);
                 restoreSimpleReminder();
                 //TODO: Maybe change add extras menu icon with amount of extras added?
-
             }
-            else {
-                BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-                        finish();
-                    }
-                };
-                SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_generic_reminder, SnackbarUtil.SnackbarDuration.SHORT, callback);
-
-            }
-
         }
     }
 
@@ -502,49 +492,56 @@ public class SimpleReminderActivity extends AppCompatActivity {
             if(repeatEndType != ReminderRepeatEndType.UNTIL_DATE)
                 mRepeatUntilCal = null;
         }
-        mNewReminder = new SimpleReminder(ReminderStatus.ACTIVE, title, description, category, mDateCal, mTimeTime, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, mRepeatUntilCal);
+
+
+        ArrayList<ReminderExtra> extras = new ArrayList<>();
+        if(mReminder != null)
+            extras = mReminder.getExtras();
+
+        mReminder = new SimpleReminder(ReminderStatus.ACTIVE, title, description, category, mDateCal, mTimeTime, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, mRepeatUntilCal);
+        mReminder.setExtras(extras);
     }
 
     private void restoreSimpleReminder() {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
 
-        mTitle.setText(mNewReminder.getTitle());
-        mDescription.setText(mNewReminder.getDescription());
+        mTitle.setText(mReminder.getTitle());
+        mDescription.setText(mReminder.getDescription());
 
-        if(mNewReminder.getDate() != null) {
+        if(mReminder.getDate() != null) {
             mDateCal = Calendar.getInstance();
-            mDateCal.setTimeInMillis(mNewReminder.getDate().getTimeInMillis());
+            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
             mDate.setText(formatter.format(mDateCal.getTime()));
         }
 
-        if(mNewReminder.getTime() != null) {
-            mTime.setText(mNewReminder.getTime().toString());
-            mTimeTime = new Time(mNewReminder.getTime().getTimeInMinutes());
+        if(mReminder.getTime() != null) {
+            mTime.setText(mReminder.getTime().toString());
+            mTimeTime = new Time(mReminder.getTime().getTimeInMinutes());
         }
 
-        mCategory.setSelection(mNewReminder.getCategory().ordinal());
-        mRepeatType.setSelection(mNewReminder.getRepeatType().ordinal());
+        mCategory.setSelection(mReminder.getCategory().ordinal());
+        mRepeatType.setSelection(mReminder.getRepeatType().ordinal());
 
 
-        if(mNewReminder.getRepeatType() != ReminderRepeatType.DISABLED) {
-            mRepeatInterval.setText(String.valueOf(mNewReminder.getRepeatInterval()));
-            mRepeatEndType.setSelection(mNewReminder.getRepeatEndType().ordinal());
-            handleRepeatTypeSelected(mNewReminder.getRepeatType().ordinal());
+        if(mReminder.getRepeatType() != ReminderRepeatType.DISABLED) {
+            mRepeatInterval.setText(String.valueOf(mReminder.getRepeatInterval()));
+            mRepeatEndType.setSelection(mReminder.getRepeatEndType().ordinal());
+            handleRepeatTypeSelected(mReminder.getRepeatType().ordinal());
 
-            if(mNewReminder.getRepeatEndType() == ReminderRepeatEndType.FOR_X_EVENTS)
-                mRepeatEndForXEvents.setText(String.valueOf(mNewReminder.getRepeatEndNumberOfEvents()));
+            if(mReminder.getRepeatEndType() == ReminderRepeatEndType.FOR_X_EVENTS)
+                mRepeatEndForXEvents.setText(String.valueOf(mReminder.getRepeatEndNumberOfEvents()));
 
-            if(mNewReminder.getRepeatEndType() == ReminderRepeatEndType.UNTIL_DATE) {
-                if(mNewReminder.getRepeatEndDate() != null) {
+            if(mReminder.getRepeatEndType() == ReminderRepeatEndType.UNTIL_DATE) {
+                if(mReminder.getRepeatEndDate() != null) {
                     mRepeatUntilCal = Calendar.getInstance();
-                    mRepeatUntilCal.setTimeInMillis(mNewReminder.getRepeatEndDate().getTimeInMillis());
+                    mRepeatUntilCal.setTimeInMillis(mReminder.getRepeatEndDate().getTimeInMillis());
                     mRepeatUntilDate.setText(formatter.format(mRepeatUntilCal.getTime()));
                 }
             }
 
-            if(mNewReminder.getRepeatEndType() != ReminderRepeatEndType.FOREVER) {
-                handleRepeatEndTypeSelected(mNewReminder.getRepeatEndType().ordinal());
+            if(mReminder.getRepeatEndType() != ReminderRepeatEndType.FOREVER) {
+                handleRepeatEndTypeSelected(mReminder.getRepeatEndType().ordinal());
 
             }
 

@@ -127,6 +127,37 @@ public class RemindyDAO {
     public List<Reminder> getRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
         List<Reminder> reminders = new ArrayList<>();
 
+        //List<SimpleReminder> simpleReminders = getSimpleRemindersByStatus(reminderStatus, sortType);
+        List<AdvancedReminder> advancedReminders = getAdvancedRemindersByStatus(reminderStatus, sortType);
+
+        //TODO: KABOOM
+        //reminders.addAll(simpleReminders);
+        reminders.addAll(advancedReminders);
+
+        return reminders;
+    }
+
+
+    /**
+     * Returns a List of ADVANCED Reminders given a specific ReminderStatus and ReminderSortType
+     * The available ReminderStatus are:
+     *   - ARCHIVED.
+     *   - DONE.
+     *   - ACTIVE:
+     *          These are reminders which have an Active status, and will trigger sometime in the present or in the future
+     *          Basically, all Reminders which are *NOT* OVERDUE (See below)
+     *   - OVERDUE:
+     *          These are reminders which have an Active status, but will never trigger because of their set dates
+     *          Examples:
+     *              1. Reminder is set to end in the past: endDate < today
+     *              2. Reminder is set to end sometime in the future, but on a day of the week that have passed: Today=Tuesday, endDate=Friday but Reminder is set to trigger only Mondays.
+     *
+     * @param reminderStatus ReminderStatus enum value with which to filter Reminders.
+     * @param sortType       ReminderSortType enum value with which to sort results. By date or place
+     */
+    private List<AdvancedReminder> getAdvancedRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
+        List<AdvancedReminder> advancedReminders = new ArrayList<>();
+
         String orderByClause = null;
         switch (sortType) {
             case DATE:
@@ -155,19 +186,64 @@ public class RemindyDAO {
                 //Try to get the Extras, if there are any
                 current.setExtras(getAdvancedReminderExtras(current.getId()));
 
-                reminders.add(current);
+                advancedReminders.add(current);
             }
         } finally {
             cursor.close();
         }
 
-//        //Do sort by place if needed
-//        if (sortType == ReminderSortType.PLACE) {
-//            Collections.sort(reminders, new AdvancedReminderByPlaceComparator());
-//        }
-
-        return reminders;
+        //Do sort by place if needed
+        if (sortType == ReminderSortType.PLACE) {
+            Collections.sort(advancedReminders, new AdvancedReminderByPlaceComparator());
+        }
+        return advancedReminders;
     }
+
+    /**
+     * Returns a List of SIMPLE Reminders given a specific ReminderStatus and ReminderSortType
+     * The available ReminderStatus are:
+     *   - ARCHIVED.
+     *   - DONE.
+     *   - ACTIVE:
+     *          These are reminders which have an Active status, and will trigger sometime in the present or in the future
+     *          Basically, all Reminders which are *NOT* OVERDUE (See below)
+     *   - OVERDUE:
+     *          These are reminders which have an Active status, but will never trigger because of their set dates
+     *          Examples:
+     *              1. Reminder date is sometime in the past: date < today AND reminder.repeat = disabled
+     *              2. Reminder RepeatType!=DISABLED AND RepeatEndType==UNTIL_DATE AND repeatEndDate is in the past
+     *              3. Reminder RepeatType!=DISABLED AND RepeatEndType==FOR_X_EVENTS AND events have already passed.
+     *
+     * @param reminderStatus ReminderStatus enum value with which to filter Reminders.
+     * @param sortType       ReminderSortType enum value with which to sort results. By date only
+     */
+    private List<SimpleReminder> getSimpleRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
+        List<SimpleReminder> simpleReminders = new ArrayList<>();
+
+        String orderByClause = null;
+        if(sortType == ReminderSortType.DATE)
+            orderByClause = RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName() + " DESC";
+
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query(RemindyContract.SimpleReminderTable.TABLE_NAME, null, RemindyContract.SimpleReminderTable.COLUMN_NAME_STATUS.getName() + "=?",
+                new String[]{reminderStatus.name()}, null, null, orderByClause);
+
+        try {
+            while (cursor.moveToNext()) {
+                SimpleReminder current = getSimpleReminderFromCursor(cursor);
+
+                //Try to get the Extras, if there are any
+                current.setExtras(getSimpleReminderExtras(current.getId()));
+
+                simpleReminders.add(current);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return simpleReminders;
+    }
+
 
     /**
      * Returns a List of all the Places in the database.
@@ -212,8 +288,8 @@ public class RemindyDAO {
      * Returns a List of Extras associated to an Advanced Reminder.
      * @param reminderId The id of the Reminder, fk in AdvancedReminderExtraTable
      */
-    public List<ReminderExtra> getAdvancedReminderExtras(int reminderId) {
-        List<ReminderExtra> extras = new ArrayList<>();
+    public ArrayList<ReminderExtra> getAdvancedReminderExtras(int reminderId) {
+        ArrayList<ReminderExtra> extras = new ArrayList<>();
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.query(RemindyContract.AdvancedReminderExtraTable.TABLE_NAME, null, RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + "=?",
                         new String[]{String.valueOf(reminderId)}, null, null, null);
@@ -233,8 +309,8 @@ public class RemindyDAO {
      * Returns a List of Extras associated to a Simple Reminder.
      * @param reminderId The id of the Reminder, fk in SimpleReminderExtraTable
      */
-    public List<ReminderExtra> getSimpleReminderExtras(int reminderId) {
-        List<ReminderExtra> extras = new ArrayList<>();
+    public ArrayList<ReminderExtra> getSimpleReminderExtras(int reminderId) {
+        ArrayList<ReminderExtra> extras = new ArrayList<>();
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
         Cursor cursor = db.query(RemindyContract.SimpleReminderExtraTable.TABLE_NAME, null, RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + "=?",
                         new String[]{String.valueOf(reminderId)}, null, null, null);
@@ -725,24 +801,28 @@ public class RemindyDAO {
         String description = cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_DESCRIPTION.getName()));
         ReminderCategory category = ReminderCategory.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_CATEGORY.getName())));
 
-        Calendar date = null;
-        int dateIndex = cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName());
-        if (!cursor.getString(dateIndex).isEmpty()) {
-            date = Calendar.getInstance();
-            date.setTimeInMillis(cursor.getLong(dateIndex));
-        }
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName())));
 
         Time time = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_TIME.getName())));
         ReminderRepeatType repeatType = ReminderRepeatType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_TYPE.getName())));
-        int repeatInterval = cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName()));
-        ReminderRepeatEndType repeatEndType = ReminderRepeatEndType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName())));
-        int repeatEndNumberOfEvents = cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName()));
 
+        int repeatInterval = 0;
+        ReminderRepeatEndType repeatEndType = null;
+        int repeatEndNumberOfEvents = 0;
         Calendar repeatEndDate = null;
-        int repeatEndDateIndex = cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName());
-        if (!cursor.getString(repeatEndDateIndex).isEmpty()) {
-            repeatEndDate = Calendar.getInstance();
-            repeatEndDate.setTimeInMillis(cursor.getLong(repeatEndDateIndex));
+
+        if(repeatType != ReminderRepeatType.DISABLED) {
+            repeatInterval = cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName()));
+            repeatEndType = ReminderRepeatEndType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName())));
+
+            if(repeatEndType == ReminderRepeatEndType.FOR_X_EVENTS)
+                repeatEndNumberOfEvents = cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName()));
+
+            if(repeatEndType == ReminderRepeatEndType.UNTIL_DATE) {
+                repeatEndDate = Calendar.getInstance();
+                repeatEndDate.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName())));
+            }
         }
 
         return new SimpleReminder(id, status, title, description, category, date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);

@@ -84,9 +84,16 @@
 
 
     /* Create/Edit Extras Activity */
+    <string name="activity_reminder_extras_toolbar_title">Add Extras</string>
+    <string name="activity_reminder_on_back_saving_extras">Saving Extras&#8230;</string>
+
+    <string name="activity_reminder_extras_no_items">Add extras by clicking the + button</string>
+    <!--<string name="activity_reminder_extras_no_reminder_argument">Error processing Reminder Extras, please report this error</string>-->
+
     <string name="list_item_extras_image_tap_to_add">Tap to add an image</string>
     <string name="item_extra_text_content_hint">Enter some text</string>
     <string name="item_extra_link_content_hint">Enter a link</string>
+
 
 
 
@@ -113,7 +120,7 @@
     <string name="error_invalid_repeat_events">Please enter a valid repeat event number</string>
     <string name="error_invalid_repeat_until_date">Please enter a valid repeat until date</string>
     <string name="error_repeat_until_date_after_reminder_date">Repeat until date must be after reminder date</string>
-    <string name="reminder_saved_successfully">The reminder was saved successfully</string>
+    <string name="reminder_saved_successfully">Saving reminder&#8230;</string>
     <string name="error_generic_reminder">There was a problem with the reminder data, please report this error</string>
 
 

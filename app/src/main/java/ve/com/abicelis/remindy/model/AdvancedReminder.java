@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import ve.com.abicelis.remindy.enums.ReminderCategory;
@@ -15,7 +16,7 @@ import ve.com.abicelis.remindy.enums.ReminderType;
  * Created by abice on 3/3/2017.
  */
 
-public class AdvancedReminder extends Reminder {
+public class AdvancedReminder extends Reminder implements Serializable {
 
     private Place place;
     private ReminderDateType dateType;
@@ -121,19 +122,20 @@ public class AdvancedReminder extends Reminder {
 
     @Override
     public String toString() {
-        return  "ID=" + id + "\r\n" +
-                " status=" + status.name() + "\r\n" +
-                " title=" + title + "\r\n" +
-                " description=" + description + "\r\n" +
-                " category=" + category.name() + "\r\n" +
-                " place=" + place + "\r\n" +
-                " dateType=" + dateType + "\r\n" +
-                " startDate=" + startDate + "\r\n" +
-                " endDate=" + endDate + "\r\n" +
-                " timeType=" + timeType + "\r\n" +
-                " startTime=" + startTime + "\r\n" +
-                " endTime=" + endTime + "\r\n" +
-                " weekDays=" + weekdays.toString() + "\r\n" +
-                " extras=" + extras;
+
+        String                  res = "ID=" + id + "\r\n title=" + title + "\r\n description=" + description + "\r\n";
+        if(status != null)      res += " status=" + status.name() + "\r\n";
+        if(category != null)    res +=  " category=" + category.name() + "\r\n";
+        if(place != null)    res +=  " place=" + place.toString() + "\r\n";
+        if(dateType != null)    res +=  " dateType=" + dateType.name() + "\r\n";
+        if(startDate != null)    res +=  " startDate=" + startDate.toString() + "\r\n";
+        if(endDate != null)    res +=  " endDate=" + endDate.toString() + "\r\n";
+        if(timeType != null)    res +=  " timeType=" + timeType.name() + "\r\n";
+        if(startTime != null)    res +=  " startTime=" + startTime.toString() + "\r\n";
+        if(endTime != null)    res +=  " endTime=" + endTime.toString() + "\r\n";
+        if(weekdays != null)    res +=  " weekDays=" + weekdays.toString() + "\r\n";
+        if(extras != null)    res +=  " #extras=" + extras.size();
+
+        return res;
     }
 }
