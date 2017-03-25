@@ -12,21 +12,22 @@ import ve.com.abicelis.remindy.R;
  * Created by abice on 3/3/2017.
  */
 
-public enum TaskCategory {
-    BUSINESS(R.string.task_category_business),
-    PERSONAL(R.string.task_category_personal);
+public enum TaskSortType {
+    DATE(R.string.task_sort_type_date),
+    PLACE(R.string.task_sort_type_place);
 
-    private @StringRes int friendlyNameRes;
+    private @StringRes
+    int friendlyNameRes;
 
-    TaskCategory(@StringRes int friendlyNameRes) {
+    TaskSortType(@StringRes int friendlyNameRes) {
         this.friendlyNameRes = friendlyNameRes;
 
     }
 
     public static List<String> getFriendlyValues(Context context) {
         List<String> friendlyValues = new ArrayList<>();
-        for (TaskCategory tc : values()) {
-            friendlyValues.add(context.getResources().getString(tc.friendlyNameRes));
+        for (TaskSortType tst : values()) {
+            friendlyValues.add(context.getResources().getString(tst.friendlyNameRes));
         }
         return friendlyValues;
     }
