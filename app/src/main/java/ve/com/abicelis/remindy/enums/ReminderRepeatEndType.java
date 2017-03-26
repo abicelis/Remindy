@@ -25,6 +25,10 @@ public enum ReminderRepeatEndType {
 
     }
 
+    public int getFriendlyNameRes() {
+        return friendlyNameRes;
+    }
+
     public static List<String> getFriendlyValues(Context context) {
         List<String> friendlyValues = new ArrayList<>();
         for (ReminderRepeatEndType rc : values()) {

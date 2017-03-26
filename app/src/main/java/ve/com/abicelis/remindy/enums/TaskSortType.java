@@ -14,7 +14,7 @@ import ve.com.abicelis.remindy.R;
 
 public enum TaskSortType {
     DATE(R.string.task_sort_type_date),
-    PLACE(R.string.task_sort_type_place);
+    PLACE(R.string.task_sort_type_location);
 
     private @StringRes
     int friendlyNameRes;

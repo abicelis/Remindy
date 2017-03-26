@@ -1,6 +1,7 @@
 package ve.com.abicelis.remindy.enums;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
 import java.util.ArrayList;
@@ -13,14 +14,23 @@ import ve.com.abicelis.remindy.R;
  */
 
 public enum TaskCategory {
-    BUSINESS(R.string.task_category_business),
-    PERSONAL(R.string.task_category_personal);
+    BUSINESS(R.string.task_category_business, R.drawable.icon_category_business),
+    PERSONAL(R.string.task_category_personal, R.drawable.icon_category_personal);
 
     private @StringRes int friendlyNameRes;
+    private @DrawableRes int iconRes;
 
-    TaskCategory(@StringRes int friendlyNameRes) {
+    TaskCategory(@StringRes int friendlyNameRes, @DrawableRes int iconRes) {
         this.friendlyNameRes = friendlyNameRes;
+        this.iconRes = iconRes;
 
+    }
+
+    public int getFriendlyNameRes() {
+        return friendlyNameRes;
+    }
+    public int getIconRes() {
+        return iconRes;
     }
 
     public static List<String> getFriendlyValues(Context context) {

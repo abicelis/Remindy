@@ -13,7 +13,6 @@ import ve.com.abicelis.remindy.R;
  */
 
 public enum ReminderRepeatType {
-    DISABLED(R.string.reminder_repeat_type_disabled),
     DAILY(R.string.reminder_repeat_type_daily),
     WEEKLY(R.string.reminder_repeat_type_weekly),
     MONTHLY(R.string.reminder_repeat_type_monthly),
@@ -25,6 +24,10 @@ public enum ReminderRepeatType {
     ReminderRepeatType(@StringRes int friendlyNameRes) {
         this.friendlyNameRes = friendlyNameRes;
 
+    }
+
+    public int getFriendlyNameRes() {
+        return friendlyNameRes;
     }
 
     public static List<String> getFriendlyValues(Context context) {
