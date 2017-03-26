@@ -6,29 +6,29 @@ import android.view.View;
 import android.widget.TextView;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.adapters.ReminderAdapter;
+import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 
 /**
  * Created by abice on 14/3/2017.
  */
 
-public class ReminderHeaderViewHolder extends RecyclerView.ViewHolder {
+public class TaskHeaderViewHolder extends RecyclerView.ViewHolder {
 
     //UI
     private TextView mHeaderTitle;
 
     //DATA
-    private ReminderAdapter mAdapter;
+    private TaskAdapter mAdapter;
     private Activity mActivity;
     private int mPosition;
 
-    public ReminderHeaderViewHolder(View itemView) {
+    public TaskHeaderViewHolder(View itemView) {
         super(itemView);
 
-        mHeaderTitle = (TextView) itemView.findViewById(R.id.item_reminder_header_title);
+        mHeaderTitle = (TextView) itemView.findViewById(R.id.item_task_header_title);
     }
 
-    public void setData(ReminderAdapter adapter, Activity activity, String title, int position) {
+    public void setData(TaskAdapter adapter, Activity activity, String title, int position) {
         mAdapter = adapter;
         mActivity = activity;
         mPosition = position;

@@ -3,7 +3,6 @@ package ve.com.abicelis.remindy.app.holders;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -11,8 +10,7 @@ import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.ReminderExtraAdapter;
-import ve.com.abicelis.remindy.model.ReminderExtraAudio;
-import ve.com.abicelis.remindy.model.ReminderExtraText;
+import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 
 /**
  * Created by abice on 13/3/2017.
@@ -32,7 +30,7 @@ public class EditExtraAudioViewHolder extends RecyclerView.ViewHolder implements
 
 
     //DATA
-    private ReminderExtraAudio mCurrent;
+    private AudioAttachment mCurrent;
     private int mPosition;
 
     public EditExtraAudioViewHolder(View itemView) {
@@ -46,7 +44,7 @@ public class EditExtraAudioViewHolder extends RecyclerView.ViewHolder implements
     }
 
 
-    public void setData(ReminderExtraAdapter adapter, Activity activity, ReminderExtraAudio current, int position) {
+    public void setData(ReminderExtraAdapter adapter, Activity activity, AudioAttachment current, int position) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -66,10 +64,10 @@ public class EditExtraAudioViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_extra_audio_rec:
-                Toast.makeText(mActivity, "ReminderExtraAudio REC clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "AudioAttachment REC clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.item_extra_audio_play_pause:
-                Toast.makeText(mActivity, "ReminderExtraAudio PLAY/PAUSE clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "AudioAttachment PLAY/PAUSE clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
                 break;
         }
     }

@@ -10,13 +10,13 @@ import java.util.List;
  * Created by abice on 30/1/2017.
  */
 
-public class RemindersViewPagerAdapter extends FragmentStatePagerAdapter {
+public class TasksViewPagerAdapter extends FragmentStatePagerAdapter {
 
     //DATA
     private List<String> mTitleList;
     private List<Fragment> mFragmentList;
 
-    public RemindersViewPagerAdapter(FragmentManager fm, List<String> titleList, List<Fragment> fragmentList) {
+    public TasksViewPagerAdapter(FragmentManager fm, List<String> titleList, List<Fragment> fragmentList) {
         super(fm);
         mTitleList = titleList;
         mFragmentList = fragmentList;

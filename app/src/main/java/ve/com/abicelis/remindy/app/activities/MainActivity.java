@@ -28,17 +28,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Date;
-import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
-import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.ReminderSortType;
-import ve.com.abicelis.remindy.enums.ReminderStatus;
-import ve.com.abicelis.remindy.model.Place;
-import ve.com.abicelis.remindy.model.Reminder;
-import ve.com.abicelis.remindy.model.ReminderExtra;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, AddressResultReceiver.AddressReceiverListener {
@@ -98,21 +91,21 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-        RemindyDAO mDao = new RemindyDAO(getApplicationContext());
-
-        List<Place> places = mDao.getPlaces();
-        Toast.makeText(this, "Places saved in db = " + places.size(), Toast.LENGTH_SHORT).show();
-
-        List<Reminder> reminders = mDao.getRemindersByStatus(ReminderStatus.ACTIVE, ReminderSortType.DATE);
-        Toast.makeText(this, "Reminders saved in db = " + reminders.size(), Toast.LENGTH_SHORT).show();
-
-        try {
-            List<ReminderExtra> reminderExtras = mDao.getAdvancedReminderExtras(reminders.get(0).getId());
-            Toast.makeText(this, "There are " + reminderExtras.size() + " ReminderExtras for reminder named " + reminders.get(0).getTitle(), Toast.LENGTH_SHORT).show();
-        }catch (Exception e) {
-            Toast.makeText(this, "Error catching extras!", Toast.LENGTH_SHORT).show();
-
-        }
+//        RemindyDAO mDao = new RemindyDAO(getApplicationContext());
+//
+//        List<Place> places = mDao.getPlaces();
+//        Toast.makeText(this, "Places saved in db = " + places.size(), Toast.LENGTH_SHORT).show();
+//
+//        List<Task> tasks = mDao.getRemindersByStatus(TaskStatus.ACTIVE, TaskSortType.DATE);
+//        Toast.makeText(this, "Reminders saved in db = " + tasks.size(), Toast.LENGTH_SHORT).show();
+//
+//        try {
+//            List<Attachment> attachments = mDao.getAdvancedReminderExtras(tasks.get(0).getId());
+//            Toast.makeText(this, "There are " + attachments.size() + " ReminderExtras for reminder named " + tasks.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+//        }catch (Exception e) {
+//            Toast.makeText(this, "Error catching extras!", Toast.LENGTH_SHORT).show();
+//
+//        }
 
 
         // Create an instance of GoogleAPIClient.
@@ -176,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
@@ -188,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_home_settings) {
             return true;
         }
 

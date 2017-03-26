@@ -18,29 +18,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.adapters.ReminderAdapter;
+import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.ReminderSortType;
-import ve.com.abicelis.remindy.enums.ReminderStatus;
-import ve.com.abicelis.remindy.model.Reminder;
+import ve.com.abicelis.remindy.enums.TaskSortType;
+import ve.com.abicelis.remindy.enums.TaskStatus;
+import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
+import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.util.SnackbarUtil;
+import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
 /**
  * Created by abice on 13/3/2017.
  */
 
-public class ReminderListFragment extends Fragment {
+public class TaskListFragment extends Fragment {
 
-    public static final String REMINDER_TO_DISPLAY = "REMINDER_TO_DISPLAY";
+    public static final String TASK_TYPE_TO_DISPLAY = "TASK_TYPE_TO_DISPLAY";
 
     //DATA
-    private List<Reminder> reminders = new ArrayList<>();
-    private ReminderStatus reminderTypeToDisplay;
+    private List<TaskViewModel> tasks = new ArrayList<>();
+    private TaskStatus reminderTypeToDisplay;
     private RemindyDAO mDao;
 
     //UI
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
-    private ReminderAdapter mAdapter;
+    private TaskAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefresh;
     private RelativeLayout mNoItemsContainer;
 
@@ -50,7 +53,7 @@ public class ReminderListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         try {
-            reminderTypeToDisplay = (ReminderStatus)getArguments().getSerializable(REMINDER_TO_DISPLAY);
+            reminderTypeToDisplay = (TaskStatus)getArguments().getSerializable(TASK_TYPE_TO_DISPLAY);
         }catch (NullPointerException e) {
             Toast.makeText(getActivity(), "Error! reminderTypeToDisplay == null", Toast.LENGTH_SHORT).show();
         }
@@ -81,7 +84,7 @@ public class ReminderListFragment extends Fragment {
     private void setUpRecyclerView() {
 
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mAdapter = new ReminderAdapter(getActivity(), reminders);
+        mAdapter = new TaskAdapter(getActivity(), tasks);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
         itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
 
@@ -110,8 +113,24 @@ public class ReminderListFragment extends Fragment {
 
         //Clear the list and refresh it with new data, this must be done so the mAdapter
         // doesn't lose track of the reminder list
-        reminders.clear();
-        reminders.addAll(mDao.getRemindersByStatus(reminderTypeToDisplay, ReminderSortType.DATE));
+        tasks.clear();
+
+        try {
+            switch (reminderTypeToDisplay) {
+                case UNPROGRAMMED:
+                    tasks.addAll(mDao.getUnprogrammedTasks());
+                    break;
+                case PROGRAMMED:
+                    tasks.addAll(mDao.getProgrammedTasks(TaskSortType.DATE));
+                    break;
+                case DONE:
+                    tasks.addAll(mDao.getDoneTasks(TaskSortType.DATE));
+            }
+        }catch (CouldNotGetDataException e) {
+            SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_getting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
+        }
+
+        //tasks.addAll(mDao.getRemindersByStatus(reminderTypeToDisplay, TaskSortType.DATE));
 
 //            //If a new expense was added
 //            if(newExpensesCount == oldExpensesCount+1) {

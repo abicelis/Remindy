@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,14 +36,13 @@ import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.ReminderCategory;
+import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
-import ve.com.abicelis.remindy.enums.ReminderStatus;
-import ve.com.abicelis.remindy.enums.ReminderType;
+import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
-import ve.com.abicelis.remindy.model.ReminderExtra;
-import ve.com.abicelis.remindy.model.SimpleReminder;
+import ve.com.abicelis.remindy.model.attachment.Attachment;
+import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.util.InputFilterMinMax;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
@@ -68,7 +66,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
     Calendar mDateCal;
     Time mTimeTime;
     Calendar mRepeatUntilCal;
-    SimpleReminder mReminder = null;
+    RepeatingReminder mReminder = null;
 
 
     //UI
@@ -126,16 +124,16 @@ public class SimpleReminderActivity extends AppCompatActivity {
         setupSpinners();
         setupDateAndTimePickers();
 
-        //If editing a reminder, then intent contains a SimpleReminder extra with key ARG_SIMPLE_REMINDER
+        //If editing a reminder, then intent contains a RepeatingReminder extra with key ARG_SIMPLE_REMINDER
         //Get the reminder and restore its data
         if(getIntent().hasExtra(ARG_SIMPLE_REMINDER)) {
-            mReminder = (SimpleReminder) getIntent().getSerializableExtra(ARG_SIMPLE_REMINDER);
+            mReminder = (RepeatingReminder) getIntent().getSerializableExtra(ARG_SIMPLE_REMINDER);
             restoreSimpleReminder();
         }
 
         //If a state was saved (such as when rotating the device), restore the state!
         if(savedInstanceState != null && savedInstanceState.containsKey(KEY_INSTANCE_STATE_SIMPLE_REMINDER)) {
-            mReminder = (SimpleReminder) savedInstanceState.getSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER);
+            mReminder = (RepeatingReminder) savedInstanceState.getSerializable(KEY_INSTANCE_STATE_SIMPLE_REMINDER);
             restoreSimpleReminder();
         }
 
@@ -174,7 +172,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
     }
 
     private void setupSpinners() {
-        reminderCategories = ReminderCategory.getFriendlyValues(this);
+        reminderCategories = TaskCategory.getFriendlyValues(this);
         ArrayAdapter reminderCategoryAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, reminderCategories);
         reminderCategoryAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         mCategory.setAdapter(reminderCategoryAdapter);
@@ -304,36 +302,36 @@ public class SimpleReminderActivity extends AppCompatActivity {
 //                        .setInterpolator(reminderRepeatActive ? new FastOutLinearInInterpolator() :
 //                                new FastOutLinearInInterpolator());
 
-        if(ReminderRepeatType.values()[position] != ReminderRepeatType.DISABLED && !reminderRepeatActive) {
-            TransitionManager.beginDelayedTransition(mTransitionsContainer);
-            mRepeatContainer.setVisibility(View.VISIBLE);
-            reminderRepeatActive = true;
-
-        } else if(ReminderRepeatType.values()[position] == ReminderRepeatType.DISABLED && reminderRepeatActive) {
-            TransitionManager.beginDelayedTransition(mTransitionsContainer);
-            mRepeatContainer.setVisibility(View.INVISIBLE);
-            reminderRepeatActive = false;
-        }
-
-        switch(ReminderRepeatType.values()[position]) {
-            case DAILY:
-                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_days);
-                break;
-            case WEEKLY:
-                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_weeks);
-                break;
-            case MONTHLY:
-                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_months);
-                break;
-            case YEARLY:
-                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_years);
-                break;
-        }
-
-        if(ReminderRepeatType.values()[position] != ReminderRepeatType.DISABLED) {
-            mRepeatInterval.requestFocus();
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        }
+//        if(ReminderRepeatType.values()[position] != ReminderRepeatType.DISABLED && !reminderRepeatActive) {
+//            TransitionManager.beginDelayedTransition(mTransitionsContainer);
+//            mRepeatContainer.setVisibility(View.VISIBLE);
+//            reminderRepeatActive = true;
+//
+//        } else if(ReminderRepeatType.values()[position] == ReminderRepeatType.DISABLED && reminderRepeatActive) {
+//            TransitionManager.beginDelayedTransition(mTransitionsContainer);
+//            mRepeatContainer.setVisibility(View.INVISIBLE);
+//            reminderRepeatActive = false;
+//        }
+//
+//        switch(ReminderRepeatType.values()[position]) {
+//            case DAILY:
+//                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_days);
+//                break;
+//            case WEEKLY:
+//                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_weeks);
+//                break;
+//            case MONTHLY:
+//                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_months);
+//                break;
+//            case YEARLY:
+//                mRepeatTypeTitle.setText(R.string.activity_reminder_simple_repeat_interval_years);
+//                break;
+//        }
+//
+//        if(ReminderRepeatType.values()[position] != ReminderRepeatType.DISABLED) {
+//            mRepeatInterval.requestFocus();
+//            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+//        }
 
     }
 
@@ -383,29 +381,29 @@ public class SimpleReminderActivity extends AppCompatActivity {
             case R.id.action_add_extras:
                 saveSimpleReminder();
                 Intent editExtrasIntent = new Intent(this, ReminderExtrasActivity.class);
-                if(mReminder.getExtras().size() > 0)
-                    editExtrasIntent.putExtra(ReminderExtrasActivity.ARG_EXTRAS, mReminder.getExtras());
-                startActivityForResult(editExtrasIntent, INTENT_EDIT_EXTRAS_REQUEST_CODE);
+//                if(mReminder.getAttachments().size() > 0)
+//                    editExtrasIntent.putExtra(ReminderExtrasActivity.ARG_EXTRAS, mReminder.getAttachments());
+//                startActivityForResult(editExtrasIntent, INTENT_EDIT_EXTRAS_REQUEST_CODE);
                 break;
             case R.id.action_save:
                 if(valuesAreGood()) {
                     saveSimpleReminder();
                     RemindyDAO dao = new RemindyDAO(this);
-                    try {
-                        dao.insertSimpleReminder(mReminder);
-
-                        BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                            @Override
-                            public void onDismissed(Snackbar transientBottomBar, int event) {
-                                super.onDismissed(transientBottomBar, event);
-                                finish();
-                            }
-                        };
-                        SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.reminder_saved_successfully, SnackbarUtil.SnackbarDuration.SHORT, callback);
-
-                    } catch (CouldNotInsertDataException e) {
-                        SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_inserting_reminder, null, null);
-                    }
+//                    try {
+////                        dao.insertSimpleReminder(mReminder);
+//
+//                        BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+//                            @Override
+//                            public void onDismissed(Snackbar transientBottomBar, int event) {
+//                                super.onDismissed(transientBottomBar, event);
+//                                finish();
+//                            }
+//                        };
+//                        SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.reminder_saved_successfully, SnackbarUtil.SnackbarDuration.SHORT, callback);
+//
+//                    } catch (CouldNotInsertDataException e) {
+//                        SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_inserting_reminder, null, null);
+//                    }
                 }
                 break;
         }
@@ -418,8 +416,8 @@ public class SimpleReminderActivity extends AppCompatActivity {
 
         if(requestCode == INTENT_EDIT_EXTRAS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if(data.hasExtra(ReminderExtrasActivity.ARG_EXTRAS)){
-                ArrayList<ReminderExtra> extras = ( ArrayList<ReminderExtra>) data.getExtras().getSerializable(ReminderExtrasActivity.ARG_EXTRAS);
-                mReminder.setExtras(extras);
+                ArrayList<Attachment> extras = ( ArrayList<Attachment>) data.getExtras().getSerializable(ReminderExtrasActivity.ARG_EXTRAS);
+                //mReminder.setAttachments(extras);
                 restoreSimpleReminder();
                 //TODO: Maybe change add extras menu icon with amount of extras added?
             }
@@ -443,31 +441,31 @@ public class SimpleReminderActivity extends AppCompatActivity {
             return false;
         }
 
-        if(ReminderRepeatType.values()[mRepeatType.getSelectedItemPosition()] != ReminderRepeatType.DISABLED) {
-            if(mRepeatInterval.getText().toString().isEmpty()){
-                SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_interval, null, null);
-                return false;
-            }
-
-            if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.FOR_X_EVENTS) {
-                if(mRepeatEndForXEvents.getText().toString().isEmpty()){
-                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_events, null, null);
-                    return false;
-                }
-            }
-
-            if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.UNTIL_DATE) {
-                if(mRepeatUntilCal == null) {
-                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_until_date, null, null);
-                    return false;
-                }
-                if(mRepeatUntilCal.compareTo(mDateCal) <= 0) {
-                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_repeat_until_date_after_reminder_date, null, null);
-                    return false;
-                }
-            }
-
-        }
+//        if(ReminderRepeatType.values()[mRepeatType.getSelectedItemPosition()] != ReminderRepeatType.DISABLED) {
+//            if(mRepeatInterval.getText().toString().isEmpty()){
+//                SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_interval, null, null);
+//                return false;
+//            }
+//
+//            if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.FOR_X_EVENTS) {
+//                if(mRepeatEndForXEvents.getText().toString().isEmpty()){
+//                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_events, null, null);
+//                    return false;
+//                }
+//            }
+//
+//            if(ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()] == ReminderRepeatEndType.UNTIL_DATE) {
+//                if(mRepeatUntilCal == null) {
+//                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_invalid_repeat_until_date, null, null);
+//                    return false;
+//                }
+//                if(mRepeatUntilCal.compareTo(mDateCal) <= 0) {
+//                    SnackbarUtil.showSnackbar(mRepeatContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_repeat_until_date_after_reminder_date, null, null);
+//                    return false;
+//                }
+//            }
+//
+//        }
 
         return true;
     }
@@ -475,77 +473,77 @@ public class SimpleReminderActivity extends AppCompatActivity {
     private void saveSimpleReminder() {
         String title = mTitle.getText().toString();
         String description = mDescription.getText().toString();
-        ReminderCategory category = ReminderCategory.values()[mCategory.getSelectedItemPosition()];
+        TaskCategory category = TaskCategory.values()[mCategory.getSelectedItemPosition()];
         ReminderRepeatType repeatType = ReminderRepeatType.values()[mRepeatType.getSelectedItemPosition()];
 
         int repeatInterval = 0;
         ReminderRepeatEndType repeatEndType = null;
         int repeatEndNumberOfEvents = 0;
 
-        if(repeatType != ReminderRepeatType.DISABLED) {
-            repeatInterval = Integer.parseInt(mRepeatInterval.getText().toString());
-            repeatEndType = ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()];
-
-            if(repeatEndType == ReminderRepeatEndType.FOR_X_EVENTS)
-                repeatEndNumberOfEvents = Integer.parseInt(mRepeatEndForXEvents.getText().toString());
-
-            if(repeatEndType != ReminderRepeatEndType.UNTIL_DATE)
-                mRepeatUntilCal = null;
-        }
-
-
-        ArrayList<ReminderExtra> extras = new ArrayList<>();
-        if(mReminder != null)
-            extras = mReminder.getExtras();
-
-        mReminder = new SimpleReminder(ReminderStatus.ACTIVE, title, description, category, mDateCal, mTimeTime, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, mRepeatUntilCal);
-        mReminder.setExtras(extras);
+//        if(repeatType != ReminderRepeatType.DISABLED) {
+//            repeatInterval = Integer.parseInt(mRepeatInterval.getText().toString());
+//            repeatEndType = ReminderRepeatEndType.values()[mRepeatEndType.getSelectedItemPosition()];
+//
+//            if(repeatEndType == ReminderRepeatEndType.FOR_X_EVENTS)
+//                repeatEndNumberOfEvents = Integer.parseInt(mRepeatEndForXEvents.getText().toString());
+//
+//            if(repeatEndType != ReminderRepeatEndType.UNTIL_DATE)
+//                mRepeatUntilCal = null;
+//        }
+//
+//
+//        ArrayList<Attachment> extras = new ArrayList<>();
+//        if(mReminder != null)
+//            extras = mReminder.getAttachments();
+//
+//        mReminder = new RepeatingReminder(TaskStatus.ACTIVE, title, description, category, mDateCal, mTimeTime, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, mRepeatUntilCal);
+//        mReminder.setAttachments(extras);
     }
 
     private void restoreSimpleReminder() {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
-
-        mTitle.setText(mReminder.getTitle());
-        mDescription.setText(mReminder.getDescription());
-
-        if(mReminder.getDate() != null) {
-            mDateCal = Calendar.getInstance();
-            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
-            mDate.setText(formatter.format(mDateCal.getTime()));
-        }
-
-        if(mReminder.getTime() != null) {
-            mTime.setText(mReminder.getTime().toString());
-            mTimeTime = new Time(mReminder.getTime().getTimeInMinutes());
-        }
-
-        mCategory.setSelection(mReminder.getCategory().ordinal());
-        mRepeatType.setSelection(mReminder.getRepeatType().ordinal());
-
-
-        if(mReminder.getRepeatType() != ReminderRepeatType.DISABLED) {
-            mRepeatInterval.setText(String.valueOf(mReminder.getRepeatInterval()));
-            mRepeatEndType.setSelection(mReminder.getRepeatEndType().ordinal());
-            handleRepeatTypeSelected(mReminder.getRepeatType().ordinal());
-
-            if(mReminder.getRepeatEndType() == ReminderRepeatEndType.FOR_X_EVENTS)
-                mRepeatEndForXEvents.setText(String.valueOf(mReminder.getRepeatEndNumberOfEvents()));
-
-            if(mReminder.getRepeatEndType() == ReminderRepeatEndType.UNTIL_DATE) {
-                if(mReminder.getRepeatEndDate() != null) {
-                    mRepeatUntilCal = Calendar.getInstance();
-                    mRepeatUntilCal.setTimeInMillis(mReminder.getRepeatEndDate().getTimeInMillis());
-                    mRepeatUntilDate.setText(formatter.format(mRepeatUntilCal.getTime()));
-                }
-            }
-
-            if(mReminder.getRepeatEndType() != ReminderRepeatEndType.FOREVER) {
-                handleRepeatEndTypeSelected(mReminder.getRepeatEndType().ordinal());
-
-            }
-
-        }
+//
+//        mTitle.setText(mReminder.getTitle());
+//        mDescription.setText(mReminder.getDescription());
+//
+//        if(mReminder.getDate() != null) {
+//            mDateCal = Calendar.getInstance();
+//            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
+//            mDate.setText(formatter.format(mDateCal.getTime()));
+//        }
+//
+//        if(mReminder.getTime() != null) {
+//            mTime.setText(mReminder.getTime().toString());
+//            mTimeTime = new Time(mReminder.getTime().getTimeInMinutes());
+//        }
+//
+//        mCategory.setSelection(mReminder.getCategory().ordinal());
+//        mRepeatType.setSelection(mReminder.getRepeatType().ordinal());
+//
+//
+//        if(mReminder.getRepeatType() != ReminderRepeatType.DISABLED) {
+//            mRepeatInterval.setText(String.valueOf(mReminder.getRepeatInterval()));
+//            mRepeatEndType.setSelection(mReminder.getRepeatEndType().ordinal());
+//            handleRepeatTypeSelected(mReminder.getRepeatType().ordinal());
+//
+//            if(mReminder.getRepeatEndType() == ReminderRepeatEndType.FOR_X_EVENTS)
+//                mRepeatEndForXEvents.setText(String.valueOf(mReminder.getRepeatEndNumberOfEvents()));
+//
+//            if(mReminder.getRepeatEndType() == ReminderRepeatEndType.UNTIL_DATE) {
+//                if(mReminder.getRepeatEndDate() != null) {
+//                    mRepeatUntilCal = Calendar.getInstance();
+//                    mRepeatUntilCal.setTimeInMillis(mReminder.getRepeatEndDate().getTimeInMillis());
+//                    mRepeatUntilDate.setText(formatter.format(mRepeatUntilCal.getTime()));
+//                }
+//            }
+//
+//            if(mReminder.getRepeatEndType() != ReminderRepeatEndType.FOREVER) {
+//                handleRepeatEndTypeSelected(mReminder.getRepeatEndType().ordinal());
+//
+//            }
+//
+//        }
     }
 
 }

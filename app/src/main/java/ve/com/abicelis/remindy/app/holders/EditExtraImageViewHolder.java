@@ -1,18 +1,15 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.ReminderExtraAdapter;
-import ve.com.abicelis.remindy.model.ReminderExtraImage;
-import ve.com.abicelis.remindy.model.ReminderExtraText;
+import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 
 /**
  * Created by abice on 13/3/2017.
@@ -28,7 +25,7 @@ public class EditExtraImageViewHolder extends RecyclerView.ViewHolder implements
     private LinearLayout mTapToAddContainer;
 
     //DATA
-    private ReminderExtraImage mCurrent;
+    private ImageAttachment mCurrent;
     private int mPosition;
 
     public EditExtraImageViewHolder(View itemView) {
@@ -39,7 +36,7 @@ public class EditExtraImageViewHolder extends RecyclerView.ViewHolder implements
     }
 
 
-    public void setData(ReminderExtraAdapter adapter, Activity activity, ReminderExtraImage current, int position) {
+    public void setData(ReminderExtraAdapter adapter, Activity activity, ImageAttachment current, int position) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -64,7 +61,7 @@ public class EditExtraImageViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_extra_image_tap_to_add_container:
-                Toast.makeText(mActivity, "ReminderExtraImage tap to add clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "ImageAttachment tap to add clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
                 break;
         }
     }

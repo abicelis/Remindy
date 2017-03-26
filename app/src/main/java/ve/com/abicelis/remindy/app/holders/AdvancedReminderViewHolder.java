@@ -10,12 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.adapters.ReminderAdapter;
-import ve.com.abicelis.remindy.enums.ReminderCategory;
-import ve.com.abicelis.remindy.enums.ReminderExtraType;
-import ve.com.abicelis.remindy.model.AdvancedReminder;
-import ve.com.abicelis.remindy.model.Reminder;
-import ve.com.abicelis.remindy.model.ReminderExtra;
+import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
+import ve.com.abicelis.remindy.enums.AttachmentType;
+import ve.com.abicelis.remindy.enums.TaskCategory;
+import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.model.attachment.Attachment;
 
 /**
  * Created by abice on 13/3/2017.
@@ -23,7 +22,7 @@ import ve.com.abicelis.remindy.model.ReminderExtra;
 
 public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private ReminderAdapter mAdapter;
+    private TaskAdapter mAdapter;
     private Activity mActivity;
 
     //UI
@@ -43,73 +42,73 @@ public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implemen
     private TextView mAddress;
 
     //DATA
-    private AdvancedReminder mCurrent;
+    private Task mCurrent;
     private int mReminderPosition;
 
     public AdvancedReminderViewHolder(View itemView) {
         super(itemView);
 
-        mContainer = (RelativeLayout) itemView.findViewById(R.id.item_reminder_container);
-        mReminderIconBackground = (ImageView) itemView.findViewById(R.id.item_reminder_icon_background);
-        mReminderIconText = (TextView) itemView.findViewById(R.id.item_reminder_icon_text);
-        mCategory = (ImageView) itemView.findViewById(R.id.item_reminder_category);
-        mTitle = (TextView) itemView.findViewById(R.id.item_reminder_title);
-        mDescription = (TextView) itemView.findViewById(R.id.item_reminder_description);
-        mExtraLink = (ImageView) itemView.findViewById(R.id.item_reminder_extra_link);
-        mExtraAudio = (ImageView) itemView.findViewById(R.id.item_reminder_extra_audio);
-        mExtraImage = (ImageView) itemView.findViewById(R.id.item_reminder_extra_image);
-        mExtraText = (ImageView) itemView.findViewById(R.id.item_reminder_extra_text);
-        mTimeIcon = (ImageView) itemView.findViewById(R.id.item_reminder_time_icon);
-        mTime = (TextView) itemView.findViewById(R.id.item_reminder_time);
-        mAddressIcon = (ImageView) itemView.findViewById(R.id.item_reminder_address_icon);
-        mAddress = (TextView) itemView.findViewById(R.id.item_reminder_address);
+//        mContainer = (RelativeLayout) itemView.findViewById(R.id.item_reminder_container);
+//        mReminderIconBackground = (ImageView) itemView.findViewById(R.id.item_reminder_icon_background);
+//        mReminderIconText = (TextView) itemView.findViewById(R.id.item_reminder_icon_text);
+//        mCategory = (ImageView) itemView.findViewById(R.id.item_reminder_category);
+//        mTitle = (TextView) itemView.findViewById(R.id.item_reminder_title);
+//        mDescription = (TextView) itemView.findViewById(R.id.item_reminder_description);
+//        mExtraLink = (ImageView) itemView.findViewById(R.id.item_reminder_extra_link);
+//        mExtraAudio = (ImageView) itemView.findViewById(R.id.item_reminder_extra_audio);
+//        mExtraImage = (ImageView) itemView.findViewById(R.id.item_reminder_extra_image);
+//        mExtraText = (ImageView) itemView.findViewById(R.id.item_reminder_extra_text);
+//        mTimeIcon = (ImageView) itemView.findViewById(R.id.item_reminder_time_icon);
+//        mTime = (TextView) itemView.findViewById(R.id.item_reminder_time);
+//        mAddressIcon = (ImageView) itemView.findViewById(R.id.item_reminder_address_icon);
+//        mAddress = (TextView) itemView.findViewById(R.id.item_reminder_address);
     }
 
 
-    public void setData(ReminderAdapter adapter, Activity activity, AdvancedReminder current, int position) {
-        mAdapter = adapter;
-        mActivity = activity;
-        mCurrent = current;
-        mReminderPosition = position;
+    public void setData(TaskAdapter adapter, Activity activity, Task current, int position) {
+//        mAdapter = adapter;
+//        mActivity = activity;
+//        mCurrent = current;
+//        mReminderPosition = position;
+//
+//        //TODO: do something fancy with mReminderBackground color
+//        mReminderIconBackground.setColorFilter(getReminderColor());
+//
+//
+//        mReminderIconText.setText(getIconTextFromReminderTitle());
+//        mCategory.setImageResource((mCurrent.getCategory() == TaskCategory.BUSINESS ? R.drawable.icon_business : R.drawable.icon_personal));
+//        mTitle.setText(mCurrent.getTitle());
+//        if(!mCurrent.getDescription().isEmpty())
+//            mDescription.setText(mCurrent.getDescription());
+//        else
+//            mDescription.setText("-");
+//
+//        mExtraLink.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
+//        mExtraAudio.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
+//        mExtraImage.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
+//        mExtraText.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
 
-        //TODO: do something fancy with mReminderBackground color
-        mReminderIconBackground.setColorFilter(getReminderColor());
-
-
-        mReminderIconText.setText(getIconTextFromReminderTitle());
-        mCategory.setImageResource((mCurrent.getCategory() == ReminderCategory.BUSINESS ? R.drawable.icon_business : R.drawable.icon_personal));
-        mTitle.setText(mCurrent.getTitle());
-        if(!mCurrent.getDescription().isEmpty())
-            mDescription.setText(mCurrent.getDescription());
-        else
-            mDescription.setText("-");
-
-        mExtraLink.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(ReminderExtraType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mExtraAudio.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(ReminderExtraType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mExtraImage.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(ReminderExtraType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mExtraText.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(ReminderExtraType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
-
-        switch (mCurrent.getTimeType()) {
-            case ANYTIME:
-                mTime.setText(R.string.reminder_time_type_anytime);
-                mTimeIcon.setColorFilter(ContextCompat.getColor(mActivity, R.color.icons_disabled));
-                mTime.setTextColor(ContextCompat.getColor(mActivity, R.color.icons_disabled));
-                break;
-            case SINGLE_TIME:
-                mTime.setText(mCurrent.getStartTime().toString());
-                break;
-            case INTERVAL:
-                mTime.setText(mCurrent.getStartTime().toString() + " - " + mCurrent.getEndTime().toString());
-                break;
-        }
-
-        if(mCurrent.getPlace() != null)
-            mAddress.setText(mCurrent.getPlace().getAddress());
-        else{
-            mAddressIcon.setColorFilter(ContextCompat.getColor(mActivity, R.color.icons_disabled));
-            mAddress.setTextColor(ContextCompat.getColor(mActivity, R.color.icons_disabled));
-            mAddress.setText(R.string.fragment_reminder_list_place_anywhere);
-        }
+//        switch (mCurrent.getTimeType()) {
+//            case ANYTIME:
+//                mTime.setText(R.string.reminder_time_type_anytime);
+//                mTimeIcon.setColorFilter(ContextCompat.getColor(mActivity, R.color.icons_disabled));
+//                mTime.setTextColor(ContextCompat.getColor(mActivity, R.color.icons_disabled));
+//                break;
+//            case SINGLE_TIME:
+//                mTime.setText(mCurrent.getStartTime().toString());
+//                break;
+//            case INTERVAL:
+//                mTime.setText(mCurrent.getStartTime().toString() + " - " + mCurrent.getEndTime().toString());
+//                break;
+//        }
+//
+//        if(mCurrent.getPlace() != null)
+//            mAddress.setText(mCurrent.getPlace().getAddress());
+//        else{
+//            mAddressIcon.setColorFilter(ContextCompat.getColor(mActivity, R.color.icons_disabled));
+//            mAddress.setTextColor(ContextCompat.getColor(mActivity, R.color.icons_disabled));
+//            mAddress.setText(R.string.fragment_reminder_list_place_anywhere);
+//        }
     }
 
     private String getIconTextFromReminderTitle() {
@@ -125,8 +124,8 @@ public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implemen
             return words[0].substring(0, 1).toUpperCase() + words[1].substring(0, 1).toLowerCase();
     }
 
-    private boolean hasExtrasOfType(ReminderExtraType extraType) {
-        for (ReminderExtra extra : mCurrent.getExtras()) {
+    private boolean hasExtrasOfType(AttachmentType extraType) {
+        for (Attachment extra : mCurrent.getAttachments()) {
             if(extra.getType().equals(extraType))
                 return true;
         }
@@ -138,17 +137,17 @@ public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implemen
 
         switch (colorPos) {
             case 0:
-                return ContextCompat.getColor(mActivity, R.color.reminder_icon_1);
+                return ContextCompat.getColor(mActivity, R.color.category_health);
             case 1:
-                return ContextCompat.getColor(mActivity, R.color.reminder_icon_2);
+                return ContextCompat.getColor(mActivity, R.color.category_business);
             case 2:
-                return ContextCompat.getColor(mActivity, R.color.reminder_icon_3);
+                return ContextCompat.getColor(mActivity, R.color.category_repairs);
             case 3:
-                return ContextCompat.getColor(mActivity, R.color.reminder_icon_4);
+                return ContextCompat.getColor(mActivity, R.color.category_personal);
             case 4:
-                return ContextCompat.getColor(mActivity, R.color.reminder_icon_5);
+                return ContextCompat.getColor(mActivity, R.color.category_other);
             default:
-                return ContextCompat.getColor(mActivity, R.color.reminder_icon_1);
+                return ContextCompat.getColor(mActivity, R.color.category_health);
 
         }
     }
@@ -162,7 +161,7 @@ public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implemen
         int id = view.getId();
         switch (id) {
             case R.id.item_reminder_container:
-                Toast.makeText(mActivity, "ADV Reminder '" + mCurrent.getTitle() + "' clicked! Pos=" + mReminderPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "ADV Task '" + mCurrent.getTitle() + "' clicked! Pos=" + mReminderPosition, Toast.LENGTH_SHORT).show();
 //                Pair[] pairs = new Pair[1];
 //                pairs[0] = new Pair<View, String>(mImage, mFragment.getResources().getString(R.string.transition_name_expense_detail_image));
 //                //pairs[1] = new Pair<View, String>(mAmount,  mActivity.getResources().getString(R.string.transition_name_expense_detail_amount));

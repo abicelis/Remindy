@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.ReminderExtraAdapter;
-import ve.com.abicelis.remindy.model.ReminderExtraLink;
+import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 
 /**
  * Created by abice on 13/3/2017.
@@ -23,7 +23,7 @@ public class EditExtraLinkViewHolder extends RecyclerView.ViewHolder implements 
     private EditText mLink;
 
     //DATA
-    private ReminderExtraLink mCurrent;
+    private LinkAttachment mCurrent;
     private int mPosition;
 
     public EditExtraLinkViewHolder(View itemView) {
@@ -33,7 +33,7 @@ public class EditExtraLinkViewHolder extends RecyclerView.ViewHolder implements 
     }
 
 
-    public void setData(ReminderExtraAdapter adapter, Activity activity, ReminderExtraLink current, int position) {
+    public void setData(ReminderExtraAdapter adapter, Activity activity, LinkAttachment current, int position) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -52,7 +52,7 @@ public class EditExtraLinkViewHolder extends RecyclerView.ViewHolder implements 
         int id = view.getId();
         switch (id) {
             case R.id.item_extra_link_content:
-                Toast.makeText(mActivity, "ReminderExtraLink link clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "LinkAttachment link clicked, pos= " + mPosition, Toast.LENGTH_SHORT).show();
                 break;
         }
     }

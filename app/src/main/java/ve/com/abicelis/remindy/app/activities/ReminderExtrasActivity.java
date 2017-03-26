@@ -8,34 +8,24 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.ReminderExtraAdapter;
-import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.ReminderSortType;
-import ve.com.abicelis.remindy.enums.ReminderType;
-import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
-import ve.com.abicelis.remindy.model.Reminder;
-import ve.com.abicelis.remindy.model.ReminderExtra;
-import ve.com.abicelis.remindy.model.ReminderExtraAudio;
-import ve.com.abicelis.remindy.model.ReminderExtraLink;
-import ve.com.abicelis.remindy.model.ReminderExtraText;
+import ve.com.abicelis.remindy.model.attachment.Attachment;
+import ve.com.abicelis.remindy.model.attachment.TextAttachment;
+import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -49,7 +39,7 @@ public class ReminderExtrasActivity extends AppCompatActivity implements View.On
     private static final String TAG = ReminderExtrasActivity.class.getSimpleName();
 
     //DATA
-    private ArrayList<ReminderExtra> mExtras;
+    private ArrayList<Attachment> mExtras;
     private ReminderExtraAdapter mAdapter;
 
     //UI
@@ -79,7 +69,7 @@ public class ReminderExtrasActivity extends AppCompatActivity implements View.On
         setUpRecyclerView();
 
         if(getIntent().hasExtra(ARG_EXTRAS)) {
-            mExtras = (ArrayList<ReminderExtra>) getIntent().getSerializableExtra(ARG_EXTRAS);
+            mExtras = (ArrayList<Attachment>) getIntent().getSerializableExtra(ARG_EXTRAS);
         } else {
             mExtras = new ArrayList<>();
         }
@@ -87,8 +77,8 @@ public class ReminderExtrasActivity extends AppCompatActivity implements View.On
         setUpRecyclerView();
 
         //TODO: Remove this eventually
-        mExtras.add(new ReminderExtraLink("http://www.alejandrobicelis.com.ve"));
-        mExtras.add(new ReminderExtraText("Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text "));
+        mExtras.add(new LinkAttachment("http://www.alejandrobicelis.com.ve"));
+        mExtras.add(new TextAttachment("Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text "));
         mAdapter.notifyDataSetChanged();
     }
 
@@ -127,7 +117,7 @@ public class ReminderExtrasActivity extends AppCompatActivity implements View.On
     }
 
 
-    private void addExtraAndRefreshRecyclerView(ReminderExtra extra) {
+    private void addExtraAndRefreshRecyclerView(Attachment extra) {
         mExtras.add(extra);
         mAdapter.notifyItemInserted(mAdapter.getItemCount());
     }
@@ -138,7 +128,7 @@ public class ReminderExtrasActivity extends AppCompatActivity implements View.On
 //        switch (id) {
 ////            case R.id.activity_reminder_extras_fab:
 ////                //TODO: Use a fab menu, switch for 4 types of ReminderExtras...
-////                addExtraAndRefreshRecyclerView(new ReminderExtraText("Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text "));
+////                addExtraAndRefreshRecyclerView(new TextAttachment("Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text "));
 ////                break;
 //
 //        }

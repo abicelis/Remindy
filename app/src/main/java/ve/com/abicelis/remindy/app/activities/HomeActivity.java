@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,10 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.dialogs.NewReminderDialogFragment;
-import ve.com.abicelis.remindy.app.fragments.ReminderListFragment;
-import ve.com.abicelis.remindy.app.adapters.RemindersViewPagerAdapter;
-import ve.com.abicelis.remindy.enums.ReminderStatus;
+import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
+import ve.com.abicelis.remindy.app.adapters.TasksViewPagerAdapter;
+import ve.com.abicelis.remindy.enums.TaskStatus;
 
 /**
  * Created by abice on 13/3/2017.
@@ -29,7 +27,7 @@ import ve.com.abicelis.remindy.enums.ReminderStatus;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
 
     //UI
-    private ViewPager mGraphsViewpager;
+    private ViewPager mViewpager;
     private TabLayout mTabLayout;
     private FloatingActionButton mFab;
 
@@ -44,24 +42,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_home_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.activity_home_toolbar_title);
 
         initLists();
 
-        RemindersViewPagerAdapter adapter = new RemindersViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
-        mGraphsViewpager = (ViewPager) findViewById(R.id.activity_home_viewpager);
+        TasksViewPagerAdapter adapter = new TasksViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
+        mViewpager = (ViewPager) findViewById(R.id.activity_home_viewpager);
         mTabLayout = (TabLayout) findViewById(R.id.activity_home_tab_layout);
         mFab = (FloatingActionButton) findViewById(R.id.activity_home_fab);
 
-        mGraphsViewpager.setAdapter(adapter);
-        mGraphsViewpager.setCurrentItem(1);     //Start at page 2
-        mTabLayout.setupWithViewPager(mGraphsViewpager);
+        mViewpager.setAdapter(adapter);
+        mViewpager.setCurrentItem(1);     //Start at page 2
+        mTabLayout.setupWithViewPager(mViewpager);
         mFab.setOnClickListener(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
@@ -73,7 +72,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_home_settings) {
             return true;
         }
 
@@ -81,28 +80,28 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initLists() {
-        titleList.add(getResources().getString(R.string.reminder_status_archived));
-        titleList.add(getResources().getString(R.string.reminder_status_current));
-        titleList.add(getResources().getString(R.string.reminder_status_done));
+        titleList.add(getResources().getString(R.string.task_status_unprogrammed));
+        titleList.add(getResources().getString(R.string.task_status_programmed));
+        titleList.add(getResources().getString(R.string.task_status_done));
 
-        Fragment archivedReminderListFragment = new ReminderListFragment();
-        Fragment activeReminderListFragment = new ReminderListFragment();
-        Fragment doneReminderListFragment = new ReminderListFragment();
+        Fragment unprogrammedTasksListFragment = new TaskListFragment();
+        Fragment programmedTasksListFragment = new TaskListFragment();
+        Fragment doneTasksListFragment = new TaskListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ReminderListFragment.REMINDER_TO_DISPLAY, ReminderStatus.ARCHIVED);
-        archivedReminderListFragment.setArguments(bundle);
-        fragmentList.add(archivedReminderListFragment);
+        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.UNPROGRAMMED);
+        unprogrammedTasksListFragment.setArguments(bundle);
+        fragmentList.add(unprogrammedTasksListFragment);
 
         bundle = new Bundle();
-        bundle.putSerializable(ReminderListFragment.REMINDER_TO_DISPLAY, ReminderStatus.ACTIVE);
-        activeReminderListFragment.setArguments(bundle);
-        fragmentList.add(activeReminderListFragment);
+        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.PROGRAMMED);
+        programmedTasksListFragment.setArguments(bundle);
+        fragmentList.add(programmedTasksListFragment);
 
         bundle = new Bundle();
-        bundle.putSerializable(ReminderListFragment.REMINDER_TO_DISPLAY, ReminderStatus.DONE);
-        doneReminderListFragment.setArguments(bundle);
-        fragmentList.add(doneReminderListFragment);
+        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.DONE);
+        doneTasksListFragment.setArguments(bundle);
+        fragmentList.add(doneTasksListFragment);
 
     }
 
@@ -111,15 +110,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.activity_home_fab:
-                showAddReminderDialog();
+                //TODO: Open newTask Activity
+                //showAddReminderDialog();
                 break;
-
         }
     }
 
-    private void showAddReminderDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        NewReminderDialogFragment dialog = NewReminderDialogFragment.newInstance();
-        dialog.show(fm, "NewReminderDialogFragment");
-    }
+//    private void showAddReminderDialog() {
+//        FragmentManager fm = getSupportFragmentManager();
+//        NewReminderDialogFragment dialog = NewReminderDialogFragment.newInstance();
+//        dialog.show(fm, "NewReminderDialogFragment");
+//    }
 }
