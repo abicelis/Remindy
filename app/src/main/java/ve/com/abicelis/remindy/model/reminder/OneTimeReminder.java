@@ -25,9 +25,8 @@ public class OneTimeReminder extends Reminder implements Serializable {
         init(date, time);
     }
 
-    public OneTimeReminder(int id, @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
-                           @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
-        super(id);
+    public OneTimeReminder(int id, int taskId, @NonNull Calendar date, @NonNull Time time) {
+        super(id, taskId);
         init(date, time);
     }
 
@@ -41,8 +40,6 @@ public class OneTimeReminder extends Reminder implements Serializable {
     public ReminderType getType() {
         return ReminderType.ONE_TIME;
     }
-
-
 
     public Calendar getDate() {
         return date;
@@ -63,8 +60,9 @@ public class OneTimeReminder extends Reminder implements Serializable {
     public String toString() {
         String                      res = "Reminder ID=" + getId() + "\r\n";
                                     res += " Type=" + getType().name() + "\r\n";
-        if(date != null)            res +=  " Date=" + date.toString() + "\r\n";
-        if(time != null)            res +=  " Time=" + time.toString();
+                                    res += " TaskID=" + getTaskId() + "\r\n";
+                                    res +=  " Date=" + date.toString() + "\r\n";
+                                    res +=  " Time=" + time.toString();
         return res;
     }
 }

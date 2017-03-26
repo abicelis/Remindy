@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
@@ -16,29 +17,31 @@ import ve.com.abicelis.remindy.model.reminder.Reminder;
  * Created by abice on 3/3/2017.
  */
 
-public abstract class Task implements Serializable {
+public class Task implements Serializable {
 
     private int id;
     private TaskStatus status;
     private String title;
     private String description;
     private TaskCategory category;
+    private ReminderType reminderType;
     private Reminder reminder;
     private Calendar doneDate;
     private ArrayList<Attachment> attachments;
 
-    public Task(@NonNull TaskStatus status, @NonNull String title, @Nullable String description, @NonNull TaskCategory category,  @Nullable Reminder reminder, @Nullable Calendar doneDate) {
+    public Task(@NonNull TaskStatus status, @NonNull String title, @NonNull String description, @NonNull TaskCategory category, @NonNull ReminderType reminderType, @Nullable Reminder reminder, @Nullable Calendar doneDate) {
         this.status = status;
         this.title = title;
         this.description = description;
         this.category = category;
+        this.reminderType = reminderType;
         this.reminder = reminder;
         this.doneDate = doneDate;
         this.attachments = new ArrayList<>();
     }
 
-    public Task(int id, @NonNull TaskStatus status, @NonNull String title, @Nullable String description, @NonNull TaskCategory category,  @Nullable Reminder reminder, @Nullable Calendar doneDate) {
-        this(status, title, description, category, reminder, doneDate);
+    public Task(int id, @NonNull TaskStatus status, @NonNull String title, @NonNull String description, @NonNull TaskCategory category, @NonNull ReminderType reminderType, @Nullable Reminder reminder, @Nullable Calendar doneDate) {
+        this(status, title, description, category, reminderType, reminder, doneDate);
         this.id = id;
     }
 
@@ -53,7 +56,7 @@ public abstract class Task implements Serializable {
     public TaskStatus getStatus() {
         return status;
     }
-    public void setStatus(boolean active) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -76,6 +79,13 @@ public abstract class Task implements Serializable {
     }
     public void setCategory(TaskCategory category) {
         this.category = category;
+    }
+
+    public ReminderType getReminderType() {
+        return reminderType;
+    }
+    public void setReminderType(ReminderType reminderType) {
+        this.reminderType = reminderType;
     }
 
     public Reminder getReminder() {
@@ -103,5 +113,17 @@ public abstract class Task implements Serializable {
     }
     public void clearAttachments() {
         attachments.clear();
+    }
+
+
+
+    @Override
+    public String toString() {
+        String                      res = "Task ID=" + id + "\r\n Status= " + status.name() + "\r\n Title=" + title + "\r\n Description=" + description + "\r\n Category=" + category.name() + "\r\n";
+                                    res += " ReminderType=" + reminderType.name();
+        if(reminder != null)        res += " Reminder=" + reminder.toString() + "\r\n";
+        if(doneDate != null)        res += " DoneDate=" + doneDate.toString();
+                                    res += " Attachments="  + attachments.size();
+        return res;
     }
 }

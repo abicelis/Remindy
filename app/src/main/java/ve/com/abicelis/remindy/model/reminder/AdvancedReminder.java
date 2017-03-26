@@ -41,7 +41,7 @@ public class AdvancedReminder extends Reminder implements Serializable {
                         @NonNull TaskCategory category, @Nullable Place place, @NonNull ReminderDateType dateType,
                         @Nullable Calendar startDate, @Nullable Calendar endDate, @NonNull ReminderTimeType timeType,
                         @Nullable Time startTime, @Nullable Time endTime, @NonNull Weekdays weekdays) {
-        super(id);
+        super();
         init(place, dateType, startDate, endDate, timeType, startTime, endTime, weekdays);
     }
 

@@ -27,19 +27,19 @@ public class RepeatingReminder extends Reminder implements Serializable {
 
 
     public RepeatingReminder(@NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
-                             @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
+                             @NonNull ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
         init(date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
     }
 
-    public RepeatingReminder(int id, @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
-                             @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
-        super(id);
+    public RepeatingReminder(int id, int taskId, @NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
+                             @NonNull ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
+        super(id, taskId);
         init(date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
 
     }
 
     private void init(@NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
-                      @Nullable ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
+                      @NonNull ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
         this.date = date;
         this.time = time;
         this.repeatType = repeatType;
@@ -54,6 +54,7 @@ public class RepeatingReminder extends Reminder implements Serializable {
     public ReminderType getType() {
         return ReminderType.REPEATING;
     }
+
 
 
 
@@ -111,12 +112,13 @@ public class RepeatingReminder extends Reminder implements Serializable {
     @Override
     public String toString() {
         String                      res = "Reminder ID=" + getId() + "\r\n";
-                                    res += " Type=" + getType().name() + "\r\n";
-        if(date != null)            res +=  " Date=" + date.toString() + "\r\n";
-        if(time != null)            res +=  " Time=" + time.toString() + "\r\n";
-        if(repeatType != null)      res +=  " RepeatType=" + repeatType.toString() + "\r\n";
+                                    res +=  " Type=" + getType().name() + "\r\n";
+                                    res +=  " TaskID=" + getTaskId() + "\r\n";
+                                    res +=  " Date=" + date.toString() + "\r\n";
+                                    res +=  " Time=" + time.toString() + "\r\n";
+                                    res +=  " RepeatType=" + repeatType.toString() + "\r\n";
                                     res +=  " RepeatInterval=" + repeatInterval + "\r\n";
-        if(repeatEndType != null)   res +=  " RepeatEndType=" + repeatEndType.toString() + "\r\n";
+                                    res +=  " RepeatEndType=" + repeatEndType.toString() + "\r\n";
                                     res +=  " RepeatEndNumberOfEvents=" + repeatEndNumberOfEvents + "\r\n";
         if(repeatEndDate != null)   res +=  " RepeatEndDate=" + repeatEndDate.toString();
         return res;
