@@ -3,18 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ve.com.abicelis.remindy.app.activities.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/menu_home_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/menu_home_action_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_about"
+        android:id="@+id/menu_home_about"
         android:orderInCategory="100"
-        android:title="@string/action_about"
+        android:title="@string/menu_home_action_about"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_rate"
+        android:id="@+id/menu_home_rate"
         android:orderInCategory="100"
-        android:title="@string/action_rate"
+        android:title="@string/menu_home_action_rate"
         app:showAsAction="never" />
 </menu>

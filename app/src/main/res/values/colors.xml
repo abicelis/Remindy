@@ -15,11 +15,11 @@
     <color name="divider">#BDBDBD</color>
 
 
-    <color name="reminder_icon_1">#AB47BC</color>
-    <color name="reminder_icon_2">#5C6BC0</color>
-    <color name="reminder_icon_3">#009688</color>
-    <color name="reminder_icon_4">#43A047</color>
-    <color name="reminder_icon_5">#FB8C00</color>
+    <color name="category_personal">#43A047</color>
+    <color name="category_business">#5C6BC0</color>
+    <color name="category_health">#AB47BC</color>
+    <color name="category_repairs">#009688</color>
+    <color name="category_other">#FB8C00</color>
 
     <color name="gray_50">#FAFAFA</color>
     <color name="gray_100">#F5F5F5</color>

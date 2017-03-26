@@ -6,7 +6,7 @@
         android:id="@+id/action_add_extras"
         android:orderInCategory="100"
         android:icon="@drawable/icon_extra"
-        android:title="Add extras"
+        android:title="Add attachments"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_save"
