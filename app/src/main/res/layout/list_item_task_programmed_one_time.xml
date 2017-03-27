@@ -3,6 +3,8 @@
     android:id="@+id/item_task_programmed_one_time_container"
     android:padding="8dp"
     android:layout_width="match_parent"
+    android:layout_marginLeft="@dimen/item_task_margin_left"
+    android:layout_marginStart="@dimen/item_task_margin_left"
     android:layout_height="64dp">
 
     <ImageView
