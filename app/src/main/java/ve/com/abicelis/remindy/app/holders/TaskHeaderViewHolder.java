@@ -1,6 +1,7 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -28,11 +29,15 @@ public class TaskHeaderViewHolder extends RecyclerView.ViewHolder {
         mHeaderTitle = (TextView) itemView.findViewById(R.id.item_task_header_title);
     }
 
-    public void setData(TaskAdapter adapter, Activity activity, String title, int position) {
+    public void setData(TaskAdapter adapter, Activity activity, String title, boolean headerTitleRed, int position) {
         mAdapter = adapter;
         mActivity = activity;
         mPosition = position;
 
         mHeaderTitle.setText(title);
+        if(headerTitleRed)
+            mHeaderTitle.setTextColor(ContextCompat.getColor(activity, R.color.header_title_red));
+        else
+            mHeaderTitle.setTextColor(ContextCompat.getColor(activity, R.color.primary));
     }
 }
