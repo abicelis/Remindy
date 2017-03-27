@@ -9,7 +9,7 @@ import java.nio.channels.FileChannel;
  * Created by Alex on 9/3/2017.
  */
 
-public class FileUtils {
+public class FileUtil {
     /**
      * Creates the specified <code>toFile</code> as a byte for byte copy of the
      * <code>fromFile</code>. If <code>toFile</code> already exists, then it
