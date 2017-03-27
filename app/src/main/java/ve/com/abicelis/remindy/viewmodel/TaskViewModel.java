@@ -16,6 +16,7 @@ public class TaskViewModel {
     //DATA
     private Task task = null;
     private String headerTitle = null;
+    private boolean headerTitleRed;
     private TaskViewModelType viewModelType;
 
 
@@ -28,8 +29,9 @@ public class TaskViewModel {
         this.viewModelType = viewModelType;
     }
 
-    public TaskViewModel(@NonNull String headerTitle) {
+    public TaskViewModel(@NonNull String headerTitle, @NonNull boolean headerTitleRed) {
         this.headerTitle = headerTitle;
+        this.headerTitleRed = headerTitleRed;
         viewModelType = TaskViewModelType.HEADER;
     }
 
@@ -40,6 +42,8 @@ public class TaskViewModel {
     public String getHeaderTitle() {
         return headerTitle;
     }
+    public boolean isHeaderTitleRed() {return headerTitleRed;}
+
     public TaskViewModelType getViewModelType() {
         return viewModelType;
     }
