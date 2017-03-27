@@ -69,8 +69,8 @@
     <string name="task_sort_type_location">Location</string>
 
     /* ENUM TaskStatus */
-    <string name="task_status_unprogrammed">Unprogrammed</string>
-    <string name="task_status_programmed">Programmed</string>
+    <string name="task_status_unprogrammed">Task List</string>
+    <string name="task_status_programmed">With Reminders</string>
     <string name="task_status_done">Done</string>
 
     /* ENUM ReminderTimeType */
@@ -90,6 +90,25 @@
     <string name="reminder_repeat_end_type_for_x_events">For a number of events</string>
 
 
+
+
+    /* Task headers */
+    <string name="task_header_overdue">Overdue</string>
+    <string name="task_header_location_based">Location-based</string>
+    <string name="task_header_past">Past</string>
+    <string name="task_header_last_year">Last Year</string>
+    <string name="task_header_last_month">Last month</string>
+    <string name="task_header_last_week">Last week</string>
+    <string name="task_header_yesterday">Yesterday</string>
+    <string name="task_header_today">Today</string>
+    <string name="task_header_tomorrow">Tomorrow</string>
+    <string name="task_header_this_week">This week</string>
+    <string name="task_header_next_week">Next week</string>
+    <string name="task_header_this_month">This month</string>
+    <string name="task_header_next_month">Next month</string>
+    <string name="task_header_this_year">This year</string>
+    <string name="task_header_next_year">Next year</string>
+    <string name="task_header_future">Future</string>
 
 
 

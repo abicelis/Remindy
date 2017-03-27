@@ -2,6 +2,8 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="header_title_red">#ff3333</color>
+
 
     <color name="primary">#4CAF50</color>
     <color name="primary_dark">#388E3C</color>

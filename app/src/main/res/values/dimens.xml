@@ -6,6 +6,7 @@
 
 
     /*List item task */
+    <dimen name="item_task_margin_left">6dp</dimen>
     <dimen name="item_task_unprogrammed_category_icon_size">36dp</dimen>
     <dimen name="item_task_category_icon_size">50dp</dimen>
     <dimen name="item_task_attachment_icon_size">18dp</dimen>
