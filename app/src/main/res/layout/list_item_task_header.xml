@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:lines="1"
         android:textColor="@color/primary"
+        android:textStyle="bold"
         android:textSize="@dimen/text_size_small"
         android:text="Header title"
         />
