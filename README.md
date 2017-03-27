@@ -4,17 +4,19 @@ THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT
 
 
 ## About the app
-The android reminder app for power-users wanting set any kind of reminder. 
+THE android app for power-users wanting set any kind of tasks, and reminders of those tasks. Rich metadata can be attached to any task.
+Some of the available attachments include: Lists, Text, Images, Recordings and Links!
 
 Supports all kinds of reminders:
 
-* Daily, Weekly, Monthly and yearly reminders? Yes. 
-* Location-based reminders? Yes. 
+* Daily, Weekly, Monthly and yearly reminders? Yes.
+* Location-based reminders? Yes.
 * Geofences? Yes. 
-* Timed reminders? Yes. 
-* Reminders ending at a specific date? Yes. 
+* Timed reminders? Yes.
+* Reminders ending at a specific date? Yes.
 * Reminders which repeat a set amount of times? Yes.
-* Reminders with extra data attached such as images, audio, links and text? YES!
+
+
 
 This app will be available at the Google Play Store, soon!
 
