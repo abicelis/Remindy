@@ -73,7 +73,7 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (viewModelType) {
             case HEADER:
                 TaskHeaderViewHolder thHolder = (TaskHeaderViewHolder) holder;
-                thHolder.setData(this, mActivity, mTasks.get(position).getHeaderTitle(), position);
+                thHolder.setData(this, mActivity, mTasks.get(position).getHeaderTitle(), mTasks.get(position).isHeaderTitleRed(), position);
                 break;
 
             case UNPROGRAMMED_REMINDER:
