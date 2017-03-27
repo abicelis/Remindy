@@ -2,42 +2,51 @@ package ve.com.abicelis.remindy.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import java.io.InvalidClassException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import ve.com.abicelis.remindy.enums.ReminderCategory;
-import ve.com.abicelis.remindy.enums.ReminderDateType;
-import ve.com.abicelis.remindy.enums.ReminderExtraType;
+import ve.com.abicelis.remindy.enums.AttachmentType;
+import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
-import ve.com.abicelis.remindy.enums.ReminderSortType;
-import ve.com.abicelis.remindy.enums.ReminderStatus;
-import ve.com.abicelis.remindy.enums.ReminderTimeType;
+import ve.com.abicelis.remindy.enums.TaskSortType;
+import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.enums.ReminderType;
+import ve.com.abicelis.remindy.enums.TaskViewModelType;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
+import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.exception.PlaceNotFoundException;
-import ve.com.abicelis.remindy.model.AdvancedReminder;
+import ve.com.abicelis.remindy.model.UnprogrammedTasksByTitleComparator;
+import ve.com.abicelis.remindy.model.attachment.Attachment;
+import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
+import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
+import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
+import ve.com.abicelis.remindy.model.attachment.ListAttachment;
+import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
+import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
+import ve.com.abicelis.remindy.model.reminder.Reminder;
+import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.model.Place;
-import ve.com.abicelis.remindy.model.Reminder;
-import ve.com.abicelis.remindy.model.AdvancedReminderByPlaceComparator;
-import ve.com.abicelis.remindy.model.ReminderExtra;
-import ve.com.abicelis.remindy.model.ReminderExtraAudio;
-import ve.com.abicelis.remindy.model.ReminderExtraImage;
-import ve.com.abicelis.remindy.model.ReminderExtraLink;
-import ve.com.abicelis.remindy.model.ReminderExtraText;
-import ve.com.abicelis.remindy.model.SimpleReminder;
+import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.model.TasksByDoneDateComparator;
+import ve.com.abicelis.remindy.model.TasksByReminderDateComparator;
+import ve.com.abicelis.remindy.model.TasksByPlaceComparator;
+import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.Time;
-import ve.com.abicelis.remindy.model.Weekdays;
+import ve.com.abicelis.remindy.util.TaskHeaderUtil;
+import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
 /**
  * Created by Alex on 9/3/2017.
@@ -52,196 +61,174 @@ public class RemindyDAO {
 
 
     /* Get data from database */
-
-//    /**
-//     * Returns a List of OVERDUE Reminders.
-//     * These are reminders which have an Active status, but will never trigger because of their set dates
-//     * Examples:
-//     * 1. Reminder is set to end in the past:
-//     * endDate < today
-//     * 2. Reminder is set to end sometime in the future, but on a day of the week that have passed:
-//     * Today=Tuesday, endDate=Friday but Reminder is set to trigger only Mondays.
-//     */
-//    public List<Reminder> getOverdueReminders() {
-//        return getRemindersByStatus(ReminderStatus.OVERDUE, ReminderSortType.DATE);
-//    }
-//
-//    /**
-//     * Returns a List of ACTIVE Reminders.
-//     * These are reminders which have an Active status, and will trigger sometime in the present or in the future
-//     * Basically, all Reminders which are *NOT* OVERDUE (See function above)
-//     *
-//     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
-//     */
-//    public List<Reminder> getActiveReminders(@NonNull ReminderSortType sortType) {
-//        return getRemindersByStatus(ReminderStatus.ACTIVE, sortType);
-//    }
-//
-//    /**
-//     * Returns a List of Reminders with a status of DONE.
-//     *
-//     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
-//     */
-//    public List<Reminder> getDoneReminders(@NonNull ReminderSortType sortType) {
-//        return getRemindersByStatus(ReminderStatus.DONE, sortType);
-//    }
-//
-//    /**
-//     * Returns a List of Reminders with a status of ARCHIVED.
-//     *
-//     * @param sortType ReminderSortType enum value with which to sort results. By date, by category or by Location
-//     */
-//    public List<Reminder> getArchivedReminders(@NonNull ReminderSortType sortType) {
-//        return getRemindersByStatus(ReminderStatus.ARCHIVED, sortType);
-//    }
-
-
     /**
-     * Returns a List of ADVANCED AND SIMPLE Reminders given a specific ReminderStatus and ReminderSortType
-     * The available ReminderStatus are:
-     *   - ARCHIVED.
-     *   - DONE.
-     *   - ACTIVE:
-     *          These are reminders which have an Active status, and will trigger sometime in the present or in the future
-     *          Basically, all Reminders which are *NOT* OVERDUE (See below)
-     *   - OVERDUE:
-     *          These are reminders which have an Active status, but will never trigger because of their set dates
-     *          Examples:
-     *              1. Reminder is set to end in the past: endDate < today
-     *              2. Reminder is set to end sometime in the future, but on a day of the week that have passed: Today=Tuesday, endDate=Friday but Reminder is set to trigger only Mondays.
-     *
-     * @param reminderStatus ReminderStatus enum value with which to filter Reminders.
-     * @param sortType       ReminderSortType enum value with which to sort results. By date, by category or by Location
+     * Returns a List of Tasks (with Reminder and Attachments) which have TaskStatus.UNPROGRAMMED. Sorted Alphabetically by Task Title
+     * @return A List of TaskViewModel
      */
+    public List<TaskViewModel> getUnprogrammedTasks() throws CouldNotGetDataException {
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        List<TaskViewModel> result = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
 
+        Cursor cursor = db.query(RemindyContract.TaskTable.TABLE_NAME,
+                null, RemindyContract.TaskTable.COLUMN_NAME_STATUS.getName() + "=?",
+                new String[]{TaskStatus.UNPROGRAMMED.name()}, null, null, null);
 
-    //TODO: This method must change
-    //Get advanced reminders, and get its extras
-    //Get simple reminders, and get its extras
-    //Sort/Group them by ReminderSortType
-    //Return them either Map<ReminderDateType, Reminder> or Map<ReminderDateType, List<Reminder>>
-    //Where ReminderDateType is [Today, Tomorrow, Next Week... ]
-    //Or maybe list Map<ReminderViewType, Object> where ReminderViewType is [AdvRem, SimplRem, Header)]
-    //and when Map key is Header, value will be just s String with header name? so ReminderAdapter is happy...
-    //Figure this part out.
-    public List<Reminder> getRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
-        List<Reminder> reminders = new ArrayList<>();
+        try {
+            while (cursor.moveToNext()) {
+                Task current = getTaskFromCursor(cursor);
 
-        //List<SimpleReminder> simpleReminders = getSimpleRemindersByStatus(reminderStatus, sortType);
-        List<AdvancedReminder> advancedReminders = getAdvancedRemindersByStatus(reminderStatus, sortType);
+                //Try to get the attachments, if there are any
+                current.setAttachments(getAttachmentsOfTask(current.getId()));
 
-        //TODO: KABOOM
-        //reminders.addAll(simpleReminders);
-        reminders.addAll(advancedReminders);
+                //If Task !ReminderType.NONE, throw an error.
+                if(current.getReminderType() != ReminderType.NONE)
+                    throw new CouldNotGetDataException("Error, Task with TaskStatus=UNPROGRAMMED has not ReminderType=NONE");
 
-        return reminders;
+                tasks.add(current);
+            }
+
+        } finally {
+            cursor.close();
+        }
+
+        //Sort tasks by title
+        Collections.sort(tasks, new UnprogrammedTasksByTitleComparator());
+
+        //Create viewModel
+        for (int i = 0; i < tasks.size(); i++) {
+            result.add(new TaskViewModel(tasks.get(i), TaskViewModelType.UNPROGRAMMED_REMINDER));
+        }
+
+        return result;
     }
 
 
     /**
-     * Returns a List of ADVANCED Reminders given a specific ReminderStatus and ReminderSortType
-     * The available ReminderStatus are:
-     *   - ARCHIVED.
-     *   - DONE.
-     *   - ACTIVE:
-     *          These are reminders which have an Active status, and will trigger sometime in the present or in the future
-     *          Basically, all Reminders which are *NOT* OVERDUE (See below)
-     *   - OVERDUE:
-     *          These are reminders which have an Active status, but will never trigger because of their set dates
-     *          Examples:
-     *              1. Reminder is set to end in the past: endDate < today
-     *              2. Reminder is set to end sometime in the future, but on a day of the week that have passed: Today=Tuesday, endDate=Friday but Reminder is set to trigger only Mondays.
-     *
-     * @param reminderStatus ReminderStatus enum value with which to filter Reminders.
-     * @param sortType       ReminderSortType enum value with which to sort results. By date or place
+     * Returns a List of Tasks (with Reminder and Attachments) which have TaskStatus.PROGRAMMED
+     * @param sortType TaskSortType enum value with which to sort results. By date or location
+     * @return A List of TaskViewModel
      */
-    private List<AdvancedReminder> getAdvancedRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
-        List<AdvancedReminder> advancedReminders = new ArrayList<>();
-
-        String orderByClause = null;
-        switch (sortType) {
-            case DATE:
-                orderByClause = RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName() + " DESC";
-                break;
-            case PLACE:
-                //Cant sort here, need the Place's name, which we don't have yet.
-                break;
-        }
-
+    public List<TaskViewModel> getProgrammedTasks(@NonNull TaskSortType sortType, Resources resources) throws CouldNotGetDataException, InvalidClassException {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.AdvancedReminderTable.TABLE_NAME, null, RemindyContract.AdvancedReminderTable.COLUMN_NAME_STATUS.getName() + "=?",
-                new String[]{reminderStatus.name()}, null, null, orderByClause);
+        List<TaskViewModel> result = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
+
+        Cursor cursor = db.query(RemindyContract.TaskTable.TABLE_NAME,
+                null, RemindyContract.TaskTable.COLUMN_NAME_STATUS.getName() + "=?",
+                new String[]{TaskStatus.PROGRAMMED.name()}, null, null, null);
 
         try {
             while (cursor.moveToNext()) {
-                AdvancedReminder current = getAdvancedReminderFromCursor(cursor);
+                Task current = getTaskFromCursor(cursor);
 
-                //Try to get the Place, if there is one
-                try {
-                    int placeId = cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_PLACE_FK.getName()));
-                    if(placeId != -1)
-                        current.setPlace(getPlace(placeId));
-                } catch (Exception e) {/*Thrown if COLUMN_NAME_PLACE_FK is null, so do nothing.*/}
+                //Try to get the attachments, if there are any
+                current.setAttachments(getAttachmentsOfTask(current.getId()));
 
-                //Try to get the Extras, if there are any
-                current.setExtras(getAdvancedReminderExtras(current.getId()));
+                //If Task ReminderType.NONE, throw an error.
+                if(current.getReminderType() == ReminderType.NONE)
+                    throw new CouldNotGetDataException("Error, Task with TaskStatus=PROGRAMMED has ReminderType=NONE");
+                else
+                    current.setReminder(getReminderOfTask(current.getId(), current.getReminderType()));
 
-                advancedReminders.add(current);
+                tasks.add(current);
             }
+
         } finally {
             cursor.close();
         }
+
 
         //Do sort by place if needed
-        if (sortType == ReminderSortType.PLACE) {
-            Collections.sort(advancedReminders, new AdvancedReminderByPlaceComparator());
+        if (sortType == TaskSortType.PLACE) {
+            Collections.sort(tasks, new TasksByPlaceComparator());
+
+        } else if (sortType == TaskSortType.DATE) {
+            Collections.sort(tasks, new TasksByReminderDateComparator());                   //CHECK THIS I DONT THINK ITS WORKING, ALSO CHECK SORT BY DATE ON DONE REMINDERS (DONEDATE)
+
         }
-        return advancedReminders;
+
+        //Generate List<TaskViewModel>
+        result = new TaskHeaderUtil().generateProgrammedTaskHeaderList(tasks, sortType, resources);
+
+        return result;
     }
 
+
     /**
-     * Returns a List of SIMPLE Reminders given a specific ReminderStatus and ReminderSortType
-     * The available ReminderStatus are:
-     *   - ARCHIVED.
-     *   - DONE.
-     *   - ACTIVE:
-     *          These are reminders which have an Active status, and will trigger sometime in the present or in the future
-     *          Basically, all Reminders which are *NOT* OVERDUE (See below)
-     *   - OVERDUE:
-     *          These are reminders which have an Active status, but will never trigger because of their set dates
-     *          Examples:
-     *              1. Reminder date is sometime in the past: date < today AND reminder.repeat = disabled
-     *              2. Reminder RepeatType!=DISABLED AND RepeatEndType==UNTIL_DATE AND repeatEndDate is in the past
-     *              3. Reminder RepeatType!=DISABLED AND RepeatEndType==FOR_X_EVENTS AND events have already passed.
-     *
-     * @param reminderStatus ReminderStatus enum value with which to filter Reminders.
-     * @param sortType       ReminderSortType enum value with which to sort results. By date only
+     * Returns a List of Tasks (with Reminder and Attachments) which have TaskStatus.DONE
+     * @param sortType TaskSortType enum value with which to sort results. By date or location
+     * @return A List of TaskViewModel
      */
-    private List<SimpleReminder> getSimpleRemindersByStatus(@NonNull ReminderStatus reminderStatus, @NonNull ReminderSortType sortType) {
-        List<SimpleReminder> simpleReminders = new ArrayList<>();
-
-        String orderByClause = null;
-        if(sortType == ReminderSortType.DATE)
-            orderByClause = RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName() + " DESC";
-
+    public List<TaskViewModel> getDoneTasks(@NonNull TaskSortType sortType, Resources resources) throws CouldNotGetDataException, InvalidClassException {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.SimpleReminderTable.TABLE_NAME, null, RemindyContract.SimpleReminderTable.COLUMN_NAME_STATUS.getName() + "=?",
-                new String[]{reminderStatus.name()}, null, null, orderByClause);
+        List<TaskViewModel> result = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
+
+        Cursor cursor = db.query(RemindyContract.TaskTable.TABLE_NAME,
+                null, RemindyContract.TaskTable.COLUMN_NAME_STATUS.getName() + "=?",
+                new String[]{TaskStatus.DONE.name()}, null, null, null);
 
         try {
             while (cursor.moveToNext()) {
-                SimpleReminder current = getSimpleReminderFromCursor(cursor);
+                Task current = getTaskFromCursor(cursor);
 
-                //Try to get the Extras, if there are any
-                current.setExtras(getSimpleReminderExtras(current.getId()));
+                //Try to get the attachments, if there are any
+                current.setAttachments(getAttachmentsOfTask(current.getId()));
 
-                simpleReminders.add(current);
+                //If Task has reminder, get it
+                if(current.getReminderType() != ReminderType.NONE)
+                    current.setReminder(getReminderOfTask(current.getId(), current.getReminderType()));
+
+                tasks.add(current);
             }
+
         } finally {
             cursor.close();
         }
 
-        return simpleReminders;
+        //Sort by date? sort by doneDate!
+
+        //Do sort by place if needed
+        if (sortType == TaskSortType.PLACE)
+            Collections.sort(tasks, new TasksByPlaceComparator());
+        else if (sortType == TaskSortType.DATE)
+            Collections.sort(tasks, new TasksByDoneDateComparator());   //Sorting by doneDate!
+
+
+        //TODO: Populate List<TaskViewModel>, adding headers (date or place headers)
+
+
+
+        //Generate List<TaskViewModel>
+        result = new TaskHeaderUtil().generateDoneTaskHeaderList(tasks, sortType, resources);
+
+
+        return result;
+    }
+
+
+    /**
+     * Returns a Task (with Reminder and Attachments) given a taskId
+     * @param taskId    The ID of the Task to get.
+     */
+    public Task getTask(int taskId) throws CouldNotGetDataException, SQLiteConstraintException {
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query(RemindyContract.TaskTable.TABLE_NAME, null, RemindyContract.PlaceTable._ID + "=?",
+                new String[]{String.valueOf(taskId)}, null, null, null);
+
+        if (cursor.getCount() == 0)
+            throw new CouldNotGetDataException("Specified Task not found in the database. Passed id=" + taskId);
+        if (cursor.getCount() > 1)
+            throw new SQLiteConstraintException("Database UNIQUE constraint failure, more than one record found. Passed value=" + taskId);
+
+        cursor.moveToNext();
+        Task task = getTaskFromCursor(cursor);
+        task.setAttachments(getAttachmentsOfTask(taskId));
+
+        if(task.getReminderType() != ReminderType.NONE)
+            task.setReminder(getReminderOfTask(taskId, task.getReminderType()));
+        return task;
     }
 
 
@@ -265,6 +252,7 @@ public class RemindyDAO {
         return places;
     }
 
+
     /**
      * Returns a Place given a placeId.
      * @param placeId The id of the place
@@ -285,46 +273,91 @@ public class RemindyDAO {
 
 
     /**
-     * Returns a List of Extras associated to an Advanced Reminder.
-     * @param reminderId The id of the Reminder, fk in AdvancedReminderExtraTable
+     * Returns a List of Attachments associated to a Task.
+     * @param taskId The id of the Task
      */
-    public ArrayList<ReminderExtra> getAdvancedReminderExtras(int reminderId) {
-        ArrayList<ReminderExtra> extras = new ArrayList<>();
+    public ArrayList<Attachment> getAttachmentsOfTask(int taskId) {
+        ArrayList<Attachment> attachments = new ArrayList<>();
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.AdvancedReminderExtraTable.TABLE_NAME, null, RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + "=?",
-                        new String[]{String.valueOf(reminderId)}, null, null, null);
+        Cursor cursor = db.query(RemindyContract.AttachmentTable.TABLE_NAME, null,
+                RemindyContract.AttachmentTable.COLUMN_NAME_TASK_FK.getName() + "=?",
+                        new String[]{String.valueOf(taskId)}, null, null, null);
 
         try {
             while (cursor.moveToNext()) {
-                extras.add(getReminderExtraFromCursor(cursor));
+                attachments.add(getAttachmentFromCursor(cursor));
             }
         } finally {
             cursor.close();
         }
 
-        return extras;
+        return attachments;
     }
+
 
     /**
-     * Returns a List of Extras associated to a Simple Reminder.
-     * @param reminderId The id of the Reminder, fk in SimpleReminderExtraTable
+     * Returns a Reminder given its taskId and reminderType
+     * @param taskId The ID of the task
+     * @param reminderType The Type of reminder
      */
-    public ArrayList<ReminderExtra> getSimpleReminderExtras(int reminderId) {
-        ArrayList<ReminderExtra> extras = new ArrayList<>();
-        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.SimpleReminderExtraTable.TABLE_NAME, null, RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + "=?",
-                        new String[]{String.valueOf(reminderId)}, null, null, null);
+    public Reminder getReminderOfTask(int taskId, @NonNull ReminderType reminderType) throws  CouldNotGetDataException, SQLiteConstraintException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        Reminder reminder;
 
+        String tableName, whereClause;
+        switch (reminderType) {
+            case ONE_TIME:
+                whereClause = RemindyContract.OneTimeReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+                tableName = RemindyContract.OneTimeReminderTable.TABLE_NAME;
+                break;
+            case REPEATING:
+                whereClause = RemindyContract.RepeatingReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+                tableName = RemindyContract.RepeatingReminderTable.TABLE_NAME;
+                break;
+            case LOCATION_BASED:
+                whereClause = RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+                tableName = RemindyContract.LocationBasedReminderTable.TABLE_NAME;
+                break;
+            default:
+                throw new CouldNotGetDataException("ReminderType is invalid. Type=" + reminderType);
+        }
+
+        Cursor cursor = db.query(tableName, null, whereClause, new String[]{String.valueOf(taskId)}, null, null, null);
         try {
-            while (cursor.moveToNext()) {
-                extras.add(getReminderExtraFromCursor(cursor));
+            if (cursor.getCount() == 0)
+                throw new CouldNotGetDataException("Specified Reminder not found in the database. Passed id=" + taskId);
+            if (cursor.getCount() > 1)
+                throw new SQLiteConstraintException("Database UNIQUE constraint failure, more than one Reminder found. Passed id=" + taskId);
+
+            cursor.moveToNext();
+            switch (reminderType) {
+                case ONE_TIME:
+                    reminder = getOneTimeReminderFromCursor(cursor);
+                    break;
+                case REPEATING:
+                    reminder = getRepeatingReminderFromCursor(cursor);
+                    break;
+                case LOCATION_BASED:
+                    reminder = getLocationBasedReminderFromCursor(cursor);
+                    int placeId = ((LocationBasedReminder)reminder).getPlaceId();
+                    try {
+                        ((LocationBasedReminder)reminder).setPlace(getPlace(placeId));
+                    } catch (PlaceNotFoundException | SQLiteConstraintException e) {
+                        throw new CouldNotGetDataException("Error trying to get Place for Location-based Reminder", e);
+                    }
+
+                    break;
+                default:
+                    throw new CouldNotGetDataException("ReminderType is invalid. Type=" + reminderType);
             }
         } finally {
             cursor.close();
         }
 
-        return extras;
+        return reminder;
     }
+
+
 
 
 
@@ -348,85 +381,80 @@ public class RemindyDAO {
                 new String[]{String.valueOf(placeId)}) > 0;
     }
 
-    /**
-     * Deletes a single AdvancedExtra, given its ID
-     * @param extraId The ID of the extra to delete
-     */
-    public boolean deleteAdvancedExtra(int extraId) throws CouldNotDeleteDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-
-        return db.delete(RemindyContract.AdvancedReminderExtraTable.TABLE_NAME,
-                RemindyContract.AdvancedReminderExtraTable._ID + " =?",
-                new String[]{String.valueOf(extraId)}) > 0;
-    }
 
     /**
-     * Deletes a single SimpleExtra, given its ID
-     * @param extraId The ID of the extra to delete
+     * Deletes all Attachments linked to an Task, given the task's ID
+     * @param taskId The ID of the reminder whose extras will be deleted
      */
-    public boolean deleteSimpleExtra(int extraId) throws CouldNotDeleteDataException {
+    public boolean deleteAttachmentsOfTask(int taskId) throws CouldNotDeleteDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
-        return db.delete(RemindyContract.SimpleReminderExtraTable.TABLE_NAME,
-                RemindyContract.SimpleReminderExtraTable._ID + " =?",
-                new String[]{String.valueOf(extraId)}) > 0;
-    }
-
-    /**
-     * Deletes all Extras linked to an Advanced Reminder, given the reminder's ID
-     * @param reminderId The ID of the reminder whose extras will be deleted
-     */
-    public boolean deleteExtrasFromAdvancedReminder(int reminderId) throws CouldNotDeleteDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-
-        return db.delete(RemindyContract.AdvancedReminderExtraTable.TABLE_NAME,
-                RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + " =?",
-                new String[]{String.valueOf(reminderId)}) > 0;
-    }
-
-    /**
-     * Deletes all Extras linked to a Simple Reminder, given the reminder's ID
-     * @param reminderId The ID of the reminder whose extras will be deleted
-     */
-    public boolean deleteExtrasFromSimpleReminder(int reminderId) throws CouldNotDeleteDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-
-        return db.delete(RemindyContract.SimpleReminderExtraTable.TABLE_NAME,
-                RemindyContract.SimpleReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName() + " =?",
-                new String[]{String.valueOf(reminderId)}) > 0;
-    }
-
-    /**
-     * Deletes an Advanced Reminder with its associated Extras, given the reminder's ID
-     * @param reminderId The ID of the reminder o delete
-     */
-    public boolean deleteAdvancedReminder(int reminderId, ReminderType reminderType) throws CouldNotDeleteDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-
-        //Delete the extras
-        deleteExtrasFromAdvancedReminder(reminderId);
-
-        return db.delete(RemindyContract.AdvancedReminderTable.TABLE_NAME,
-                RemindyContract.AdvancedReminderTable._ID + " =?",
-                new String[]{String.valueOf(reminderId)}) > 0;
-    }
-
-    /**
-     * Deletes a Simple Reminder with its associated Extras, given the reminder's ID
-     * @param reminderId The ID of the reminder o delete
-     */
-    public boolean deleteReminder(int reminderId, ReminderType reminderType) throws CouldNotDeleteDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-
-        //Delete the extras
-        deleteExtrasFromSimpleReminder(reminderId);
-
-        return db.delete(RemindyContract.SimpleReminderTable.TABLE_NAME,
-                RemindyContract.SimpleReminderTable._ID + " =?",
-                new String[]{String.valueOf(reminderId)}) > 0;
+        return db.delete(RemindyContract.AttachmentTable.TABLE_NAME,
+                RemindyContract.AttachmentTable.COLUMN_NAME_TASK_FK.getName() + " =?",
+                new String[]{String.valueOf(taskId)}) > 0;
     }
 
 
+    /**
+     * Deletes the Reminder of type ReminderType associated to a Task
+     * @param taskId The ID of the task
+     * @param reminderType The Type of reminder
+     */
+    public boolean deleteReminderOfTask(int taskId, ReminderType reminderType) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        String tableName, whereClause;
+        switch (reminderType) {
+            case ONE_TIME:
+                whereClause = RemindyContract.OneTimeReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+                tableName = RemindyContract.OneTimeReminderTable.TABLE_NAME;
+                break;
+            case REPEATING:
+                whereClause = RemindyContract.RepeatingReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+                tableName = RemindyContract.RepeatingReminderTable.TABLE_NAME;
+                break;
+            case LOCATION_BASED:
+                whereClause = RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+                tableName = RemindyContract.LocationBasedReminderTable.TABLE_NAME;
+                break;
+            default:
+                throw new CouldNotDeleteDataException("ReminderType is invalid. Type=" + reminderType);
+        }
+
+        return db.delete(tableName, whereClause, new String[]{String.valueOf(taskId)}) > 0;
+    }
+
+
+
+
+    /**
+     * Deletes a Task and associated Attachments and Reminder
+     * @param taskId The ID of the task
+     */
+    public boolean deleteTask(int taskId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        Task task;
+        try {
+            task = getTask(taskId);
+        } catch (CouldNotGetDataException e) {
+            throw new CouldNotDeleteDataException("Failed to get task from database. TaskID=" + taskId, e);
+        }
+
+        //Delete task's attachments
+        deleteAttachmentsOfTask(taskId);
+
+        //If task has a reminder, delete it
+        if(task.getReminderType() != ReminderType.NONE) {
+            deleteReminderOfTask(taskId, task.getReminderType());
+        }
+
+        //Finally, delete the task
+        return db.delete(RemindyContract.TaskTable.TABLE_NAME,
+                RemindyContract.TaskTable._ID + " =?",
+                new String[]{String.valueOf(taskId)}) > 0;
+
+    }
 
 
 
@@ -443,116 +471,77 @@ public class RemindyDAO {
     public long updatePlace(Place place) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
-        //Set values
-        ContentValues values = getValuesFromPlace(place);
-
-        //Which row to update
-        String selection = RemindyContract.PlaceTable._ID + " =? ";
-        String[] selectionArgs = {String.valueOf(place.getId())};
-
         int count = db.update(
                 RemindyContract.PlaceTable.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
+                getValuesFromPlace(place),
+                RemindyContract.PlaceTable._ID + " =? ",
+                new String[] {String.valueOf(place.getId())} );
 
         return count;
     }
 
     /**
-     * Updates the information stored about an Extra, associated to an Advanced Reminder
-     * @param extra The ReminderExtra to update
+     * Updates the information stored about a List of Attachments
+     * @param attachments The Attachments to update
      */
-    public long updateAdvancedReminderExtra(ReminderExtra extra) throws CouldNotUpdateDataException {
+    public long[] updateAttachments(ArrayList<Attachment> attachments) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        long[] updatedRowIds = new long[attachments.size()];
 
-        return db.update(RemindyContract.AdvancedReminderExtraTable.TABLE_NAME,
-                        getValuesFromExtra(extra),
-                        RemindyContract.AdvancedReminderExtraTable._ID + " =? ",
-                        new String[] {String.valueOf(extra.getId())});
+        for (int i = 0; i < attachments.size(); i++) {
+
+            updatedRowIds[i] = db.update(RemindyContract.AttachmentTable.TABLE_NAME,
+                    getValuesFromAttachment(attachments.get(i)),
+                    RemindyContract.AttachmentTable._ID + " =? ",
+                    new String[]{String.valueOf(attachments.get(i).getId())});
+        }
+        return updatedRowIds;
     }
 
     /**
-     * Updates the information stored about an Extra, associated to a Simple Reminder
-     * @param extra The ReminderExtra to update
+     * Updates the information stored about a Reminder
+     * @param reminder The Reminder to update
      */
-    public long updateSimpleReminderExtra(ReminderExtra extra) throws CouldNotUpdateDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+    public boolean updateReminder(Reminder reminder) throws CouldNotUpdateDataException {
 
-        return db.update(RemindyContract.SimpleReminderExtraTable.TABLE_NAME,
-                getValuesFromExtra(extra),
-                RemindyContract.SimpleReminderExtraTable._ID + " =? ",
-                new String[] {String.valueOf(extra.getId())});
+        //Need to delete old reminder and insert new one
+        //Old and New reminderType may be different, which are stored in different tables
+        try {
+            deleteReminderOfTask(reminder.getTaskId(), reminder.getType());
+        }catch (CouldNotDeleteDataException e) {
+            throw new CouldNotUpdateDataException("Error while deleting old reminder in dao.updateReminder(). Reminder=" + reminder.toString(), e);
+        }
+
+        try {
+            insertReminderOfTask(reminder.getTaskId(), reminder);
+        }catch (CouldNotInsertDataException e) {
+            throw new CouldNotUpdateDataException("Error while inserting new reminder in dao.updateReminder(). Reminder=" + reminder.toString(), e);
+        }
+
+        return true;
     }
 
+
     /**
-     * Updates the information stored about an Advanced Reminder and its Extras.
-     * @param advancedReminder The Advanced Reminder (and associated Extras) to update
+     * Updates the information stored about a Task, its Reminder and its Attachments.
+     * @param task The Task to update
      */
-    public long updateAdvancedReminder(AdvancedReminder advancedReminder) throws CouldNotUpdateDataException {
+    public long updateTask(Task task) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
-        //Delete the extras
-        try {
-            deleteExtrasFromAdvancedReminder(advancedReminder.getId());
-        } catch (CouldNotDeleteDataException e) {
-            throw new CouldNotUpdateDataException("Failed trying to delete Extras associated with Reminder ID= " + advancedReminder.getId(), e);
-        }
-        //Insert new Extras
-        try {
-            insertAdvancedReminderExtras(advancedReminder.getExtras());
-        } catch (CouldNotInsertDataException e) {
-            throw new CouldNotUpdateDataException("Failed trying to insert Extras associated with Reminder ID= " + advancedReminder.getId(), e);
-        }
+        updateAttachments(task.getAttachments());
 
-
-        //Set advancedReminder values
-        ContentValues values = getValuesFromAdvancedReminder(advancedReminder);
-
-        //Which row to update
-        String selection = RemindyContract.AdvancedReminderTable._ID + " =? ";
-        String[] selectionArgs = {String.valueOf(advancedReminder.getId())};
+        if(task.getReminderType() != ReminderType.NONE)
+            updateReminder(task.getReminder());
 
         return db.update(
-                RemindyContract.AdvancedReminderTable.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
+                RemindyContract.TaskTable.TABLE_NAME,
+                getValuesFromTask(task),
+                RemindyContract.TaskTable._ID + " =? ",
+                new String[] {String.valueOf(task.getId())} );
     }
-    /**
-     * Updates the information stored about a Simple Reminder and its Extras.
-     * @param simpleReminder The Simple Reminder (and associated Extras) to update
-     */
-    public long updateSimpleReminder(SimpleReminder simpleReminder) throws CouldNotUpdateDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-
-        //Delete the extras
-        try {
-            deleteExtrasFromSimpleReminder(simpleReminder.getId());
-        } catch (CouldNotDeleteDataException e) {
-            throw new CouldNotUpdateDataException("Failed trying to delete Extras associated with Reminder ID= " + simpleReminder.getId(), e);
-        }
-        //Insert new Extras
-        try {
-            insertSimpleReminderExtras(simpleReminder.getExtras());
-        } catch (CouldNotInsertDataException e) {
-            throw new CouldNotUpdateDataException("Failed trying to insert Extras associated with Reminder ID= " + simpleReminder.getId(), e);
-        }
 
 
-        //Set advancedReminder values
-        ContentValues values = getValuesFromSimpleReminder(simpleReminder);
-
-        //Which row to update
-        String selection = RemindyContract.SimpleReminderTable._ID + " =? ";
-        String[] selectionArgs = {String.valueOf(simpleReminder.getId())};
-
-        return db.update(
-                RemindyContract.SimpleReminderTable.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
-    }
 
 
 
@@ -580,101 +569,116 @@ public class RemindyDAO {
         return newRowId;
     }
 
+
     /**
-     * Inserts a List of Extras associated to an AdvancedReminder, into the database.
-     * @param extras The List of Extras to be inserted
+     * Inserts a List of Attachments associated to an Task, into the database.
+     * @param taskId The id of the Task associated to the Attachments
+     * @param attachments The List of Attachments to be inserted
      */
-    public long[] insertAdvancedReminderExtras(List<ReminderExtra> extras) throws CouldNotInsertDataException {
+    public long[] insertAttachmentsOfTask(int taskId, List<Attachment> attachments) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-        long[] newRowIds = new long[extras.size()];
+        long[] newRowIds = new long[attachments.size()];
 
-        for (int i = 0; i < extras.size(); i++) {
+        for (int i = 0; i < attachments.size(); i++) {
 
-            ContentValues values = getValuesFromExtra(extras.get(i));
+            Attachment attachment = attachments.get(i);
+            attachment.setTaskId(taskId);
+            ContentValues values = getValuesFromAttachment(attachment);
 
-            newRowIds[i] = db.insert(RemindyContract.AdvancedReminderExtraTable.TABLE_NAME, null, values);
+            newRowIds[i] = db.insert(RemindyContract.AttachmentTable.TABLE_NAME, null, values);
 
             if (newRowIds[i] == -1)
-                throw new CouldNotInsertDataException("There was a problem inserting the Extra: " + extras.toString());
+                throw new CouldNotInsertDataException("There was a problem inserting the Attachment: " + attachments.toString());
         }
 
         return newRowIds;
     }
 
-    /**
-     * Inserts a List of Extras associated to an AdvancedReminder, into the database.
-     * @param extras The List of Extras to be inserted
-     */
-    public long[] insertSimpleReminderExtras(List<ReminderExtra> extras) throws CouldNotInsertDataException {
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-        long[] newRowIds = new long[extras.size()];
-
-        for (int i = 0; i < extras.size(); i++) {
-
-            ContentValues values = getValuesFromExtra(extras.get(i));
-
-            newRowIds[i] = db.insert(RemindyContract.SimpleReminderExtraTable.TABLE_NAME, null, values);
-
-            if (newRowIds[i] == -1)
-                throw new CouldNotInsertDataException("There was a problem inserting the Extra: " + extras.toString());
-        }
-
-        return newRowIds;
-    }
 
     /**
-     * Inserts a new Advanced Reminder and its associated Extras into the database.
-     * @param advancedReminder The Reminder (and associated Extras) to insert
+     * Inserts a new Reminder into the database.
+     * @param taskId The id of the Task associated to the Reminder
+     * @param reminder The Reminder to insert
      */
-    public long insertAdvancedReminder(AdvancedReminder advancedReminder) throws CouldNotInsertDataException {
+    public long insertReminderOfTask(int taskId, Reminder reminder) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
-        //Insert Extras
-        if (advancedReminder.getExtras() != null && advancedReminder.getExtras().size() > 0) {
-            try {
-                insertAdvancedReminderExtras(advancedReminder.getExtras());
-            } catch (CouldNotInsertDataException e) {
-                throw new CouldNotInsertDataException("There was a problem inserting the Extras while inserting the Reminder: " + advancedReminder.toString(), e);
-            }
-        }
+        ContentValues values;
+        String tableName;
 
-        ContentValues values = getValuesFromAdvancedReminder(advancedReminder);
+        reminder.setTaskId(taskId);
+
+        switch (reminder.getType()) {
+            case ONE_TIME:
+                values = getValuesFromOneTimeReminder((OneTimeReminder) reminder);
+                tableName = RemindyContract.OneTimeReminderTable.TABLE_NAME;
+                break;
+            case REPEATING:
+                values = getValuesFromRepeatingReminder((RepeatingReminder) reminder);
+                tableName = RemindyContract.RepeatingReminderTable.TABLE_NAME;
+                break;
+            case LOCATION_BASED:
+                values = getValuesFromLocationBasedReminder((LocationBasedReminder) reminder);
+                tableName = RemindyContract.LocationBasedReminderTable.TABLE_NAME;
+                break;
+            default:
+                throw new CouldNotInsertDataException("ReminderType is invalid. Type=" + reminder.getType());
+        }
 
         long newRowId;
-        newRowId = db.insert(RemindyContract.AdvancedReminderTable.TABLE_NAME, null, values);
+        newRowId = db.insert(tableName, null, values);
 
         if (newRowId == -1)
-            throw new CouldNotInsertDataException("There was a problem inserting the Reminder: " + advancedReminder.toString());
+            throw new CouldNotInsertDataException("There was a problem inserting the Reminder: " + reminder.toString());
 
         return newRowId;
     }
 
+
     /**
-     * Inserts a new Simple Reminder and its associated Extras into the database.
-     * @param simpleReminder The Reminder (and associated Extras) to insert
+     * Inserts a new Task and its associated Reminder and Attachments into the database.
+     * @param task The Task (and associated Reminder and Attachments) to insert
      */
-    public long insertSimpleReminder(SimpleReminder simpleReminder) throws CouldNotInsertDataException {
+    public long insertTask(Task task) throws CouldNotInsertDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
-        //Insert Extras
-        if (simpleReminder.getExtras() != null && simpleReminder.getExtras().size() > 0) {
+        ContentValues values = getValuesFromTask(task);
+
+        long newRowId;
+        newRowId = db.insert(RemindyContract.TaskTable.TABLE_NAME, null, values);
+
+        if (newRowId == -1)
+            throw new CouldNotInsertDataException("There was a problem inserting the Task: " + task.toString());
+
+
+
+        //Insert Attachments
+        if (task.getAttachments() != null && task.getAttachments().size() > 0) {
             try {
-                insertSimpleReminderExtras(simpleReminder.getExtras());
+                insertAttachmentsOfTask((int)newRowId, task.getAttachments());
             } catch (CouldNotInsertDataException e) {
-                throw new CouldNotInsertDataException("There was a problem inserting the Extras while inserting the Reminder: " + simpleReminder.toString(), e);
+                throw new CouldNotInsertDataException("There was a problem inserting the Attachments while inserting the Task: " + task.toString(), e);
             }
         }
 
-        ContentValues values = getValuesFromSimpleReminder(simpleReminder);
-
-        long newRowId;
-        newRowId = db.insert(RemindyContract.SimpleReminderTable.TABLE_NAME, null, values);
-
-        if (newRowId == -1)
-            throw new CouldNotInsertDataException("There was a problem inserting the Reminder: " + simpleReminder.toString());
+        //Insert Reminder if it exists
+        if (task.getReminder() != null) {
+            try {
+                insertReminderOfTask((int)newRowId, task.getReminder());
+            } catch (CouldNotInsertDataException e) {
+                throw new CouldNotInsertDataException("There was a problem inserting the Reminder while inserting the Task: " + task.toString(), e);
+            }
+        }
 
         return newRowId;
     }
+
+
+
+
+
+
+
 
 
 
@@ -682,6 +686,51 @@ public class RemindyDAO {
 
 
     /* Model to ContentValues */
+
+    private ContentValues getValuesFromTask(Task task) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.TaskTable.COLUMN_NAME_STATUS.getName(), task.getStatus().name());
+        values.put(RemindyContract.TaskTable.COLUMN_NAME_TITLE.getName(), task.getTitle());
+        values.put(RemindyContract.TaskTable.COLUMN_NAME_DESCRIPTION.getName(), task.getDescription());
+        values.put(RemindyContract.TaskTable.COLUMN_NAME_CATEGORY.getName(), task.getCategory().name());
+        values.put(RemindyContract.TaskTable.COLUMN_NAME_REMINDER_TYPE.getName(), task.getReminderType().name());
+
+        values.put(RemindyContract.TaskTable.COLUMN_NAME_DONE_DATE.getName(), (task.getStatus() == TaskStatus.DONE ? task.getDoneDate().getTimeInMillis() : -1));
+        return values;
+    }
+
+
+    private ContentValues getValuesFromOneTimeReminder(OneTimeReminder oneTimeReminder) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.OneTimeReminderTable.COLUMN_NAME_TASK_FK.getName(), oneTimeReminder.getTaskId());
+        values.put(RemindyContract.OneTimeReminderTable.COLUMN_NAME_DATE.getName(), oneTimeReminder.getDate().getTimeInMillis());
+        values.put(RemindyContract.OneTimeReminderTable.COLUMN_NAME_TIME.getName(), oneTimeReminder.getTime().getTimeInMinutes());
+        return values;
+    }
+
+
+    private ContentValues getValuesFromRepeatingReminder(RepeatingReminder repeatingReminder) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_TASK_FK.getName(), repeatingReminder.getTaskId());
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_DATE.getName(), repeatingReminder.getDate().getTimeInMillis());
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_TIME.getName(), repeatingReminder.getTime().getTimeInMinutes());
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_TYPE.getName(), repeatingReminder.getRepeatType().name());
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName(), repeatingReminder.getRepeatInterval());
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName(), repeatingReminder.getRepeatEndType().name());
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName(), (repeatingReminder.getRepeatEndType() == ReminderRepeatEndType.FOR_X_EVENTS ? repeatingReminder.getRepeatEndNumberOfEvents() : -1));
+        values.put(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName(), (repeatingReminder.getRepeatEndType() == ReminderRepeatEndType.UNTIL_DATE ? repeatingReminder.getRepeatEndDate().getTimeInMillis() : -1));
+        return values;
+    }
+
+
+    private ContentValues getValuesFromLocationBasedReminder(LocationBasedReminder locationBasedReminder) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName(), locationBasedReminder.getTaskId());
+        values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName(), locationBasedReminder.getPlaceId());
+        values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_IS_ENTERING.getName(), String.valueOf(locationBasedReminder.isEntering()));
+        return values;
+    }
+
 
     private ContentValues getValuesFromPlace(Place place) {
         ContentValues values = new ContentValues();
@@ -694,64 +743,43 @@ public class RemindyDAO {
         return values;
     }
 
-    private ContentValues getValuesFromExtra(ReminderExtra extra) {
-        ContentValues values = new ContentValues();
-        values.put(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName(), extra.getReminderId());
-        values.put(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_TYPE.getName(), extra.getType().name());
 
-        switch (extra.getType()) {
+    private ContentValues getValuesFromAttachment(Attachment attachment) {
+        ContentValues values = new ContentValues();
+        values.put(RemindyContract.AttachmentTable.COLUMN_NAME_TASK_FK.getName(), attachment.getTaskId());
+        values.put(RemindyContract.AttachmentTable.COLUMN_NAME_TYPE.getName(), attachment.getType().name());
+
+        switch (attachment.getType()) {
             case AUDIO:
-                values.put(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((ReminderExtraAudio) extra).getAudio());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((AudioAttachment) attachment).getAudio());
                 break;
             case IMAGE:
-                values.put(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((ReminderExtraImage) extra).getThumbnail());
-                values.put(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ReminderExtraImage) extra).getFullImagePath());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((ImageAttachment) attachment).getThumbnail());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ImageAttachment) attachment).getFullImagePath());
                 break;
             case TEXT:
-                values.put(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ReminderExtraText) extra).getText());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((TextAttachment) attachment).getText());
+                break;
+            case LIST:
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ListAttachment) attachment).getText());
                 break;
             case LINK:
-                values.put(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ReminderExtraLink) extra).getLink());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((LinkAttachment) attachment).getLink());
                 break;
             default:
-                throw new InvalidParameterException("ReminderExtraType is invalid. Value = " + extra.getType());
+                throw new InvalidParameterException("AttachmentType is invalid. Value = " + attachment.getType());
         }
         return values;
     }
 
-    private ContentValues getValuesFromAdvancedReminder(AdvancedReminder reminder) {
-        ContentValues values = new ContentValues();
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_STATUS.getName(), reminder.getStatus().name());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TITLE.getName(), reminder.getTitle());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DESCRIPTION.getName(), reminder.getDescription());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_CATEGORY.getName(), reminder.getCategory().name());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_PLACE_FK.getName(), (reminder.getPlace() != null ? String.valueOf(reminder.getPlace().getId()) : "-1"));
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DATE_TYPE.getName(), reminder.getDateType().name());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_DATE.getName(), reminder.getStartDate().getTimeInMillis());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName(), reminder.getEndDate().getTimeInMillis());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getName(), reminder.getTimeType().name());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName(), reminder.getStartTime().getTimeInMinutes());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName(), reminder.getEndTime().getTimeInMinutes());
-        values.put(RemindyContract.AdvancedReminderTable.COLUMN_NAME_WEEKDAYS.getName(), reminder.getWeekdays().getIntValue());
-        return values;
-    }
 
-    private ContentValues getValuesFromSimpleReminder(SimpleReminder reminder) {
-        ContentValues values = new ContentValues();
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_STATUS.getName(), reminder.getStatus().name());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_TITLE.getName(), reminder.getTitle());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_DESCRIPTION.getName(), reminder.getDescription());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_CATEGORY.getName(), reminder.getCategory().name());
 
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName(), reminder.getDate().getTimeInMillis());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_TIME.getName(), reminder.getTime().getTimeInMinutes());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_TYPE.getName(), reminder.getRepeatType().name());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName(), reminder.getRepeatInterval());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName(), (reminder.getRepeatEndType() != null ? reminder.getRepeatEndType().name() : null));
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName(), reminder.getRepeatEndNumberOfEvents());
-        values.put(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName(), (reminder.getRepeatEndDate() != null ? reminder.getRepeatEndDate().getTimeInMillis() : 0));
-        return values;
-    }
+
+
+
+
+
+
 
 
 
@@ -761,71 +789,81 @@ public class RemindyDAO {
 
     /* Cursor to Model */
 
-    private AdvancedReminder getAdvancedReminderFromCursor(Cursor cursor) {
-        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable._ID));
-        ReminderStatus status = ReminderStatus.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_STATUS.getName())));
-        String title = cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TITLE.getName()));
-        String description = cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DESCRIPTION.getName()));
-        ReminderCategory category = ReminderCategory.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_CATEGORY.getName())));
-        ReminderDateType dateType = ReminderDateType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_DATE_TYPE.getName())));
+    private Task getTaskFromCursor(Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.TaskTable._ID));
+        TaskStatus status = TaskStatus.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.TaskTable.COLUMN_NAME_STATUS.getName())));
+        String title = cursor.getString(cursor.getColumnIndex(RemindyContract.TaskTable.COLUMN_NAME_TITLE.getName()));
+        String description = cursor.getString(cursor.getColumnIndex(RemindyContract.TaskTable.COLUMN_NAME_DESCRIPTION.getName()));
+        TaskCategory category = TaskCategory.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.TaskTable.COLUMN_NAME_CATEGORY.getName())));
 
-        Calendar startDate = null;
-        int startDateIndex = cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName());
-        if (!cursor.getString(startDateIndex).isEmpty()) {
-            startDate = Calendar.getInstance();
-            startDate.setTimeInMillis(cursor.getLong(startDateIndex));
+
+        ReminderType reminderType;
+        try {
+            reminderType = ReminderType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.TaskTable.COLUMN_NAME_REMINDER_TYPE.getName())));
+        } catch (IllegalArgumentException e) { //Thrown if task has no reminder
+            reminderType = null;
         }
 
-        Calendar endDate = null;
-        int endDateIndex = cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_DATE.getName());
-        if (!cursor.getString(endDateIndex).isEmpty()) {
-            endDate = Calendar.getInstance();
-            endDate.setTimeInMillis(cursor.getLong(endDateIndex));
-        }
-
-        ReminderTimeType timeType = ReminderTimeType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_TIME_TYPE.getName())));
-
-        Time startTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_START_TIME.getName())));
-        Time endTime = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_END_TIME.getName())));
-        Weekdays weekdays = new Weekdays(cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderTable.COLUMN_NAME_WEEKDAYS.getName())));
-
-
-        return new AdvancedReminder(id, status, title, description, category, null, dateType, startDate, endDate, timeType, startTime, endTime, weekdays);
-    }
-
-
-    private SimpleReminder getSimpleReminderFromCursor(Cursor cursor) {
-        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable._ID));
-        ReminderStatus status = ReminderStatus.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_STATUS.getName())));
-        String title = cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_TITLE.getName()));
-        String description = cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_DESCRIPTION.getName()));
-        ReminderCategory category = ReminderCategory.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_CATEGORY.getName())));
-
-        Calendar date = Calendar.getInstance();
-        date.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_DATE.getName())));
-
-        Time time = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_TIME.getName())));
-        ReminderRepeatType repeatType = ReminderRepeatType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_TYPE.getName())));
-
-        int repeatInterval = 0;
-        ReminderRepeatEndType repeatEndType = null;
-        int repeatEndNumberOfEvents = 0;
-        Calendar repeatEndDate = null;
-
-        if(repeatType != ReminderRepeatType.DISABLED) {
-            repeatInterval = cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName()));
-            repeatEndType = ReminderRepeatEndType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName())));
-
-            if(repeatEndType == ReminderRepeatEndType.FOR_X_EVENTS)
-                repeatEndNumberOfEvents = cursor.getInt(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName()));
-
-            if(repeatEndType == ReminderRepeatEndType.UNTIL_DATE) {
-                repeatEndDate = Calendar.getInstance();
-                repeatEndDate.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.SimpleReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName())));
+        Calendar doneDate = null;
+        if (status == TaskStatus.DONE) {
+            long doneDateLong = cursor.getLong(cursor.getColumnIndex(RemindyContract.TaskTable.COLUMN_NAME_DONE_DATE.getName()));
+            if (doneDateLong != -1) {
+                doneDate = Calendar.getInstance();
+                doneDate.setTimeInMillis(doneDateLong);
             }
         }
 
-        return new SimpleReminder(id, status, title, description, category, date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
+        return new Task(id, status, title, description, category, reminderType, null, doneDate);
+    }
+
+
+    private OneTimeReminder getOneTimeReminderFromCursor(Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.OneTimeReminderTable._ID));
+        int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.OneTimeReminderTable.COLUMN_NAME_TASK_FK.getName()));
+
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.OneTimeReminderTable.COLUMN_NAME_DATE.getName())));
+
+        Time time = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.OneTimeReminderTable.COLUMN_NAME_TIME.getName())));
+
+        return new OneTimeReminder(id, taskId, date, time);
+    }
+
+
+    private RepeatingReminder getRepeatingReminderFromCursor(Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable._ID));
+        int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_TASK_FK.getName()));
+
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_DATE.getName())));
+
+        Time time = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_TIME.getName())));
+        ReminderRepeatType repeatType = ReminderRepeatType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_TYPE.getName())));
+
+        int repeatInterval = cursor.getInt(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName()));
+        ReminderRepeatEndType repeatEndType = ReminderRepeatEndType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_TYPE.getName())));
+
+        int repeatEndNumberOfEvents = -1;
+        if(repeatEndType == ReminderRepeatEndType.FOR_X_EVENTS)
+            repeatEndNumberOfEvents = cursor.getInt(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_NUMBER_OF_EVENTS.getName()));
+
+        Calendar repeatEndDate = null;
+        if(repeatEndType == ReminderRepeatEndType.UNTIL_DATE) {
+            repeatEndDate = Calendar.getInstance();
+            repeatEndDate.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName())));
+        }
+
+        return new RepeatingReminder(id, taskId, date, time, repeatType, repeatInterval, repeatEndType, repeatEndNumberOfEvents, repeatEndDate);
+    }
+
+
+    private LocationBasedReminder getLocationBasedReminderFromCursor(Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable._ID));
+        int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName()));
+        int placeId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName()));
+        boolean isEntering = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_IS_ENTERING.getName())));
+
+        return new LocationBasedReminder(id, taskId, placeId, null, isEntering);
     }
 
 
@@ -841,24 +879,26 @@ public class RemindyDAO {
         return new Place(id, alias, address, latitude, longitude, radius, isOneOff);
     }
 
-    private ReminderExtra getReminderExtraFromCursor(Cursor cursor) {
-        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderExtraTable._ID));
-        int reminderId = cursor.getInt(cursor.getColumnIndex(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_REMINDER_FK.getName()));
-        ReminderExtraType extraType = ReminderExtraType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_TYPE.getName())));
-        String textContent = cursor.getString(cursor.getColumnIndex(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_TEXT.getName()));
-        byte[] blobContent = cursor.getBlob(cursor.getColumnIndex(RemindyContract.AdvancedReminderExtraTable.COLUMN_NAME_CONTENT_BLOB.getName()));
+    private Attachment getAttachmentFromCursor(Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.AttachmentTable._ID));
+        int reminderId = cursor.getInt(cursor.getColumnIndex(RemindyContract.AttachmentTable.COLUMN_NAME_TASK_FK.getName()));
+        AttachmentType attachmentType = AttachmentType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.AttachmentTable.COLUMN_NAME_TYPE.getName())));
+        String textContent = cursor.getString(cursor.getColumnIndex(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName()));
+        byte[] blobContent = cursor.getBlob(cursor.getColumnIndex(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_BLOB.getName()));
 
-        switch (extraType) {
+        switch (attachmentType) {
             case AUDIO:
-                return new ReminderExtraAudio(id, reminderId, blobContent);
+                return new AudioAttachment(id, reminderId, blobContent);
             case IMAGE:
-                return new ReminderExtraImage(id, reminderId, blobContent, textContent);
+                return new ImageAttachment(id, reminderId, blobContent, textContent);
             case TEXT:
-                return new ReminderExtraText(id, reminderId, textContent);
+                return new TextAttachment(id, reminderId, textContent);
             case LINK:
-                return new ReminderExtraLink(id, reminderId, textContent);
+                return new LinkAttachment(id, reminderId, textContent);
+            case LIST:
+                return new ListAttachment(id, reminderId, textContent);
             default:
-                throw new InvalidParameterException("ReminderExtraType is invalid. Value = " + extraType);
+                throw new InvalidParameterException("AttachmentType is invalid. Value = " + attachmentType);
         }
     }
 
