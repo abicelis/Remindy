@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.app.adapters.TasksViewPagerAdapter;
+import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.TaskStatus;
 
 /**
@@ -30,6 +32,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager mViewpager;
     private TabLayout mTabLayout;
     private FloatingActionButton mFab;
+
+    TaskListFragment mUnprogrammedTasksListFragment;
+    TaskListFragment mProgrammedTasksListFragment;
+    TaskListFragment mDoneTasksListFragment;
 
     //DATA
     private List<String> titleList = new ArrayList<>();
@@ -66,16 +72,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_home_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.menu_home_sort:
+                boolean sortByPlace = !item.isChecked();
+                item.setChecked(!item.isChecked());
+                mProgrammedTasksListFragment.setSortTypeAndRefresh( (sortByPlace ? TaskSortType.PLACE : TaskSortType.DATE) );
+                mDoneTasksListFragment.setSortTypeAndRefresh( (sortByPlace ? TaskSortType.PLACE : TaskSortType.DATE) );
+                return true;
 
+            case R.id.menu_home_settings:
+                return true;
+
+            case R.id.menu_home_about:
+                return true;
+
+            case R.id.menu_home_rate:
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -84,24 +99,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         titleList.add(getResources().getString(R.string.task_status_programmed));
         titleList.add(getResources().getString(R.string.task_status_done));
 
-        Fragment unprogrammedTasksListFragment = new TaskListFragment();
-        Fragment programmedTasksListFragment = new TaskListFragment();
-        Fragment doneTasksListFragment = new TaskListFragment();
+        mUnprogrammedTasksListFragment = new TaskListFragment();
+        mProgrammedTasksListFragment = new TaskListFragment();
+        mDoneTasksListFragment = new TaskListFragment();
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.UNPROGRAMMED);
-        unprogrammedTasksListFragment.setArguments(bundle);
-        fragmentList.add(unprogrammedTasksListFragment);
+        mUnprogrammedTasksListFragment.setArguments(bundle);
+        fragmentList.add(mUnprogrammedTasksListFragment);
 
         bundle = new Bundle();
         bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.PROGRAMMED);
-        programmedTasksListFragment.setArguments(bundle);
-        fragmentList.add(programmedTasksListFragment);
+        mProgrammedTasksListFragment.setArguments(bundle);
+        fragmentList.add(mProgrammedTasksListFragment);
 
         bundle = new Bundle();
         bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.DONE);
-        doneTasksListFragment.setArguments(bundle);
-        fragmentList.add(doneTasksListFragment);
+        mDoneTasksListFragment.setArguments(bundle);
+        fragmentList.add(mDoneTasksListFragment);
 
     }
 

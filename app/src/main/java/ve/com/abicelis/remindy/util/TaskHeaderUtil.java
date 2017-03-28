@@ -6,12 +6,18 @@ import java.io.InvalidClassException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.TaskViewModelType;
 import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.model.TasksByDoneDateComparator;
+import ve.com.abicelis.remindy.model.TasksByPlaceComparator;
+import ve.com.abicelis.remindy.model.TasksByReminderDateComparator;
+import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
@@ -94,6 +100,7 @@ public class TaskHeaderUtil {
         clearTaskBuckets();
 
         if(sortType == TaskSortType.DATE) {
+            Collections.sort(tasks, new TasksByReminderDateComparator());
             for (Task current : tasks) {
 
                 if(current.getReminderType() == null)
@@ -172,7 +179,10 @@ public class TaskHeaderUtil {
                 dumpTaskBucketIntoViewModelList(tasksFuture, result);
             }
 
+        } else if(sortType == TaskSortType.PLACE) {
+            handleSortingByPlace(tasks, result, resources);
         }
+
 
         return result;
     }
@@ -212,6 +222,8 @@ public class TaskHeaderUtil {
 
 
 
+
+
     /* Done Tasks */
     public ArrayList<TaskViewModel> generateDoneTaskHeaderList(List<Task> tasks, TaskSortType sortType, Resources resources) throws InvalidClassException {
         ArrayList<TaskViewModel> result = new ArrayList<>();
@@ -219,6 +231,8 @@ public class TaskHeaderUtil {
         clearTaskBuckets();
 
         if(sortType == TaskSortType.DATE) {
+            Collections.sort(tasks, new TasksByDoneDateComparator());   //Sorting by doneDate!
+
             for (Task current : tasks) {
 
                 if(current.getReminderType() == null)
@@ -271,6 +285,8 @@ public class TaskHeaderUtil {
                 dumpTaskBucketIntoViewModelList(tasksPast, result);
             }
 
+        } else if(sortType == TaskSortType.PLACE) {
+            handleSortingByPlace(tasks, result, resources);
         }
 
         return result;
@@ -307,6 +323,40 @@ public class TaskHeaderUtil {
 
 
 
+
+    private void handleSortingByPlace(List<Task> tasks, ArrayList<TaskViewModel> result, Resources resources) {
+        Collections.sort(tasks, new TasksByPlaceComparator());
+
+        if(tasks.get(0).getReminderType() != ReminderType.LOCATION_BASED) {   //There are no Location-based reminders, insert them all into result
+            result.add(new TaskViewModel(resources.getString(R.string.task_header_no_location), false));
+            dumpTaskBucketIntoViewModelList(tasks, result);
+        } else {
+            String lastPlaceAlias = ((LocationBasedReminder)tasks.get(0).getReminder()).getPlace().getAlias();     //Grab first location alias
+            result.add(new TaskViewModel(lastPlaceAlias, false));
+            result.add(new TaskViewModel(tasks.get(0), TaskViewModelType.LOCATION_BASED_REMINDER));
+
+
+            for (int i = 1; i < tasks.size(); i++) {
+
+                if(tasks.get(i).getReminderType() != ReminderType.LOCATION_BASED) { //Got to a NON Location-based reminder? Add the rest of reminders and break.
+                    result.add(new TaskViewModel(resources.getString(R.string.task_header_no_location), false));
+
+                    List<Task> otherTasks = new ArrayList<>();
+                    for (int j = i; j < tasks.size(); j++)
+                        otherTasks.add(tasks.get(j));
+                    dumpTaskBucketIntoViewModelList(otherTasks, result);
+                    break;
+                }
+
+                String placeAlias = ((LocationBasedReminder)tasks.get(i).getReminder()).getPlace().getAlias();
+                if(placeAlias.compareTo(lastPlaceAlias) != 0) {   //New location alias? Add a header
+                    lastPlaceAlias = placeAlias;
+                    result.add(new TaskViewModel(lastPlaceAlias, false));
+                }
+                result.add(new TaskViewModel(tasks.get(i), TaskViewModelType.LOCATION_BASED_REMINDER));
+            }
+        }
+    }
 
     private void clearTaskBuckets() {
         tasksLastYear.clear();
@@ -359,6 +409,8 @@ public class TaskHeaderUtil {
         copyTo.setTimeZone(copyFrom.getTimeZone());
         copyTo.setTimeInMillis(copyFrom.getTimeInMillis());
     }
+
+
 
 
 

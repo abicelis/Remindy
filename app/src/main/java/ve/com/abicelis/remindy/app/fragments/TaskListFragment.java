@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class TaskListFragment extends Fragment {
     private List<TaskViewModel> tasks = new ArrayList<>();
     private TaskStatus reminderTypeToDisplay;
     private RemindyDAO mDao;
+    private TaskSortType mTaskSortType = TaskSortType.DATE;
 
     //UI
     private RecyclerView mRecyclerView;
@@ -88,7 +90,7 @@ public class TaskListFragment extends Fragment {
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
         itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
 
-        mRecyclerView.addItemDecoration(itemDecoration);
+        //mRecyclerView.addItemDecoration(itemDecoration);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -105,8 +107,12 @@ public class TaskListFragment extends Fragment {
         );
     }
 
+    public void setSortTypeAndRefresh(TaskSortType taskSortType) {
+        mTaskSortType = taskSortType;
+        refreshRecyclerView();
+    }
 
-    public void refreshRecyclerView() {
+    private void refreshRecyclerView() {
 
         if(mDao == null)
             mDao = new RemindyDAO(getActivity().getApplicationContext());
@@ -121,12 +127,14 @@ public class TaskListFragment extends Fragment {
                     tasks.addAll(mDao.getUnprogrammedTasks());
                     break;
                 case PROGRAMMED:
-                    tasks.addAll(mDao.getProgrammedTasks(TaskSortType.DATE));
+                    //TODO: Sorting by date by default, change this
+                    tasks.addAll(mDao.getProgrammedTasks(mTaskSortType, getResources()));
                     break;
                 case DONE:
-                    tasks.addAll(mDao.getDoneTasks(TaskSortType.DATE));
+                    //TODO: Sorting by date by default, change this
+                    tasks.addAll(mDao.getDoneTasks(mTaskSortType, getResources()));
             }
-        }catch (CouldNotGetDataException e) {
+        }catch (CouldNotGetDataException | InvalidClassException e) {
             SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_getting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
         }
 
