@@ -138,16 +138,6 @@ public class RemindyDAO {
             cursor.close();
         }
 
-
-        //Do sort by place if needed
-        if (sortType == TaskSortType.PLACE) {
-            Collections.sort(tasks, new TasksByPlaceComparator());
-
-        } else if (sortType == TaskSortType.DATE) {
-            Collections.sort(tasks, new TasksByReminderDateComparator());                   //CHECK THIS I DONT THINK ITS WORKING, ALSO CHECK SORT BY DATE ON DONE REMINDERS (DONEDATE)
-
-        }
-
         //Generate List<TaskViewModel>
         result = new TaskHeaderUtil().generateProgrammedTaskHeaderList(tasks, sortType, resources);
 
@@ -187,22 +177,8 @@ public class RemindyDAO {
             cursor.close();
         }
 
-        //Sort by date? sort by doneDate!
-
-        //Do sort by place if needed
-        if (sortType == TaskSortType.PLACE)
-            Collections.sort(tasks, new TasksByPlaceComparator());
-        else if (sortType == TaskSortType.DATE)
-            Collections.sort(tasks, new TasksByDoneDateComparator());   //Sorting by doneDate!
-
-
-        //TODO: Populate List<TaskViewModel>, adding headers (date or place headers)
-
-
-
-        //Generate List<TaskViewModel>
+        //Generate List<TaskViewModel> This List will be sorted and grouped!
         result = new TaskHeaderUtil().generateDoneTaskHeaderList(tasks, sortType, resources);
-
 
         return result;
     }

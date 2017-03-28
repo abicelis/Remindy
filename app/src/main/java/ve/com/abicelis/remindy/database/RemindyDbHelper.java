@@ -275,7 +275,7 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 ") VALUES " +
                 "(0, 19, 0, 'TRUE')," +
                 "(1, 20, 1, 'TRUE')," +
-                "(2, 21, 2, 'TRUE')," +
+                "(2, 21, 1, 'TRUE')," +
                 "(3, 22, 3, 'FALSE');";
         sqLiteDatabase.execSQL(statement);
 
