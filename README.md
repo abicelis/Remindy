@@ -46,7 +46,7 @@ This Project uses external SDK's
 * [Preference-v7-fix](https://github.com/Gericop/Android-Support-Preference-V7-Fix) - Fixes for preference-v7 support library
 * [BetterPickers](https://github.com/code-troopers/android-betterpickers) - Datepicker library by code-troopers
 * [TransitionsEverywhere](https://github.com/andkulikov/Transitions-Everywhere) - Backported Transitions library by andkulikov
-
+* [FloatingActionButton](https://github.com/Clans/FloatingActionButton) - Custom Fab Button by Clans
 
 ## Software used
 
