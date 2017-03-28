@@ -14,7 +14,6 @@
 
 
     /*Text sizes*/
-    <dimen name="text_size_huge">26sp</dimen>
     <dimen name="text_size_big">16sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
 
