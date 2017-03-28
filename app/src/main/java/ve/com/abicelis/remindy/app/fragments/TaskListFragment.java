@@ -87,10 +87,11 @@ public class TaskListFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mAdapter = new TaskAdapter(getActivity(), tasks);
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
-        itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
 
+        //DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
+        //itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
         //mRecyclerView.addItemDecoration(itemDecoration);
+
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -138,18 +139,7 @@ public class TaskListFragment extends Fragment {
             SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_getting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
         }
 
-        //tasks.addAll(mDao.getRemindersByStatus(reminderTypeToDisplay, TaskSortType.DATE));
-
-//            //If a new expense was added
-//            if(newExpensesCount == oldExpensesCount+1) {
-//                mAdapter.notifyItemInserted(0);
-//                mAdapter.notifyItemRangeChanged(1, activeCreditCard.getCreditPeriods().get(0).getExpenses().size()-1);
-//                mLayoutManager.scrollToPosition(0);
-//            } else {
-                mAdapter.notifyDataSetChanged();
-//            }
-
-
+        mAdapter.notifyDataSetChanged();
     }
 
 }
