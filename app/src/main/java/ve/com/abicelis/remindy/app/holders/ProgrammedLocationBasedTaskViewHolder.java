@@ -42,6 +42,8 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
     private TextView mDescription;
     private TextView mLocation;
 
+    private View mItemDecoration;
+
 
     //DATA
     private Task mCurrent;
@@ -63,11 +65,12 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
         mDescription = (TextView) itemView.findViewById(R.id.item_task_programmed_location_based_description);
 
         mLocation = (TextView) itemView.findViewById(R.id.item_task_programmed_location_based_location);
+        mItemDecoration = itemView.findViewById(R.id.item_task_programmed_location_item_decoration);
 
     }
 
 
-    public void setData(TaskAdapter adapter, Activity activity, Task current, int position) {
+    public void setData(TaskAdapter adapter, Activity activity, Task current, int position, boolean nextItemIsATask) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -92,6 +95,8 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
         } else {
             mLocation.setText("-");
         }
+
+        mItemDecoration.setVisibility(nextItemIsATask ? View.VISIBLE : View.INVISIBLE);
     }
 
 

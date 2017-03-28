@@ -46,6 +46,8 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
     private TextView mDate;
     private TextView mTime;
 
+    private View mItemDecoration;
+
 
     //DATA
     private Task mCurrent;
@@ -68,11 +70,11 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
 
         mDate = (TextView) itemView.findViewById(R.id.item_task_programmed_one_time_date);
         mTime = (TextView) itemView.findViewById(R.id.item_task_programmed_one_time_time);
-
+        mItemDecoration = itemView.findViewById(R.id.item_task_programmed_one_time_item_decoration);
     }
 
 
-    public void setData(TaskAdapter adapter, Activity activity, Task current, int position) {
+    public void setData(TaskAdapter adapter, Activity activity, Task current, int position, boolean nextItemIsATask) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -100,6 +102,8 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
             mDate.setText("-");
             mTime.setText("-");
         }
+
+        mItemDecoration.setVisibility(nextItemIsATask ? View.VISIBLE : View.INVISIBLE);
     }
 
 

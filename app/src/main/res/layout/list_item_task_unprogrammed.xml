@@ -1,98 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_task_unprogrammed_container"
-    android:padding="8dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="52dp">
-
-    <ImageView
-        android:id="@+id/item_task_unprogrammed_category_icon"
-        android:layout_width="@dimen/item_task_unprogrammed_category_icon_size"
-        android:layout_height="@dimen/item_task_category_icon_size"
-        android:layout_marginRight="6dp"
-        android:layout_marginEnd="6dp"
-        android:src="@drawable/icon_category_personal"
-        />
-    
-    <ImageView
-        android:id="@+id/item_task_unprogrammed_attachment_text"
-        android:layout_width="@dimen/item_task_attachment_icon_size"
-        android:layout_height="@dimen/item_task_attachment_icon_size"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/icon_text"
-        android:tint="@color/icons_disabled"
-        />
-
-    <ImageView
-        android:id="@+id/item_task_unprogrammed_attachment_image"
-        android:layout_width="@dimen/item_task_attachment_icon_size"
-        android:layout_height="@dimen/item_task_attachment_icon_size"
-        android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_text"
-        android:layout_toStartOf="@id/item_task_unprogrammed_attachment_text"
-        android:src="@drawable/icon_image"
-        android:tint="@color/icons_disabled"
-        />
-
-    <ImageView
-        android:id="@+id/item_task_unprogrammed_attachment_audio"
-        android:layout_width="@dimen/item_task_attachment_icon_size"
-        android:layout_height="@dimen/item_task_attachment_icon_size"
-        android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_image"
-        android:layout_toStartOf="@id/item_task_unprogrammed_attachment_image"
-        android:src="@drawable/icon_audio"
-        android:tint="@color/icons_disabled"
-        />
-
-    <ImageView
-        android:id="@+id/item_task_unprogrammed_attachment_link"
-        android:layout_width="@dimen/item_task_attachment_icon_size"
-        android:layout_height="@dimen/item_task_attachment_icon_size"
-        android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_audio"
-        android:layout_toStartOf="@id/item_task_unprogrammed_attachment_audio"
-        android:src="@drawable/icon_link"
-        android:tint="@color/icons_disabled"
-        />
-
-    <ImageView
-        android:id="@+id/item_task_unprogrammed_attachment_list"
-        android:layout_width="@dimen/item_task_attachment_icon_size"
-        android:layout_height="@dimen/item_task_attachment_icon_size"
-        android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_link"
-        android:layout_toStartOf="@id/item_task_unprogrammed_attachment_link"
-        android:src="@drawable/icon_list"
-        android:tint="@color/icons_disabled"
-        />
-    
-    <TextView
-        android:id="@+id/item_task_unprogrammed_title"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_task_unprogrammed_container"
+        android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/item_task_unprogrammed_category_icon"
-        android:layout_toEndOf="@id/item_task_unprogrammed_category_icon"
-        android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_list"
-        android:layout_toStartOf="@id/item_task_unprogrammed_attachment_list"
-        android:includeFontPadding="false"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textColor="@color/primary_text"
-        android:textSize="@dimen/text_size_big"
-        android:text="Example task - No Reminder"
-        />
-    
-    <TextView
-        android:id="@+id/item_task_unprogrammed_description"
+        android:layout_height="52dp">
+
+        <ImageView
+            android:id="@+id/item_task_unprogrammed_category_icon"
+            android:layout_width="@dimen/item_task_unprogrammed_category_icon_size"
+            android:layout_height="@dimen/item_task_category_icon_size"
+            android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/icon_category_personal"
+            />
+
+        <ImageView
+            android:id="@+id/item_task_unprogrammed_attachment_text"
+            android:layout_width="@dimen/item_task_attachment_icon_size"
+            android:layout_height="@dimen/item_task_attachment_icon_size"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/icon_text"
+            android:tint="@color/icons_disabled"
+            />
+
+        <ImageView
+            android:id="@+id/item_task_unprogrammed_attachment_image"
+            android:layout_width="@dimen/item_task_attachment_icon_size"
+            android:layout_height="@dimen/item_task_attachment_icon_size"
+            android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_text"
+            android:layout_toStartOf="@id/item_task_unprogrammed_attachment_text"
+            android:src="@drawable/icon_image"
+            android:tint="@color/icons_disabled"
+            />
+
+        <ImageView
+            android:id="@+id/item_task_unprogrammed_attachment_audio"
+            android:layout_width="@dimen/item_task_attachment_icon_size"
+            android:layout_height="@dimen/item_task_attachment_icon_size"
+            android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_image"
+            android:layout_toStartOf="@id/item_task_unprogrammed_attachment_image"
+            android:src="@drawable/icon_audio"
+            android:tint="@color/icons_disabled"
+            />
+
+        <ImageView
+            android:id="@+id/item_task_unprogrammed_attachment_link"
+            android:layout_width="@dimen/item_task_attachment_icon_size"
+            android:layout_height="@dimen/item_task_attachment_icon_size"
+            android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_audio"
+            android:layout_toStartOf="@id/item_task_unprogrammed_attachment_audio"
+            android:src="@drawable/icon_link"
+            android:tint="@color/icons_disabled"
+            />
+
+        <ImageView
+            android:id="@+id/item_task_unprogrammed_attachment_list"
+            android:layout_width="@dimen/item_task_attachment_icon_size"
+            android:layout_height="@dimen/item_task_attachment_icon_size"
+            android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_link"
+            android:layout_toStartOf="@id/item_task_unprogrammed_attachment_link"
+            android:src="@drawable/icon_list"
+            android:tint="@color/icons_disabled"
+            />
+
+        <TextView
+            android:id="@+id/item_task_unprogrammed_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/item_task_unprogrammed_category_icon"
+            android:layout_toEndOf="@id/item_task_unprogrammed_category_icon"
+            android:layout_toLeftOf="@id/item_task_unprogrammed_attachment_list"
+            android:layout_toStartOf="@id/item_task_unprogrammed_attachment_list"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/text_size_big"
+            android:text="Example task - No Reminder"
+            />
+
+        <TextView
+            android:id="@+id/item_task_unprogrammed_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/item_task_unprogrammed_category_icon"
+            android:layout_toEndOf="@id/item_task_unprogrammed_category_icon"
+            android:layout_below="@id/item_task_unprogrammed_title"
+            android:includeFontPadding="false"
+            android:layout_marginTop="1dp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/secondary_text"
+            android:textSize="@dimen/text_size_small"
+            android:text="Example long description of Task with ellipsis at the end blah"
+            />
+    </RelativeLayout>
+
+
+    <View
+        android:id="@+id/item_task_unprogrammed_item_decoration"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/item_task_unprogrammed_category_icon"
-        android:layout_toEndOf="@id/item_task_unprogrammed_category_icon"
-        android:layout_below="@id/item_task_unprogrammed_title"
-        android:includeFontPadding="false"
-        android:layout_marginTop="1dp"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textColor="@color/secondary_text"
-        android:textSize="@dimen/text_size_small"
-        android:text="Example long description of Task with ellipsis at the end blah"
-        />
-</RelativeLayout>
+        android:layout_height="1px"
+        android:background="@drawable/item_decoration_half_line_unprogrammed"/>
+</LinearLayout>

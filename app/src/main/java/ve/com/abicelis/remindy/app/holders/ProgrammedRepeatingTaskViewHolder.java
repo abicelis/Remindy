@@ -46,6 +46,8 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
     private TextView mRepeat;
     private TextView mTime;
 
+    private View mItemDecoration;
+
 
     //DATA
     private Task mCurrent;
@@ -68,11 +70,12 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
 
         mRepeat = (TextView) itemView.findViewById(R.id.item_task_programmed_repeating_repeat);
         mTime = (TextView) itemView.findViewById(R.id.item_task_programmed_repeating_time);
+        mItemDecoration = itemView.findViewById(R.id.item_task_programmed_repeating_item_decoration);
 
     }
 
 
-    public void setData(TaskAdapter adapter, Activity activity, Task current, int position) {
+    public void setData(TaskAdapter adapter, Activity activity, Task current, int position, boolean nextItemIsATask) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -93,12 +96,19 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
             mDescription.setText("-");
 
         if(current.getReminderType() == ReminderType.REPEATING && current.getReminder() != null) {
-            mRepeat.setText(getRepeatText());
+
+            //TODO: Undo this, used while debugging.
+            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+            mRepeat.setText(formatter.format(((RepeatingReminder)current.getReminder()).getDate().getTime()));
+            //mRepeat.setText(getRepeatText());
+
             mTime.setText(((RepeatingReminder)current.getReminder()).getTime().toString());
         } else {
             mRepeat.setText("-");
             mTime.setText("-");
         }
+
+        mItemDecoration.setVisibility(nextItemIsATask ? View.VISIBLE : View.INVISIBLE);
     }
 
 

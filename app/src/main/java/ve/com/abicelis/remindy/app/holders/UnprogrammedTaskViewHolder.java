@@ -38,6 +38,7 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
     private TextView mTitle;
     private TextView mDescription;
 
+    private View mItemDecoration;
 
     //DATA
     private Task mCurrent;
@@ -57,11 +58,12 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
 
         mTitle = (TextView) itemView.findViewById(R.id.item_task_unprogrammed_title);
         mDescription = (TextView) itemView.findViewById(R.id.item_task_unprogrammed_description);
+        mItemDecoration = itemView.findViewById(R.id.item_task_unprogrammed_item_decoration);
 
     }
 
 
-    public void setData(TaskAdapter adapter, Activity activity, Task current, int position) {
+    public void setData(TaskAdapter adapter, Activity activity, Task current, int position, boolean nextItemIsATask) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
@@ -80,6 +82,8 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
             mDescription.setText(mCurrent.getDescription());
         else
             mDescription.setText("-");
+
+        mItemDecoration.setVisibility(nextItemIsATask ? View.VISIBLE : View.INVISIBLE);
     }
 
 

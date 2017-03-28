@@ -70,6 +70,11 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         TaskViewModelType viewModelType = mTasks.get(position).getViewModelType();
+        boolean nextItemIsATask = false;
+        try {
+            nextItemIsATask = mTasks.get(position+1).getViewModelType() != TaskViewModelType.HEADER;
+        } catch (IndexOutOfBoundsException e) {/*Do nothing*/}
+
         switch (viewModelType) {
             case HEADER:
                 TaskHeaderViewHolder thHolder = (TaskHeaderViewHolder) holder;
@@ -78,25 +83,25 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             case UNPROGRAMMED_REMINDER:
                 UnprogrammedTaskViewHolder uHolder = (UnprogrammedTaskViewHolder) holder;
-                uHolder.setData(this, mActivity, mTasks.get(position).getTask(), position);
+                uHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
                 uHolder.setListeners();
                 break;
 
             case ONE_TIME_REMINDER:
                 ProgrammedOneTimeTaskViewHolder poHolder = (ProgrammedOneTimeTaskViewHolder) holder;
-                poHolder.setData(this, mActivity, mTasks.get(position).getTask(), position);
+                poHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
                 poHolder.setListeners();
                 break;
 
             case REPEATING_REMINDER:
                 ProgrammedRepeatingTaskViewHolder prHolder = (ProgrammedRepeatingTaskViewHolder) holder;
-                prHolder.setData(this, mActivity, mTasks.get(position).getTask(), position);
+                prHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
                 prHolder.setListeners();
                 break;
 
             case LOCATION_BASED_REMINDER:
                 ProgrammedLocationBasedTaskViewHolder plHolder = (ProgrammedLocationBasedTaskViewHolder) holder;
-                plHolder.setData(this, mActivity, mTasks.get(position).getTask(), position);
+                plHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
                 plHolder.setListeners();
                 break;
 
