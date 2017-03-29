@@ -1,7 +1,14 @@
 <resources>
     <string name="app_name">Remindy</string>
 
-
+    /* About Activity */
+    <string name="activity_about_toolbar_title">About</string>
+    <string name="activity_about_app_name">Remindy</string>
+    <string name="activity_about_version">Version %1$s</string>
+    <string name="activity_about_author">Alejandro Bicelis %1$d</string>
+    <string name="activity_about_market_link">Rate app</string>
+    <string name="activity_about_github_link">View GitHub Project</string>
+    <string name="activity_about_website_link">www.alejandrobicelis.com.ve</string>
 
     /* Home Activity */
     <string name="activity_home_toolbar_title">Tasks</string>
@@ -145,6 +152,12 @@
 
 
 
+
+    /* Links */
+    <string name="url_market" translatable="false">market://details?id=ve.com.abicelis.remindy</string>
+    <string name="url_github" translatable="false">github.com/abicelis/</string>
+    <string name="url_website" translatable="false">www.alejandrobicelis.com.ve</string>
+    <string name="address_email" translatable="false">alejandro@alejandrobicelis.com.ve</string>
 
 
 

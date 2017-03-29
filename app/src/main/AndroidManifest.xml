@@ -37,6 +37,11 @@
             android:name=".app.activities.ReminderExtrasActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <activity
+            android:name=".app.activities.AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <service
             android:name=".app.services.FetchAddressIntentService"
             android:exported="false"/>

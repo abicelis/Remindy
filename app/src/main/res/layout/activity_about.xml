@@ -1,0 +1,102 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_about_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ToolbarTheme"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        />
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin" >
+
+            <ImageView
+                android:id="@+id/activity_about_app_icon"
+                android:layout_width="@dimen/activity_about_app_logo"
+                android:layout_height="@dimen/activity_about_app_logo"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="16dp"
+                android:src="@drawable/icon_remindy" />
+
+            <TextView
+                android:id="@+id/activity_about_app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_about_app_icon"
+                android:layout_centerHorizontal="true"
+                android:text="@string/activity_about_app_name"
+                android:textSize="@dimen/activity_about_app_title"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/activity_about_github_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                app:backgroundTint="@color/primary"
+                android:textColor="@color/white"
+                android:text="@string/activity_about_github_link"
+                />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/activity_about_market_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                app:backgroundTint="@color/primary"
+                android:textColor="@color/white"
+                android:text="@string/activity_about_market_link"
+                />
+            <TextView
+                android:id="@+id/activity_about_website_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_above="@id/activity_about_github_link"
+                android:textSize="@dimen/activity_about_app_text_links"
+                android:layout_centerHorizontal="true"
+                android:text="@string/activity_about_website_link"
+                />
+
+            <TextView
+                android:id="@+id/activity_about_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/activity_about_website_link"
+                android:textSize="@dimen/activity_about_app_text_links"
+                android:layout_centerHorizontal="true"
+                android:text="@string/activity_about_author" />
+
+            <TextView
+                android:id="@+id/activity_about_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textSize="@dimen/activity_about_app_text_links"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@id/activity_about_author"
+                android:text="@string/activity_about_version" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+</LinearLayout>

@@ -4,6 +4,11 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    /* About Activity */
+    <dimen name="activity_about_app_logo">192dp</dimen>
+    <dimen name="activity_about_app_title">22sp</dimen>
+    <dimen name="activity_about_app_text_links">14sp</dimen>
+
 
     /*List item task */
     <dimen name="item_task_margin_left">6dp</dimen>
