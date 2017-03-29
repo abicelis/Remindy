@@ -21,6 +21,7 @@ import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.app.adapters.TasksViewPagerAdapter;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.TaskStatus;
+import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 13/3/2017.
@@ -40,6 +41,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     //DATA
     private List<String> titleList = new ArrayList<>();
     private List<Fragment> fragmentList = new ArrayList<>();
+    private TaskSortType mTaskSortType = TaskSortType.DATE;
 
 
     @Override
@@ -76,10 +78,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (id) {
             case R.id.menu_home_sort:
-                boolean sortByPlace = !item.isChecked();
-                item.setChecked(!item.isChecked());
-                mProgrammedTasksListFragment.setSortTypeAndRefresh( (sortByPlace ? TaskSortType.PLACE : TaskSortType.DATE) );
-                mDoneTasksListFragment.setSortTypeAndRefresh( (sortByPlace ? TaskSortType.PLACE : TaskSortType.DATE) );
+                mTaskSortType = (mTaskSortType == TaskSortType.DATE ? TaskSortType.PLACE : TaskSortType.DATE);
+                mProgrammedTasksListFragment.setSortTypeAndRefresh(mTaskSortType);
+                mDoneTasksListFragment.setSortTypeAndRefresh(mTaskSortType);
+                SnackbarUtil.showSnackbar(mViewpager, SnackbarUtil.SnackbarType.NOTICE, mTaskSortType.getFriendlyMessageRes(), SnackbarUtil.SnackbarDuration.SHORT, null);
                 return true;
 
             case R.id.menu_home_settings:

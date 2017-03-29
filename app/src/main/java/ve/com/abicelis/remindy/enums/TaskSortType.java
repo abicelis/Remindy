@@ -13,15 +13,25 @@ import ve.com.abicelis.remindy.R;
  */
 
 public enum TaskSortType {
-    DATE(R.string.task_sort_type_date),
-    PLACE(R.string.task_sort_type_location);
+    DATE(R.string.task_sort_type_date, R.string.task_sort_type_date_message),
+    PLACE(R.string.task_sort_type_location, R.string.task_sort_type_location_message);
 
     private @StringRes
     int friendlyNameRes;
+    int friendlyMessageRes;
 
-    TaskSortType(@StringRes int friendlyNameRes) {
+    TaskSortType(@StringRes int friendlyNameRes, @StringRes int friendlyMessageRes) {
         this.friendlyNameRes = friendlyNameRes;
+        this.friendlyMessageRes = friendlyMessageRes;
 
+    }
+
+    public int getFriendlyNameRes() {
+        return friendlyNameRes;
+    }
+
+    public int getFriendlyMessageRes() {
+        return friendlyMessageRes;
     }
 
     public static List<String> getFriendlyValues(Context context) {

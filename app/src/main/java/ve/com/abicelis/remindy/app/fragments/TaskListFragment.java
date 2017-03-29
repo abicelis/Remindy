@@ -110,7 +110,8 @@ public class TaskListFragment extends Fragment {
 
     public void setSortTypeAndRefresh(TaskSortType taskSortType) {
         mTaskSortType = taskSortType;
-        refreshRecyclerView();
+        if(isAdded())       //Check if Fragment is added to activity, to avoid IllegalStateExceptions
+            refreshRecyclerView();
     }
 
     private void refreshRecyclerView() {
@@ -128,11 +129,9 @@ public class TaskListFragment extends Fragment {
                     tasks.addAll(mDao.getUnprogrammedTasks());
                     break;
                 case PROGRAMMED:
-                    //TODO: Sorting by date by default, change this
                     tasks.addAll(mDao.getProgrammedTasks(mTaskSortType, getResources()));
                     break;
                 case DONE:
-                    //TODO: Sorting by date by default, change this
                     tasks.addAll(mDao.getDoneTasks(mTaskSortType, getResources()));
             }
         }catch (CouldNotGetDataException | InvalidClassException e) {
