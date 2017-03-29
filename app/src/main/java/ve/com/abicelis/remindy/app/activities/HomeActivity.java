@@ -1,5 +1,7 @@
 package ve.com.abicelis.remindy.app.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        getMenuInflater().inflate(R.menu.menu_home_programmed, menu);
         return true;
     }
 
@@ -88,9 +89,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.menu_home_about:
+                Intent goToAboutActivity = new Intent(getApplicationContext(), AboutActivity.class);
+                startActivity(goToAboutActivity);
                 return true;
 
             case R.id.menu_home_rate:
+                Intent playStoreIntent = new Intent(Intent.ACTION_VIEW);
+                playStoreIntent.setData(Uri.parse(getResources().getString(R.string.url_market)));
+                startActivity(playStoreIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
