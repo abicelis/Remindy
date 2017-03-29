@@ -3,12 +3,12 @@ package ve.com.abicelis.remindy.app.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -24,7 +24,6 @@ import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
-import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
@@ -53,6 +52,7 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         try {
             reminderTypeToDisplay = (TaskStatus)getArguments().getSerializable(TASK_TYPE_TO_DISPLAY);
@@ -82,6 +82,20 @@ public class TaskListFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        switch (reminderTypeToDisplay) {
+            case UNPROGRAMMED:
+                inflater.inflate(R.menu.menu_home_unprogrammed, menu);
+                break;
+            case PROGRAMMED:
+            case DONE:
+                inflater.inflate(R.menu.menu_home_programmed, menu);
+                break;
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     private void setUpRecyclerView() {
 

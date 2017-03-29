@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ve.com.abicelis.remindy.app.activities.MainActivity">
+    <item
+        android:id="@+id/menu_home_settings"
+        android:orderInCategory="100"
+        android:title="@string/menu_home_action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_home_about"
+        android:orderInCategory="100"
+        android:title="@string/menu_home_action_about"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_home_rate"
+        android:orderInCategory="100"
+        android:title="@string/menu_home_action_rate"
+        app:showAsAction="never" />
+</menu>
