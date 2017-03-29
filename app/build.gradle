@@ -24,17 +24,18 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
+    compile 'com.android.support:recyclerview-v7:25.3.0'
+    compile 'com.takisoft.fix:preference-v7:25.3.0.0'
+
     testCompile 'junit:junit:4.12'
-    compile 'com.takisoft.fix:preference-v7:25.2.0.0'
     compile 'com.code-troopers.betterpickers:library:3.1.0'
-    //compile 'com.google.android.gms:play-services:10.2.0'
-    //compile 'com.google.android.gms:play-services-drive:10.2.0'
-    compile 'com.google.android.gms:play-services-maps:10.2.0'
-    compile 'com.google.android.gms:play-services-location:10.2.0'
     compile 'com.andkulikov:transitionseverywhere:1.7.0'
-    compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'com.github.clans:fab:1.6.4'
 
+    //compile 'com.google.android.gms:play-services:10.2.0'
+    //compile 'com.google.android.gms:play-services-drive:10.2.0'
+    compile 'com.google.android.gms:play-services-maps:10.2.1'
+    compile 'com.google.android.gms:play-services-location:10.2.1'
 }
