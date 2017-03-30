@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ve.com.abicelis.remindy">
 
+    <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -44,12 +45,23 @@
         </activity>
 
         <activity
+            android:name=".app.activities.PlaceListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".app.activities.SettingsActivity"
             android:theme="@style/AppPreferenceTheme">
         </activity>
+
+
+
+
+        <!-- SERVICES -->
         <service
             android:name=".app.services.FetchAddressIntentService"
             android:exported="false"/>
+
     </application>
 
 </manifest>

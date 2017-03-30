@@ -23,6 +23,9 @@
     <string name="menu_home_action_about">About</string>
     <string name="menu_home_action_rate">Rate app</string>
 
+    /* List Places Activity */
+    <string name="activity_place_list_title">Manage Places</string>
+    <string name="activity_place_list_no_items">There are no places. Click the + button to add one</string>
 
 
     /* Settings Activity / Fragment */

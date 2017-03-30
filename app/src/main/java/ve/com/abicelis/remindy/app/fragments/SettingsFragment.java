@@ -15,6 +15,7 @@ import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.AboutActivity;
+import ve.com.abicelis.remindy.app.activities.PlaceListActivity;
 
 
 /**
@@ -40,8 +41,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.remindy_settings);
+        final Context packageContext = getActivity().getApplicationContext();
+
 
         mManagePlaces = findPreference(getResources().getString(R.string.settings_manage_places_key));
+        mManagePlaces.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent goToPlaceListActivity = new Intent(packageContext, PlaceListActivity.class);
+                startActivity(goToPlaceListActivity);
+                return true;
+            }
+        });
         mDateFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_date_format_key));
         mTimeFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_time_format_key));
         mDistanceFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_distance_format_key));
@@ -57,7 +68,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mBackup = findPreference(getResources().getString(R.string.settings_backup_key));
         mRestore = findPreference(getResources().getString(R.string.settings_restore_key));
         mAbout = findPreference(getResources().getString(R.string.settings_about_key));
-        final Context packageContext = getActivity().getApplicationContext();
         mAbout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

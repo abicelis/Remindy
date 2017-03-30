@@ -9,8 +9,13 @@
     <dimen name="activity_about_app_title">22sp</dimen>
     <dimen name="activity_about_app_text_links">14sp</dimen>
 
+    /* Place List Activity */
+    <dimen name="item_place_icon_size">36dp</dimen>
+    <dimen name="item_place_icon_small_size">14dp</dimen>
+    <dimen name="item_place_map_width">64dp</dimen>
 
-    /*List item task */
+
+    /* Task List Activity */
     <dimen name="item_task_margin_left">6dp</dimen>
     <dimen name="item_task_unprogrammed_category_icon_size">36dp</dimen>
     <dimen name="item_task_category_icon_size">50dp</dimen>
@@ -18,7 +23,7 @@
     <dimen name="item_task_other_icon_size">14dp</dimen>
 
 
-    /*Text sizes*/
+    /* Text sizes */
     <dimen name="text_size_big">16sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
 
