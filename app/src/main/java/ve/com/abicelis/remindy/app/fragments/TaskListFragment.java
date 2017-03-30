@@ -73,11 +73,11 @@ public class TaskListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_reminder_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_reminder_list_recycler);
-        mSwipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.fragment_reminder_list_swipe_refresh);
-        mNoItemsContainer = (RelativeLayout) rootView.findViewById(R.id.fragment_reminder_list_no_items_container);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_task_list_recycler);
+        mSwipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.fragment_task_list_swipe_refresh);
+        mNoItemsContainer = (RelativeLayout) rootView.findViewById(R.id.fragment_task_list_no_items_container);
 
         setUpRecyclerView();
         setUpSwipeRefresh();
@@ -170,6 +170,14 @@ public class TaskListFragment extends Fragment {
         }
 
         mAdapter.notifyDataSetChanged();
+
+        if(mTasks.size() == 0) {
+            mNoItemsContainer.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            mRecyclerView.setItemViewCacheSize(View.VISIBLE);
+            mNoItemsContainer.setVisibility(View.GONE);
+        }
     }
 
 
