@@ -103,15 +103,13 @@ public class RemindyDAO {
         return result;
     }
 
-
     /**
-     * Returns a List of Tasks (with Reminder and Attachments) which have TaskStatus.PROGRAMMED
-     * @param sortType TaskSortType enum value with which to sort results. By date or location
+     * Returns a List of Tasks (with Reminder and Attachments) which have TaskStatus.PROGRAMMED AND ReminderType.LOCATION_BASED, sorted by Location
      * @return A List of TaskViewModel
      */
-    public List<TaskViewModel> getProgrammedTasks(@NonNull TaskSortType sortType, Resources resources) throws CouldNotGetDataException, InvalidClassException {
+    public List<TaskViewModel> getLocationBasedTasks(Resources resources) throws CouldNotGetDataException, InvalidClassException {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        List<TaskViewModel> result = new ArrayList<>();
+        List<TaskViewModel> result;
         List<Task> tasks = new ArrayList<>();
 
         Cursor cursor = db.query(RemindyContract.TaskTable.TABLE_NAME,
@@ -121,6 +119,53 @@ public class RemindyDAO {
         try {
             while (cursor.moveToNext()) {
                 Task current = getTaskFromCursor(cursor);
+
+                if(current.getReminderType() != ReminderType.LOCATION_BASED)      //Skip NON location-based task
+                    continue;
+
+                //Try to get the attachments, if there are any
+                current.setAttachments(getAttachmentsOfTask(current.getId()));
+
+                //If Task ReminderType.NONE, throw an error.
+                if(current.getReminderType() == ReminderType.NONE)
+                    throw new CouldNotGetDataException("Error, Task with TaskStatus=PROGRAMMED has ReminderType=NONE");
+                else
+                    current.setReminder(getReminderOfTask(current.getId(), current.getReminderType()));
+
+                tasks.add(current);
+            }
+
+        } finally {
+            cursor.close();
+        }
+
+        //Generate List<TaskViewModel>
+        result = new TaskHeaderUtil().generateProgrammedTaskHeaderList(tasks, TaskSortType.PLACE, resources);
+
+        return result;
+    }
+
+
+    /**
+     * Returns a List of Tasks (with Reminder and Attachments) which have TaskStatus.PROGRAMMED
+     * @param sortType TaskSortType enum value with which to sort results. By date or location
+     * @return A List of TaskViewModel
+     */
+    public List<TaskViewModel> getProgrammedTasks(@NonNull TaskSortType sortType, boolean includeLocationBasedTasks, Resources resources) throws CouldNotGetDataException, InvalidClassException {
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        List<TaskViewModel> result;
+        List<Task> tasks = new ArrayList<>();
+
+        Cursor cursor = db.query(RemindyContract.TaskTable.TABLE_NAME,
+                null, RemindyContract.TaskTable.COLUMN_NAME_STATUS.getName() + "=?",
+                new String[]{TaskStatus.PROGRAMMED.name()}, null, null, null);
+
+        try {
+            while (cursor.moveToNext()) {
+                Task current = getTaskFromCursor(cursor);
+
+                if(!includeLocationBasedTasks && current.getReminderType() == ReminderType.LOCATION_BASED)      //Skip location-based task
+                    continue;
 
                 //Try to get the attachments, if there are any
                 current.setAttachments(getAttachmentsOfTask(current.getId()));

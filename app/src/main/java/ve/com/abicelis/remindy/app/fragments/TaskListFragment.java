@@ -1,9 +1,11 @@
 package ve.com.abicelis.remindy.app.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +24,7 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.TaskSortType;
-import ve.com.abicelis.remindy.enums.TaskStatus;
+import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
@@ -36,8 +38,8 @@ public class TaskListFragment extends Fragment {
     public static final String TASK_TYPE_TO_DISPLAY = "TASK_TYPE_TO_DISPLAY";
 
     //DATA
-    private List<TaskViewModel> tasks = new ArrayList<>();
-    private TaskStatus reminderTypeToDisplay;
+    private List<TaskViewModel> mTasks = new ArrayList<>();
+    private ViewPagerTaskDisplayType mReminderTypeToDisplay;
     private RemindyDAO mDao;
     private TaskSortType mTaskSortType = TaskSortType.DATE;
 
@@ -55,9 +57,9 @@ public class TaskListFragment extends Fragment {
         setHasOptionsMenu(true);
 
         try {
-            reminderTypeToDisplay = (TaskStatus)getArguments().getSerializable(TASK_TYPE_TO_DISPLAY);
+            mReminderTypeToDisplay = (ViewPagerTaskDisplayType)getArguments().getSerializable(TASK_TYPE_TO_DISPLAY);
         }catch (NullPointerException e) {
-            Toast.makeText(getActivity(), "Error! reminderTypeToDisplay == null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Error! mReminderTypeToDisplay == null", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -85,13 +87,19 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        switch (reminderTypeToDisplay) {
+        switch (mReminderTypeToDisplay) {
             case UNPROGRAMMED:
-                inflater.inflate(R.menu.menu_home_unprogrammed, menu);
+            case LOCATION_BASED:
+                inflater.inflate(R.menu.menu_home_no_sort, menu);
                 break;
             case PROGRAMMED:
+                if(getShowLocationBasedReminderInNewTabValue())
+                    inflater.inflate(R.menu.menu_home_no_sort, menu);   //Hide sort button
+                else
+                    inflater.inflate(R.menu.menu_home_sort, menu);
+                break;
             case DONE:
-                inflater.inflate(R.menu.menu_home_programmed, menu);
+                inflater.inflate(R.menu.menu_home_sort, menu);
                 break;
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -100,7 +108,7 @@ public class TaskListFragment extends Fragment {
     private void setUpRecyclerView() {
 
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mAdapter = new TaskAdapter(getActivity(), tasks);
+        mAdapter = new TaskAdapter(getActivity(), mTasks);
 
         //DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
         //itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
@@ -135,18 +143,27 @@ public class TaskListFragment extends Fragment {
 
         //Clear the list and refresh it with new data, this must be done so the mAdapter
         // doesn't lose track of the reminder list
-        tasks.clear();
+        mTasks.clear();
 
         try {
-            switch (reminderTypeToDisplay) {
+            switch (mReminderTypeToDisplay) {
                 case UNPROGRAMMED:
-                    tasks.addAll(mDao.getUnprogrammedTasks());
+                    mTasks.addAll(mDao.getUnprogrammedTasks());
                     break;
+
+                case LOCATION_BASED:
+                    mTasks.addAll(mDao.getLocationBasedTasks(getResources()));
+                    break;
+
                 case PROGRAMMED:
-                    tasks.addAll(mDao.getProgrammedTasks(mTaskSortType, getResources()));
+                    if(getShowLocationBasedReminderInNewTabValue())
+                        mTasks.addAll(mDao.getProgrammedTasks(TaskSortType.DATE, false, getResources()));      //Force sorting by date, no location-based tasks in this tab!
+                    else
+                        mTasks.addAll(mDao.getProgrammedTasks(mTaskSortType, true, getResources()));
                     break;
+
                 case DONE:
-                    tasks.addAll(mDao.getDoneTasks(mTaskSortType, getResources()));
+                    mTasks.addAll(mDao.getDoneTasks(mTaskSortType, getResources()));
             }
         }catch (CouldNotGetDataException | InvalidClassException e) {
             SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_getting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
@@ -155,4 +172,9 @@ public class TaskListFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
+
+    private boolean getShowLocationBasedReminderInNewTabValue() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        return preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
+    }
 }

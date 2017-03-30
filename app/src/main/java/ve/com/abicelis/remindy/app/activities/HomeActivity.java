@@ -1,6 +1,7 @@
 package ve.com.abicelis.remindy.app.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,10 +10,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.app.adapters.TasksViewPagerAdapter;
 import ve.com.abicelis.remindy.enums.TaskSortType;
-import ve.com.abicelis.remindy.enums.TaskStatus;
+import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -34,15 +36,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager mViewpager;
     private TabLayout mTabLayout;
     private FloatingActionButton mFab;
-
-    TaskListFragment mUnprogrammedTasksListFragment;
-    TaskListFragment mProgrammedTasksListFragment;
-    TaskListFragment mDoneTasksListFragment;
+    private TaskListFragment mUnprogrammedTasksListFragment;
+    private TaskListFragment mLocationBasedTasksListFragment;
+    private TaskListFragment mProgrammedTasksListFragment;
+    private TaskListFragment mDoneTasksListFragment;
 
     //DATA
     private List<String> titleList = new ArrayList<>();
     private List<Fragment> fragmentList = new ArrayList<>();
     private TaskSortType mTaskSortType = TaskSortType.DATE;
+    private boolean mShowLocationBasedTasksInOwnViewPagerTab = false;
 
 
     @Override
@@ -53,17 +56,71 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.activity_home_toolbar_title);
 
-        initLists();
-
-        TasksViewPagerAdapter adapter = new TasksViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
         mViewpager = (ViewPager) findViewById(R.id.activity_home_viewpager);
         mTabLayout = (TabLayout) findViewById(R.id.activity_home_tab_layout);
         mFab = (FloatingActionButton) findViewById(R.id.activity_home_fab);
+        mFab.setOnClickListener(this);
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "onResume()", Toast.LENGTH_SHORT).show();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mShowLocationBasedTasksInOwnViewPagerTab = preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
+
+        setupViewPagerAndTabLayout();
+    }
+
+    private void setupViewPagerAndTabLayout() {
+
+        mUnprogrammedTasksListFragment = new TaskListFragment();
+        mLocationBasedTasksListFragment = new TaskListFragment();
+        mProgrammedTasksListFragment = new TaskListFragment();
+        mDoneTasksListFragment = new TaskListFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.UNPROGRAMMED);
+        mUnprogrammedTasksListFragment.setArguments(bundle);
+
+        bundle = new Bundle();
+        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.LOCATION_BASED);
+        mLocationBasedTasksListFragment.setArguments(bundle);
+
+        bundle = new Bundle();
+        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.PROGRAMMED);
+        mProgrammedTasksListFragment.setArguments(bundle);
+
+        bundle = new Bundle();
+        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.DONE);
+        mDoneTasksListFragment.setArguments(bundle);
+
+
+        //Rebuild lists
+        titleList.clear();
+        fragmentList.clear();
+
+        titleList.add(getResources().getString(ViewPagerTaskDisplayType.UNPROGRAMMED.getFriendlyNameRes()));
+        if(mShowLocationBasedTasksInOwnViewPagerTab)
+            titleList.add(getResources().getString(ViewPagerTaskDisplayType.LOCATION_BASED.getFriendlyNameRes()));
+        titleList.add(getResources().getString(ViewPagerTaskDisplayType.PROGRAMMED.getFriendlyNameRes()));
+        titleList.add(getResources().getString(ViewPagerTaskDisplayType.DONE.getFriendlyNameRes()));
+
+        fragmentList.add(mUnprogrammedTasksListFragment);
+        if(mShowLocationBasedTasksInOwnViewPagerTab)
+            fragmentList.add(mLocationBasedTasksListFragment);
+        fragmentList.add(mProgrammedTasksListFragment);
+        fragmentList.add(mDoneTasksListFragment);
+
+
+        //Setup adapter, viewpager and tablayout
+        TasksViewPagerAdapter adapter = new TasksViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
         mViewpager.setAdapter(adapter);
         mViewpager.setCurrentItem(1);     //Start at page 2
         mTabLayout.setupWithViewPager(mViewpager);
-        mFab.setOnClickListener(this);
     }
 
     @Override
@@ -79,6 +136,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.menu_home_settings:
+                Intent goToSettingsActivity = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(goToSettingsActivity);
                 return true;
 
             case R.id.menu_home_about:
@@ -95,31 +154,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    private void initLists() {
-        titleList.add(getResources().getString(R.string.task_status_unprogrammed));
-        titleList.add(getResources().getString(R.string.task_status_programmed));
-        titleList.add(getResources().getString(R.string.task_status_done));
-
-        mUnprogrammedTasksListFragment = new TaskListFragment();
-        mProgrammedTasksListFragment = new TaskListFragment();
-        mDoneTasksListFragment = new TaskListFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.UNPROGRAMMED);
-        mUnprogrammedTasksListFragment.setArguments(bundle);
-        fragmentList.add(mUnprogrammedTasksListFragment);
-
-        bundle = new Bundle();
-        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.PROGRAMMED);
-        mProgrammedTasksListFragment.setArguments(bundle);
-        fragmentList.add(mProgrammedTasksListFragment);
-
-        bundle = new Bundle();
-        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, TaskStatus.DONE);
-        mDoneTasksListFragment.setArguments(bundle);
-        fragmentList.add(mDoneTasksListFragment);
-
-    }
 
     @Override
     public void onClick(View v) {
