@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/settings_category_settings_title"/>
+    <Preference
+        android:key="@string/settings_manage_places_key"
+        android:title="@string/settings_manage_places_title"
+        android:summary="@string/settings_manage_places_summary" />
+    <ListPreference
+        android:key="@string/settings_date_format_key"
+        android:title="@string/settings_date_format_title"
+        android:summary="%s"
+        android:entries="@array/dateFormat"
+        android:entryValues="@array/dateFormatEntries"
+        android:defaultValue="1"/>
+    <ListPreference
+        android:key="@string/settings_time_format_key"
+        android:title="@string/settings_time_format_title"
+        android:summary="%s"
+        android:entries="@array/timeFormat"
+        android:entryValues="@array/timeFormatEntries"
+        android:defaultValue="1"/>
+    <ListPreference
+        android:key="@string/settings_distance_format_key"
+        android:title="@string/settings_distance_format_title"
+        android:summary="%s"
+        android:entries="@array/distanceFormat"
+        android:entryValues="@array/distanceFormatEntries"
+        android:defaultValue="1"/>
+    <SwitchPreference
+        android:key="@string/settings_show_location_based_reminder_in_new_tab_key"
+        android:title="@string/settings_show_location_based_reminder_in_new_tab_title"
+        android:defaultValue="false"/>
+    <Preference
+        android:key="@string/settings_backup_key"
+        android:title="@string/settings_backup_title"
+        android:summary="@string/settings_backup_summary" />
+    <Preference
+        android:key="@string/settings_restore_key"
+        android:title="@string/settings_restore_title"
+        android:summary="@string/settings_restore_summary" />
+
+    <!--<ve.com.abicelis.pingwidget.app.preference.ThemePreference-->
+        <!--android:key="@string/fragment_widget_configure_theme_key"-->
+        <!--android:title="@string/fragment_widget_configure_theme_title"-->
+        <!--android:summary="@string/widget_theme_summary_blue_yellow"/>-->
+
+
+    <PreferenceCategory android:title="@string/settings_category_about_title"/>
+    <Preference
+        android:key="@string/settings_about_key"
+        android:title="@string/settings_about_title"
+        android:summary="@string/settings_about_summary"/>
+    <Preference
+        android:key="@string/remindy_settings_rate_key"
+        android:title="@string/remindy_settings_rate_title"
+        android:summary="@string/remindy_settings_rate_summary"/>
+    <Preference
+        android:key="@string/remindy_settings_contact_key"
+        android:title="@string/remindy_settings_contact_title"
+        android:summary="@string/remindy_settings_contact_summary"/>
+</PreferenceScreen>

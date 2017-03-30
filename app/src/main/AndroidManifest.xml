@@ -42,6 +42,11 @@
             android:name=".app.activities.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <activity
+            android:name=".app.activities.SettingsActivity"
+            android:theme="@style/AppPreferenceTheme">
+        </activity>
         <service
             android:name=".app.services.FetchAddressIntentService"
             android:exported="false"/>

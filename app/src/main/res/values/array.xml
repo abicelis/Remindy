@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dateFormatEntries">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="dateFormat">
+        <item>Feb 30, 2017</item>
+        <item>02/30/2017</item>
+        <item>30/02/2017</item>
+    </string-array>
+
+    <string-array name="timeFormatEntries">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="timeFormat">
+        <item>24H</item>
+        <item>12H</item>
+    </string-array>
+
+    <string-array name="distanceFormatEntries">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="distanceFormat">
+        <item>Kilometers</item>
+        <item>Miles</item>
+    </string-array>
+
+</resources>
