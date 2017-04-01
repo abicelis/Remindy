@@ -27,6 +27,25 @@
     <string name="activity_place_list_title">Manage Places</string>
     <string name="activity_place_list_no_items">There are no places. Click the + button to add one</string>
 
+    /* Add/Edit Place Activity */
+    <string name="activity_place_title_new">New Place</string>
+    <string name="activity_place_title_edit">Edit Place</string>
+    <string name="activity_place_snackbar_help">Tip: Long-press map to add a point</string>
+    <string name="activity_place_snackbar_save_succesful">Place successfully saved</string>
+    <string name="activity_place_snackbar_edit_succesful">Place successfully updated</string>
+    <string name="activity_place_snackbar_error_saving">There was an error saving the Place</string>
+    <string name="activity_place_snackbar_error_no_place">No Place. Search it or long-click map</string>
+    <string name="activity_place_snackbar_error_no_alias">Please set an Alias for the Place</string>
+
+    <string name="activity_place_exit_dialog_title">Go back?</string>
+    <string name="activity_place_exit_dialog_message">Go back and discard changes?</string>
+    <string name="activity_place_exit_dialog_positive">Yes</string>
+    <string name="activity_place_exit_dialog_negative">Cancel</string>
+
+    <string name="activity_place_search_hint">Search here</string>
+    <string name="activity_place_custom_name">Custom name?</string>
+    <string name="activity_place_custom_name_hint">Enter a name for this place</string>
+
 
     /* Settings Activity / Fragment */
     <string name="activity_settings_toolbar_title">Settings</string>
@@ -187,13 +206,12 @@
 
 
 
-    /* New Reminder Dialog */
-    <string name="dialog_new_reminder_title">New Reminder</string>
-    <string name="dialog_new_reminder_simple_button">New Simple Reminder</string>
-    <string name="dialog_new_reminder_advanced_button">New Advanced Reminder</string>
-    <string name="dialog_new_reminder_cancel_button">CANCEL</string>
-    <string name="dialog_new_reminder_simple_description">-Simple one-time tasks\n-Simple Repetitive Tasks</string>
-    <string name="dialog_new_reminder_advanced_description">-Location-aware tasks\n-Custom dates and intervals</string>
+    /* Edit Place (Alias/Address) Dialog */
+    <string name="dialog_edit_place_title">Edit Place</string>
+    <string name="dialog_edit_place_alias_title">Alias</string>
+    <string name="dialog_edit_place_address_title">Address</string>
+    <string name="dialog_edit_place_cancel">CANCEL</string>
+    <string name="dialog_edit_place_ok">OK</string>
 
 
 

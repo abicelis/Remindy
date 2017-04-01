@@ -12,7 +12,7 @@
     /* Place List Activity */
     <dimen name="item_place_icon_size">36dp</dimen>
     <dimen name="item_place_icon_small_size">14dp</dimen>
-    <dimen name="item_place_map_width">64dp</dimen>
+    <dimen name="item_place_map_width">128dp</dimen>
 
 
     /* Task List Activity */
@@ -24,6 +24,8 @@
 
 
     /* Text sizes */
+    <dimen name="text_size_huge">26sp</dimen>
+    <dimen name="text_size_bigger">20sp</dimen>
     <dimen name="text_size_big">16sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
 
