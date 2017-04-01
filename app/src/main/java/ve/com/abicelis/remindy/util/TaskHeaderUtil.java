@@ -327,6 +327,9 @@ public class TaskHeaderUtil {
     private void handleSortingByPlace(List<Task> tasks, ArrayList<TaskViewModel> result, Resources resources) {
         Collections.sort(tasks, new TasksByPlaceComparator());
 
+        if(tasks.size() == 0)
+            return;
+
         if(tasks.get(0).getReminderType() != ReminderType.LOCATION_BASED) {   //There are no Location-based reminders, insert them all into result
             result.add(new TaskViewModel(resources.getString(R.string.task_header_no_location), false));
             dumpTaskBucketIntoViewModelList(tasks, result);
