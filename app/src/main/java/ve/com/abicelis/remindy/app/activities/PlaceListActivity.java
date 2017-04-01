@@ -99,14 +99,14 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         // doesn't lose track of the reminder list
         mPlaces.clear();
         mPlaces.addAll(mDao.getPlaces());
-        mAdapter.notifyDataSetChanged();
 
         if(mPlaces.size() == 0) {
             mNoItemsContainer.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {
-            mRecyclerView.setItemViewCacheSize(View.VISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
             mNoItemsContainer.setVisibility(View.GONE);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
