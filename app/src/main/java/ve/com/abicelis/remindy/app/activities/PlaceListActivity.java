@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.PlaceAdapter;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.model.Place;
+import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 30/3/2017.
@@ -36,6 +38,7 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
     private RemindyDAO mDao;
 
     //UI
+    private LinearLayout mContainer;
     private Toolbar mToolbar;
     private FloatingActionButton mFab;
     private RecyclerView mRecyclerView;
@@ -50,6 +53,7 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_place_list);
 
 
+        mContainer = (LinearLayout) findViewById(R.id.activity_place_list_container);
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_place_list_recycler);
         mNoItemsContainer = (RelativeLayout) findViewById(R.id.activity_place_list_no_items_container);
         mFab = (FloatingActionButton) findViewById(R.id.activity_place_list_fab);
@@ -59,11 +63,14 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         setUpRecyclerView();
         refreshRecyclerView();
 
+        SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_list_snackbar_help, SnackbarUtil.SnackbarDuration.LONG, null);
+
+
     }
 
     private void setUpToolbar() {
 
-        mToolbar = (Toolbar) findViewById(R.id.activity_settings_toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.activity_place_list_toolbar);
         mToolbar.setTitle(getResources().getString(R.string.activity_place_list_title));
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.icon_back_material));
 

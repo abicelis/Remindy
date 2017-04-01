@@ -26,6 +26,8 @@
     /* List Places Activity */
     <string name="activity_place_list_title">Manage Places</string>
     <string name="activity_place_list_no_items">There are no places. Click the + button to add one</string>
+    <string name="activity_place_list_snackbar_help">Tip: Swipe a Place left or right to delete</string>
+
 
     /* Add/Edit Place Activity */
     <string name="activity_place_title_new">New Place</string>

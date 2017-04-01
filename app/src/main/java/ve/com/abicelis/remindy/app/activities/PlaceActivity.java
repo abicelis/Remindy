@@ -243,7 +243,7 @@ public class PlaceActivity extends AppCompatActivity implements
             moveCameraToLastKnownLocation();        //If creating a new place, go to user current location
             mRadius.setProgress(1);
             mRadiusDisplay.setText("100 m");
-            SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_help, SnackbarUtil.SnackbarDuration.LONG, null);
+            SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_help, SnackbarUtil.SnackbarDuration.SHORT, null);
 
         } else {
             drawMarkerWithCircle(new LatLng(mPlace.getLatitude(), mPlace.getLongitude()), mPlace.getRadius());        //If editing a place, go to that place and add a marker, circle
@@ -458,14 +458,14 @@ public class PlaceActivity extends AppCompatActivity implements
         if(mPlaceToEdit != null) {
             try {
                 mDao.updatePlace(mPlace);
-                SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_place_snackbar_edit_succesful, SnackbarUtil.SnackbarDuration.LONG, callback);
+                SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_place_snackbar_edit_succesful, SnackbarUtil.SnackbarDuration.SHORT, callback);
             } catch (CouldNotUpdateDataException e ) {
                 SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_saving, SnackbarUtil.SnackbarDuration.LONG, null);
             }
         } else {
             try {
                 mDao.insertPlace(mPlace);
-                SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_place_snackbar_save_succesful, SnackbarUtil.SnackbarDuration.LONG, callback);
+                SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_place_snackbar_save_succesful, SnackbarUtil.SnackbarDuration.SHORT, callback);
             } catch (CouldNotInsertDataException e ) {
                 SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_saving, SnackbarUtil.SnackbarDuration.LONG, null);
             }
