@@ -25,7 +25,7 @@
         android:summary="%s"
         android:entries="@array/distanceFormat"
         android:entryValues="@array/distanceFormatEntries"
-        android:defaultValue="1"/>
+        android:defaultValue="KILOMETERS"/>
     <SwitchPreference
         android:key="@string/settings_show_location_based_reminder_in_new_tab_key"
         android:title="@string/settings_show_location_based_reminder_in_new_tab_title"

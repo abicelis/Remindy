@@ -21,8 +21,8 @@
     </string-array>
 
     <string-array name="distanceFormatEntries">
-        <item>1</item>
-        <item>2</item>
+        <item>KILOMETERS</item>
+        <item>MILES</item>
     </string-array>
     <string-array name="distanceFormat">
         <item>Kilometers</item>
