@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -47,15 +48,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.dialogs.EditPlaceDialogFragment;
 import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.DistanceFormat;
+import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
+import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Place;
+import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.util.DpToPxUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
@@ -414,6 +421,10 @@ public class PlaceActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_place, menu);
+
+        if(mPlaceToEdit == null)   //If creating a Place, hide delete button.
+            menu.findItem(R.id.menu_place_delete).setVisible(false);
+
         return true;
     }
 
@@ -429,6 +440,10 @@ public class PlaceActivity extends AppCompatActivity implements
 
             case R.id.menu_place_save:
                 handleSaveOrUpdatePlace();
+                break;
+
+            case R.id.menu_place_delete:
+                handleDeletePlace();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -473,6 +488,58 @@ public class PlaceActivity extends AppCompatActivity implements
         }
     }
 
+    private void handleDeletePlace() {
+        mDao = new RemindyDAO(getApplicationContext());
+
+        final BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                super.onDismissed(transientBottomBar, event);
+                setResult(RESULT_OK);
+                finish();
+            }
+        };
+
+        //Check if Place is associated with at least one location-based reminder
+        List<Task> locationBasedTasks = new ArrayList<>();
+        try {
+            locationBasedTasks = mDao.getLocationBasedTasksAssociatedWithPlace(mPlace.getId());
+        }catch (CouldNotGetDataException e) {
+            SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_deleting, SnackbarUtil.SnackbarDuration.LONG, null);
+        }
+
+        //if there are tasks that use this place, warn user
+        @StringRes int title = (locationBasedTasks.size() > 0 ? R.string.activity_place_dialog_delete_with_associated_tasks_title : R.string.activity_place_dialog_delete_title);
+        @StringRes int message = (locationBasedTasks.size() > 0 ? R.string.activity_place_dialog_delete_with_associated_tasks_message : R.string.activity_place_dialog_delete_message);
+        @StringRes int positive = (locationBasedTasks.size() > 0 ? R.string.activity_place_dialog_delete_with_associated_tasks_positive : R.string.activity_place_dialog_delete_positive);
+        @StringRes int negative = (locationBasedTasks.size() > 0 ? R.string.activity_place_dialog_delete_negative : R.string.activity_place_dialog_delete_negative);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(title))
+                .setMessage(getResources().getString(message))
+                .setPositiveButton(getResources().getString(positive),  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            mDao.deletePlace(mPlace.getId());
+                            SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_place_snackbar_delete_succesful, SnackbarUtil.SnackbarDuration.SHORT, callback);
+                            dialog.dismiss();
+                        } catch (CouldNotDeleteDataException e) {
+                            SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_deleting, SnackbarUtil.SnackbarDuration.LONG, callback);
+                        }
+                    }
+                })
+                .setNegativeButton(getResources().getString(negative), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+
+    }
+
 
 
 
@@ -480,16 +547,16 @@ public class PlaceActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.activity_place_exit_dialog_title))
-                .setMessage(getResources().getString(R.string.activity_place_exit_dialog_message))
-                .setPositiveButton(getResources().getString(R.string.activity_place_exit_dialog_positive),  new DialogInterface.OnClickListener() {
+                .setTitle(getResources().getString(R.string.activity_place_dialog_exit_title))
+                .setMessage(getResources().getString(R.string.activity_place_dialog_exit_message))
+                .setPositiveButton(getResources().getString(R.string.activity_place_dialog_exit_positive),  new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         finish();
                     }
                 })
-                .setNegativeButton(getResources().getString(R.string.activity_place_exit_dialog_negative), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.activity_place_dialog_exit_negative), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

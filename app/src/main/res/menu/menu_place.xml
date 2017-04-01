@@ -3,9 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ve.com.abicelis.remindy.app.activities.MainActivity">
     <item
+        android:id="@+id/menu_place_delete"
+        android:orderInCategory="100"
+        android:icon="@drawable/icon_delete"
+        android:title="@string/menu_activity_place_action_save"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_place_save"
         android:orderInCategory="100"
         android:icon="@drawable/icon_save"
-        android:title="Save"
+        android:title="@string/menu_activity_place_action_delete"
         app:showAsAction="always" />
 </menu>

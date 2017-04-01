@@ -228,6 +228,30 @@ public class RemindyDAO {
         return result;
     }
 
+    /**
+     * Returns a List of Tasks which have Location-Based reminders of a particular Place.
+     * @param placeId The ID of the place with which to look for Tasks
+     */
+    public List<Task> getLocationBasedTasksAssociatedWithPlace(int placeId) throws CouldNotGetDataException{
+        List<Task> tasks = new ArrayList<>();
+
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query(RemindyContract.LocationBasedReminderTable.TABLE_NAME, null, RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + "=?",
+                new String[] {String.valueOf(placeId)}, null, null, null);
+
+
+        try {
+            while (cursor.moveToNext()) {
+                int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName()));
+                tasks.add(getTask(taskId));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return tasks;
+    }
+
 
     /**
      * Returns a Task (with Reminder and Attachments) given a taskId
@@ -391,11 +415,31 @@ public class RemindyDAO {
     /* Delete data from database */
 
     /**
-     * Deletes a single Place, given its ID
+     * Deletes a single Place, given its ID, also deletes Location-based reminders associated with place and updates Task ReminderType to NONE
      * @param placeId The ID of the place to delete
      */
     public boolean deletePlace(int placeId) throws CouldNotDeleteDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        List<Task> tasks;
+        try {
+            tasks = getLocationBasedTasksAssociatedWithPlace(placeId);
+        }catch (CouldNotGetDataException e) {
+            throw new CouldNotDeleteDataException("Error getting Task list associated with Place. PlaceID=" + placeId, e);
+        }
+
+        if(tasks.size() > 0) {      //Remove Location-based reminders from task, and update task ReminderType to NONE.
+            for (Task task : tasks) {
+                deleteReminderOfTask(task.getId(), task.getReminderType());
+                task.setStatus(TaskStatus.UNPROGRAMMED);
+                task.setReminderType(ReminderType.NONE);
+                try {
+                    updateTask(task);
+                } catch (CouldNotUpdateDataException e) {
+                    throw new CouldNotDeleteDataException("Error updating RemidnerType of Task to NONE. TaskID=" + task.getId(), e);
+                }
+            }
+        }
 
         return db.delete(RemindyContract.PlaceTable.TABLE_NAME,
                 RemindyContract.PlaceTable._ID + " =?",

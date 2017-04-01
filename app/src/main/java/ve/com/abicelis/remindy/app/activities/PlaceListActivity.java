@@ -62,10 +62,6 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         setUpToolbar();
         setUpRecyclerView();
         refreshRecyclerView();
-
-        SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_list_snackbar_help, SnackbarUtil.SnackbarDuration.LONG, null);
-
-
     }
 
     private void setUpToolbar() {
