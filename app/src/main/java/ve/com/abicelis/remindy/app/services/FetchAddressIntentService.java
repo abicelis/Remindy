@@ -31,7 +31,8 @@ public class FetchAddressIntentService extends IntentService {
     public static final int FAILURE_RESULT = 1;
     public static final String PACKAGE_NAME = "com.google.android.gms.location.sample.locationaddress";
     public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
-    public static final String RESULT_DATA_KEY = PACKAGE_NAME + ".RESULT_DATA_KEY";
+    public static final String RESULT_ALIAS_KEY = PACKAGE_NAME + ".RESULT_ALIAS_KEY";
+    public static final String RESULT_ADDRESS_KEY = PACKAGE_NAME + ".RESULT_ADDRESS_KEY";
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
 
 
@@ -76,7 +77,7 @@ public class FetchAddressIntentService extends IntentService {
                 errorMessage = getString(R.string.no_address_found);
                 Log.e(TAG, errorMessage);
             }
-            deliverResultToReceiver(FAILURE_RESULT, errorMessage);
+            deliverResultToReceiver(FAILURE_RESULT, errorMessage, "");
         } else {
             Address address = addresses.get(0);
             ArrayList<String> addressFragments = new ArrayList<String>();
@@ -87,15 +88,15 @@ public class FetchAddressIntentService extends IntentService {
                 addressFragments.add(address.getAddressLine(i));
             }
             Log.i(TAG, getString(R.string.address_found));
-            deliverResultToReceiver(SUCCESS_RESULT,
-                    TextUtils.join(System.getProperty("line.separator"),
-                            addressFragments));
+            //deliverResultToReceiver(SUCCESS_RESULT, address.getFeatureName(), TextUtils.join(System.getProperty("line.separator"), addressFragments) );
+            deliverResultToReceiver(SUCCESS_RESULT, address.getFeatureName(), TextUtils.join(", ", addressFragments) );
         }
     }
 
-    private void deliverResultToReceiver(int resultCode, String message) {
+    private void deliverResultToReceiver(int resultCode, String alias, String address) {
         Bundle bundle = new Bundle();
-        bundle.putString(RESULT_DATA_KEY, message);
+        bundle.putString(RESULT_ALIAS_KEY, alias);
+        bundle.putString(RESULT_ADDRESS_KEY, address);
         mReceiver.send(resultCode, bundle);
     }
 
