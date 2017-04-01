@@ -33,8 +33,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -96,6 +99,7 @@ public class PlaceActivity extends AppCompatActivity implements
     private DistanceFormat mDistanceFormat;
 
     //UI
+    private PlaceAutocompleteFragment mAutocompleteFragment;
     private GoogleMap mMap;
     private Toolbar mToolbar;
     private RelativeLayout mMapContainer;
@@ -141,11 +145,38 @@ public class PlaceActivity extends AppCompatActivity implements
                 .build();
         mGoogleApiClient.connect();
 
+        mAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        mAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(com.google.android.gms.location.places.Place place) {
+                //Save lat and long
+                mPlace.setLatitude(place.getLatLng().latitude);
+                mPlace.setLongitude(place.getLatLng().longitude);
 
+                //Add/Update marker and circle
+                if(mPlaceMarker == null)
+                    drawMarkerWithCircle(place.getLatLng(), mPlace.getRadius());
+                else
+                    updateMarkerWithCircle(place.getLatLng());
+
+                //Move camera
+                Location loc = new Location(LocationManager.GPS_PROVIDER);
+                loc.setLatitude(mPlace.getLatitude());
+                loc.setLongitude(mPlace.getLongitude());
+                moveCameraToLocation(loc);
+
+                setAliasAndAddress(place.getName().toString(), place.getAddress().toString());
+            }
+
+            @Override
+            public void onError(Status status) {
+                Toast.makeText(PlaceActivity.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mMapContainer = (RelativeLayout) findViewById(R.id.activity_place_map_container);
-        mSearch = (EditText) findViewById(R.id.activity_place_search);
-        mSearchButton = (ImageView) findViewById(R.id.activity_place_search_button);
+        //mSearch = (EditText) findViewById(R.id.activity_place_search);
+        //mSearchButton = (ImageView) findViewById(R.id.activity_place_search_button);
         mRadius = (SeekBar) findViewById(R.id.activity_place_radius_seekbar);
         mRadius.setMax(14);
         mRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -245,7 +276,7 @@ public class PlaceActivity extends AppCompatActivity implements
     @SuppressWarnings({"MissingPermission"})
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
-        mMap.setPadding(0, DpToPxUtil.dpToPx(52, getResources()), 0, 0);
+        mMap.setPadding(0, DpToPxUtil.dpToPx(68, getResources()), 0, 0);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         if(mPlaceToEdit == null) {
@@ -336,31 +367,30 @@ public class PlaceActivity extends AppCompatActivity implements
         String address = resultData.getString(FetchAddressIntentService.RESULT_ADDRESS_KEY);
 
         if (resultCode == FetchAddressIntentService.SUCCESS_RESULT) {
-
-            //Save alias and address
-            mPlace.setAlias(alias);
-            mPlace.setAddress(address);
-
-            if(!mAliasAddressAlreadySet) {
-                TransitionManager.beginDelayedTransition(mMapContainer, new Slide(Gravity.BOTTOM));
-                mAlias.setText(alias);
-                mAddress.setText(address);
-                mAliasAddressContainer.setVisibility(View.VISIBLE);
-                mAliasAddressAlreadySet = true;
-
-            } else {
-                //TransitionManager.beginDelayedTransition(mMapContainer, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_OUT_IN));
-                mAlias.setText(alias);
-                mAddress.setText(address);
-            }
-
-
+            setAliasAndAddress(alias, address);
         } else {
             Toast.makeText(this, "There was an error fetching the address...", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void setAliasAndAddress(String alias, String address) {
+        //Save alias and address
+        mPlace.setAlias(alias);
+        mPlace.setAddress(address);
 
+        if(!mAliasAddressAlreadySet) {
+            TransitionManager.beginDelayedTransition(mMapContainer, new Slide(Gravity.BOTTOM));
+            mAlias.setText(alias);
+            mAddress.setText(address);
+            mAliasAddressContainer.setVisibility(View.VISIBLE);
+            mAliasAddressAlreadySet = true;
+
+        } else {
+            //TransitionManager.beginDelayedTransition(mMapContainer, new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_OUT_IN));
+            mAlias.setText(alias);
+            mAddress.setText(address);
+        }
+    }
 
 
     @Override
@@ -553,6 +583,7 @@ public class PlaceActivity extends AppCompatActivity implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        setResult(RESULT_OK);
                         finish();
                     }
                 })
