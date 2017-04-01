@@ -159,14 +159,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.activity_home_fab:
                 //TODO: Open newTask Activity
-                //showAddReminderDialog();
                 break;
         }
     }
 
-//    private void showAddReminderDialog() {
-//        FragmentManager fm = getSupportFragmentManager();
-//        NewReminderDialogFragment dialog = NewReminderDialogFragment.newInstance();
-//        dialog.show(fm, "NewReminderDialogFragment");
-//    }
+
 }
