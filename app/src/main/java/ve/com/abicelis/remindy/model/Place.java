@@ -1,10 +1,12 @@
 package ve.com.abicelis.remindy.model;
 
+import java.io.Serializable;
+
 /**
  * Created by abice on 8/3/2017.
  */
 
-public class Place {
+public class Place implements Serializable {
     private int id;
     private String alias;
     private String address;
@@ -26,6 +28,14 @@ public class Place {
     public Place(int id, String alias, String address, double latitude, double longitude, float radius, boolean isOneOff) {
         this(alias, address, latitude, longitude, radius, isOneOff);
         this.id = id;
+    }
+
+    public Place(Place place) {
+        this(place.getId(), place.getAlias(), place.getAddress(), place.getLatitude(), place.getLongitude(), place.getRadius(), place.isOneOff());
+    }
+
+    public Place() {
+        radius = 500;   //Default radius 500m
     }
 
     public int getId() {
