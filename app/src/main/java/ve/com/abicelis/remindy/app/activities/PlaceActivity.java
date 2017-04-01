@@ -38,6 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -51,10 +52,12 @@ import ve.com.abicelis.remindy.app.dialogs.EditPlaceDialogFragment;
 import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.DistanceFormat;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.util.DpToPxUtil;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -83,6 +86,7 @@ public class PlaceActivity extends AppCompatActivity implements
     private Circle mPlaceCircle;
     private boolean mAliasAddressAlreadySet;
     private RemindyDAO mDao;
+    private DistanceFormat mDistanceFormat;
 
     //UI
     private GoogleMap mMap;
@@ -114,6 +118,8 @@ public class PlaceActivity extends AppCompatActivity implements
             mPlace = new Place();
         }
 
+        //Get distance format preference
+        mDistanceFormat = SharedPreferenceUtil.getDistanceFormat(getApplicationContext());
 
 
         // Build the Play services client for use by the Fused Location Provider and the Places API.
@@ -129,25 +135,22 @@ public class PlaceActivity extends AppCompatActivity implements
         mGoogleApiClient.connect();
 
 
+
         mMapContainer = (RelativeLayout) findViewById(R.id.activity_place_map_container);
         mSearch = (EditText) findViewById(R.id.activity_place_search);
         mSearchButton = (ImageView) findViewById(R.id.activity_place_search_button);
         mRadius = (SeekBar) findViewById(R.id.activity_place_radius_seekbar);
         mRadius.setMax(14);
         mRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                //Update mPlace's radius, mRadiusDisplay text and map radius
                 mPlace.setRadius((progress+1) * 100);
-                mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");
-                updateMapCircleRadius(mPlace.getRadius());
+                mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");                          //TODO: mDistanceFormat
+                if(mPlaceCircle != null)
+                    mPlaceCircle.setRadius(mPlace.getRadius());
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
@@ -161,7 +164,6 @@ public class PlaceActivity extends AppCompatActivity implements
 
         setUpToolbar();
     }
-
 
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.activity_place_toolbar);
@@ -242,11 +244,12 @@ public class PlaceActivity extends AppCompatActivity implements
         if(mPlaceToEdit == null) {
             moveCameraToLastKnownLocation();        //If creating a new place, go to user current location
             mRadius.setProgress(1);
-            mRadiusDisplay.setText("100 m");
+            mRadiusDisplay.setText("100 m");        //TODO: mDistanceFormat
             SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_help, SnackbarUtil.SnackbarDuration.SHORT, null);
 
         } else {
             drawMarkerWithCircle(new LatLng(mPlace.getLatitude(), mPlace.getLongitude()), mPlace.getRadius());        //If editing a place, go to that place and add a marker, circle
+
             Location loc = new Location(LocationManager.GPS_PROVIDER);
             loc.setLatitude(mPlace.getLatitude());
             loc.setLongitude(mPlace.getLongitude());
@@ -259,7 +262,7 @@ public class PlaceActivity extends AppCompatActivity implements
             mAliasAddressAlreadySet = true;
 
             mRadius.setProgress((int) (mPlace.getRadius()/100)-1 );
-            mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");
+            mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");      //TODO: mDistanceFormat
 
         }
     }
@@ -283,11 +286,6 @@ public class PlaceActivity extends AppCompatActivity implements
         mPlaceMarker.setPosition(position);
     }
 
-    private void updateMapCircleRadius(double radius) {
-        if(mPlaceCircle != null)
-            mPlaceCircle.setRadius(radius);
-    }
-
     private void moveCameraToLastKnownLocation() {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -304,7 +302,10 @@ public class PlaceActivity extends AppCompatActivity implements
         if (location != null) {
             //Point map camera to location
             LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15), 1000, null);  //Zoom level 15 = Streets, 1000ms animation
+
+            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15), 1000, null);  //Zoom level 15 = Streets, 1000ms animation
+            CameraPosition cameraPos = new CameraPosition.Builder().tilt(60).target(latlng).zoom(15).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos), 1000, null);
         }
     }
 
