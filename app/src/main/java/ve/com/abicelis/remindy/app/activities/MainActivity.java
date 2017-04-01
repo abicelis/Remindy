@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onReceiveAddressResult(int resultCode, Bundle resultData) {
-        mAddressOutput = resultData.getString(FetchAddressIntentService.RESULT_DATA_KEY);
+        mAddressOutput = resultData.getString(FetchAddressIntentService.RESULT_ALIAS_KEY);
 
         if (resultCode == FetchAddressIntentService.SUCCESS_RESULT) {
             mAddressText.setText(mAddressOutput);

@@ -1,5 +1,6 @@
 package ve.com.abicelis.remindy.app.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,8 @@ import ve.com.abicelis.remindy.model.Place;
 
 public class PlaceListActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //CONST
+    public static final int ADD_OR_EDIT_PLACE_REQUEST_CODE = 500;
 
     //DATA
     private List<Place> mPlaces = new ArrayList<>();
@@ -110,8 +112,16 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         int id = v.getId();
         switch (id) {
             case R.id.activity_place_list_fab:
-                Toast.makeText(this, "Places add a place!", Toast.LENGTH_SHORT).show();
+                Intent newPlaceIntent = new Intent(getApplicationContext(), PlaceActivity.class);
+                startActivityForResult(newPlaceIntent, ADD_OR_EDIT_PLACE_REQUEST_CODE);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == ADD_OR_EDIT_PLACE_REQUEST_CODE) {
+            refreshRecyclerView();
         }
     }
 
@@ -126,6 +136,8 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
 }
