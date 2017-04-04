@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,15 +34,15 @@ import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
-import ve.com.abicelis.remindy.enums.TaskStatus;
-import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.util.InputFilterMinMax;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -67,6 +65,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
     Time mTimeTime;
     Calendar mRepeatUntilCal;
     RepeatingReminder mReminder = null;
+    DateFormat mDf;
 
 
     //UI
@@ -120,6 +119,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
         mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.icon_back_material));
         setSupportActionBar(mToolbar);
 
+        mDf = SharedPreferenceUtil.getDateFormat(this);
 
         setupSpinners();
         setupDateAndTimePickers();
@@ -226,8 +226,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
                                     mDateCal.set(Calendar.MILLISECOND, 0);
                                 }
                                 mDateCal.set(year, monthOfYear, dayOfMonth);
-                                SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                                mDate.setText(formatter.format(mDateCal.getTime()));
+                                mDate.setText(mDf.formatCalendar(mDateCal));
                             }
                         })
                         .setFirstDayOfWeek(Calendar.MONDAY)
@@ -254,8 +253,7 @@ public class SimpleReminderActivity extends AppCompatActivity {
                                     mRepeatUntilCal.set(Calendar.MILLISECOND, 0);
                                 }
                                 mRepeatUntilCal.set(year, monthOfYear, dayOfMonth);
-                                SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                                mRepeatUntilDate.setText(formatter.format(mRepeatUntilCal.getTime()));
+                                mRepeatUntilDate.setText(mDf.formatCalendar(mRepeatUntilCal));
                             }
                         })
                         .setFirstDayOfWeek(Calendar.MONDAY)
@@ -501,7 +499,6 @@ public class SimpleReminderActivity extends AppCompatActivity {
     }
 
     private void restoreSimpleReminder() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
 //
 //        mTitle.setText(mReminder.getTitle());

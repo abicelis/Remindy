@@ -15,11 +15,13 @@ import java.util.Locale;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.enums.AttachmentType;
+import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.exception.WrongReminderTypeException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -95,8 +97,8 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
             mDescription.setText("-");
 
         if(current.getReminderType() == ReminderType.ONE_TIME && current.getReminder() != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-            mDate.setText(formatter.format(((OneTimeReminder)current.getReminder()).getDate().getTime()));
+            DateFormat df = SharedPreferenceUtil.getDateFormat(mActivity);
+            mDate.setText(df.formatCalendar(((OneTimeReminder)current.getReminder()).getDate()));
             mTime.setText(((OneTimeReminder)current.getReminder()).getTime().toString());
         } else {
             mDate.setText("-");

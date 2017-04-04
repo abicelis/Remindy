@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="dateFormatEntries">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
+        <item>PRETTY_DATE</item>
+        <item>MONTH_DAY_YEAR</item>
+        <item>DAY_MONTH_YEAR</item>
     </string-array>
     <string-array name="dateFormat">
         <item>Feb 30, 2017</item>

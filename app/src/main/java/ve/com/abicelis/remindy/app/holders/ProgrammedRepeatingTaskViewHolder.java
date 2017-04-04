@@ -96,12 +96,7 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
             mDescription.setText("-");
 
         if(current.getReminderType() == ReminderType.REPEATING && current.getReminder() != null) {
-
-            //TODO: Undo this, used while debugging.
-            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-            mRepeat.setText(formatter.format(((RepeatingReminder)current.getReminder()).getDate().getTime()));
-            //mRepeat.setText(getRepeatText());
-
+            mRepeat.setText(getRepeatText());
             mTime.setText(((RepeatingReminder)current.getReminder()).getTime().toString());
         } else {
             mRepeat.setText("-");
