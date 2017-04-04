@@ -68,6 +68,11 @@
         </activity>
 
         <activity
+            android:name=".app.activities.TaskDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".app.activities.SettingsActivity"
             android:theme="@style/AppPreferenceTheme">
         </activity>
