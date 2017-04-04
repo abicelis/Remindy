@@ -4,24 +4,45 @@
     <color name="black">#000000</color>
     <color name="header_title_red">#ff3333</color>
 
-
-    <color name="primary">#4CAF50</color>
-    <color name="primary_dark">#388E3C</color>
-    <color name="primary_light">#C8E6C9</color>
-    <color name="accent">#CDDC39</color>
-    <color name="primary_text">#424242</color>
-    <color name="secondary_text">#757575</color>
-    <color name="icons">#FFFFFF</color>
     <color name="icons_disabled">#BDBDBD</color>
     <color name="icons_enabled">#212121</color>
+
+    <!--<color name="primary">#4CAF50</color>-->
+    <!--<color name="primary_dark">#388E3C</color>-->
+    <!--<color name="primary_light">#C8E6C9</color>-->
+    <!--<color name="accent">#CDDC39</color>-->
+    <!--<color name="primary_text">#424242</color>-->
+    <!--<color name="secondary_text">#757575</color>-->
+    <!--<color name="icons">#FFFFFF</color>-->
+    <!--<color name="divider">#BDBDBD</color>-->
+
+    <color name="primary">#FF9800</color>
+    <color name="primary_dark">#F57C00</color>
+    <color name="primary_light">#FFE0B2</color>
+    <color name="accent">#00BCD4</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#212121</color>
     <color name="divider">#BDBDBD</color>
 
 
-    <color name="category_personal">#43A047</color>
-    <color name="category_business">#5C6BC0</color>
-    <color name="category_health">#AB47BC</color>
-    <color name="category_repairs">#009688</color>
-    <color name="category_other">#FB8C00</color>
+    <!--<color name="category_personal">#43A047</color>-->
+    <!--<color name="category_business">#5C6BC0</color>-->
+    <!--<color name="category_health">#AB47BC</color>-->
+    <!--<color name="category_repairs">#009688</color>-->
+    <!--<color name="category_other">#FB8C00</color>-->
+
+    <!--<color name="category_business">#BDBDBD</color>-->
+    <!--<color name="category_personal">#64B5F6</color>-->
+    <!--<color name="category_health">#81C784</color>-->
+    <!--<color name="category_repairs">#FFB74D</color>-->
+    <!--<color name="category_shopping">#BA68C8</color>-->
+
+    <color name="category_business">#625C38</color>
+    <color name="category_personal">#C8E800</color>
+    <color name="category_health">#00BDD3</color>
+    <color name="category_repairs">#FD392D</color>
+    <color name="category_shopping">#B44781</color>
 
     <color name="gray_50">#FAFAFA</color>
     <color name="gray_100">#F5F5F5</color>

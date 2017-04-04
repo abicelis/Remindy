@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="oval">
-            <solid android:color="@color/category_personal"/>
-        </shape>
-    </item>
-    <item android:bottom="12dp" android:top="12dp" android:left="12dp" android:right="12dp">
-        <bitmap android:src="@drawable/icon_personal"/>
+    <!--<item>-->
+        <!--<shape android:shape="oval">-->
+            <!--<solid android:color="@color/category_personal"/>-->
+        <!--</shape>-->
+    <!--</item>-->
+    <item android:bottom="8dp" android:top="8dp" android:left="8dp" android:right="8dp">
+        <bitmap android:src="@drawable/icon_personal" android:tint="@color/category_personal"/>
     </item>
 </layer-list>

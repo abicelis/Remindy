@@ -15,7 +15,10 @@ import ve.com.abicelis.remindy.R;
 
 public enum TaskCategory {
     BUSINESS(R.string.task_category_business, R.drawable.icon_category_business),
-    PERSONAL(R.string.task_category_personal, R.drawable.icon_category_personal);
+    PERSONAL(R.string.task_category_personal, R.drawable.icon_category_personal),
+    HEALTH(R.string.task_category_health, R.drawable.icon_category_health),
+    REPAIRS(R.string.task_category_repairs, R.drawable.icon_category_repairs),
+    SHOPPING(R.string.task_category_shopping, R.drawable.icon_category_shopping);
 
     private @StringRes int friendlyNameRes;
     private @DrawableRes int iconRes;

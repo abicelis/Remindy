@@ -160,6 +160,9 @@
     /* ENUM TaskCategory */
     <string name="task_category_business">Business</string>
     <string name="task_category_personal">Personal</string>
+    <string name="task_category_health">Health</string>
+    <string name="task_category_repairs">Repairs</string>
+    <string name="task_category_shopping">Shopping</string>
 
     /* ENUM ReminderDateType */
     <string name="reminder_date_type_anyday">Anyday</string>
