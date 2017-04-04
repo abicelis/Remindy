@@ -20,13 +20,4 @@
         <item>12H</item>
     </string-array>
 
-    <string-array name="distanceFormatEntries">
-        <item>KILOMETERS</item>
-        <item>MILES</item>
-    </string-array>
-    <string-array name="distanceFormat">
-        <item>Kilometers</item>
-        <item>Miles</item>
-    </string-array>
-
 </resources>

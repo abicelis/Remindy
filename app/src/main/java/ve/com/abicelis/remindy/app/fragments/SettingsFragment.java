@@ -29,7 +29,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Preference mManagePlaces;
     private ListPreference mDateFormat;
     private ListPreference mTimeFormat;
-    private ListPreference mDistanceFormat;
     private SwitchPreference mShowLocationBasedReminderInNewTab;
     private Preference mBackup;
     private Preference mRestore;
@@ -55,7 +54,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
         mDateFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_date_format_key));
         mTimeFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_time_format_key));
-        mDistanceFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_distance_format_key));
         mShowLocationBasedReminderInNewTab = (SwitchPreference) findPreference(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key));
         handleShowLocationBasedReminderInNewTabPreferenceChange(getShowLocationBasedReminderInNewTabValue());
         mShowLocationBasedReminderInNewTab.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

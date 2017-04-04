@@ -59,15 +59,13 @@ import ve.com.abicelis.remindy.app.dialogs.EditPlaceDialogFragment;
 import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
 import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.DistanceFormat;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
-import ve.com.abicelis.remindy.util.DpToPxUtil;
-import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
+import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -96,7 +94,6 @@ public class PlaceActivity extends AppCompatActivity implements
     private Circle mPlaceCircle;
     private boolean mAliasAddressAlreadySet;
     private RemindyDAO mDao;
-    private DistanceFormat mDistanceFormat;
 
     //UI
     private PlaceAutocompleteFragment mAutocompleteFragment;
@@ -129,8 +126,6 @@ public class PlaceActivity extends AppCompatActivity implements
             mPlace = new Place();
         }
 
-        //Get distance format preference
-        mDistanceFormat = SharedPreferenceUtil.getDistanceFormat(getApplicationContext());
 
 
         // Build the Play services client for use by the Fused Location Provider and the Places API.
@@ -183,7 +178,7 @@ public class PlaceActivity extends AppCompatActivity implements
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 mPlace.setRadius((progress+1) * 100);
-                mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");                          //TODO: mDistanceFormat
+                mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");
                 if(mPlaceCircle != null)
                     mPlaceCircle.setRadius(mPlace.getRadius());
             }
@@ -276,13 +271,13 @@ public class PlaceActivity extends AppCompatActivity implements
     @SuppressWarnings({"MissingPermission"})
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
-        mMap.setPadding(0, DpToPxUtil.dpToPx(68, getResources()), 0, 0);
+        mMap.setPadding(0, ConversionUtil.dpToPx(68, getResources()), 0, 0);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         if(mPlaceToEdit == null) {
             moveCameraToLastKnownLocation();        //If creating a new place, go to user current location
             mRadius.setProgress(1);
-            mRadiusDisplay.setText("100 m");        //TODO: mDistanceFormat
+            mRadiusDisplay.setText("100 m");
             SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_help, SnackbarUtil.SnackbarDuration.SHORT, null);
 
         } else {
@@ -300,7 +295,7 @@ public class PlaceActivity extends AppCompatActivity implements
             mAliasAddressAlreadySet = true;
 
             mRadius.setProgress((int) (mPlace.getRadius()/100)-1 );
-            mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");      //TODO: mDistanceFormat
+            mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");
 
         }
     }
