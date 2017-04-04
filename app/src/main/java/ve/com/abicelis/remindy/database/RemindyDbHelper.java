@@ -166,18 +166,18 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 "(8,    'DONE',             'Mock Task 8',      'Task 8 - One-time DONE',           'PERSONAL',     'ONE_TIME',         "+dateYesterday+")," +
                 "(9,    'DONE',             'Mock Task 9',      'Task 9 - One-time DONE',           'BUSINESS',     'ONE_TIME',         "+dateLastWeek+")," +
 
-                "(10,   'PROGRAMMED',       'Mock Task 10',     'Task 10 - One-time Reminder',      'PERSONAL',     'ONE_TIME',         -1)," +
+                "(10,   'PROGRAMMED',       'Mock Task 10',     'Task 10 - One-time Reminder',      'REPAIRS',     'ONE_TIME',         -1)," +
                 "(11,   'PROGRAMMED',       'Mock Task 11',     'Task 11 - One-time Reminder',      'BUSINESS',     'ONE_TIME',         -1)," +
-                "(12,   'PROGRAMMED',       'Mock Task 12',     'Task 12 - One-time Reminder',      'PERSONAL',     'ONE_TIME',         -1)," +
-                "(13,   'PROGRAMMED',       'Mock Task 13',     'Task 13 - One-time Reminder',      'BUSINESS',     'ONE_TIME',         -1)," +
+                "(12,   'PROGRAMMED',       'Mock Task 12',     'Task 12 - One-time Reminder',      'HEALTH',       'ONE_TIME',         -1)," +
+                "(13,   'PROGRAMMED',       'Mock Task 13',     'Task 13 - One-time Reminder',      'SHOPPING',     'ONE_TIME',         -1)," +
                 "(14,   'PROGRAMMED',       'Mock Task 14',     'Task 14 - One-time Reminder',      'PERSONAL',     'ONE_TIME',         -1)," +
-                "(15,   'PROGRAMMED',       'Mock Task 15',     'Task 15 - One-time Reminder',      'BUSINESS',     'ONE_TIME',         -1)," +
-                "(16,   'PROGRAMMED',       'Mock Task 16',     'Task 16 - Repeating Reminder',     'PERSONAL',     'REPEATING',        -1)," +
+                "(15,   'PROGRAMMED',       'Mock Task 15',     'Task 15 - One-time Reminder',      'HEALTH',       'ONE_TIME',         -1)," +
+                "(16,   'PROGRAMMED',       'Mock Task 16',     'Task 16 - Repeating Reminder',     'BUSINESS',     'REPEATING',        -1)," +
                 "(17,   'PROGRAMMED',       'Mock Task 17',     'Task 17 - Repeating Reminder',     'BUSINESS',     'REPEATING',        -1)," +
-                "(18,   'PROGRAMMED',       'Mock Task 18',     'Task 18 - Repeating Reminder',     'PERSONAL',     'REPEATING',        -1)," +
-                "(19,   'PROGRAMMED',       'Mock Task 19',     'Task 19 - Location Reminder',      'BUSINESS',     'LOCATION_BASED',   -1)," +
-                "(20,   'PROGRAMMED',       'Mock Task 20',     'Task 20 - Location Reminder',      'PERSONAL',     'LOCATION_BASED',   -1)," +
-                "(21,   'PROGRAMMED',       'Mock Task 21',     'Task 21 - Location Reminder',      'BUSINESS',     'LOCATION_BASED',   -1)," +
+                "(18,   'PROGRAMMED',       'Mock Task 18',     'Task 18 - Repeating Reminder',     'SHOPPING',     'REPEATING',        -1)," +
+                "(19,   'PROGRAMMED',       'Mock Task 19',     'Task 19 - Location Reminder',      'REPAIRS',     'LOCATION_BASED',   -1)," +
+                "(20,   'PROGRAMMED',       'Mock Task 20',     'Task 20 - Location Reminder',      'HEALTH',       'LOCATION_BASED',   -1)," +
+                "(21,   'PROGRAMMED',       'Mock Task 21',     'Task 21 - Location Reminder',      'SHOPPING',     'LOCATION_BASED',   -1)," +
                 "(22,   'PROGRAMMED',       'Mock Task 22',     'Task 22 - Location Reminder',      'PERSONAL',     'LOCATION_BASED',   -1);";
         sqLiteDatabase.execSQL(statement);
 
