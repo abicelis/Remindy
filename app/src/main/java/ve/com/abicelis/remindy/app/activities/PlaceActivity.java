@@ -312,9 +312,13 @@ public class PlaceActivity extends AppCompatActivity implements
         int shadeColor = 0x44ff0000; //opaque red fill
 
         CircleOptions circleOptions = new CircleOptions().center(position).radius(circleRadiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(2);
+        if(mPlaceCircle != null)
+            mPlaceCircle.remove();
         mPlaceCircle = mMap.addCircle(circleOptions);
 
         MarkerOptions markerOptions = new MarkerOptions().position(position).title("My Location");
+        if(mPlaceMarker != null)
+            mPlaceMarker.remove();
         mPlaceMarker = mMap.addMarker(markerOptions);
         mPlaceCircle.setZIndex(100);
     }
