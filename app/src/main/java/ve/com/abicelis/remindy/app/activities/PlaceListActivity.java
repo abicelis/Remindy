@@ -83,7 +83,7 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         mAdapter = new PlaceAdapter(this, mPlaces);
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
-        itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line_unprogrammed));
+        itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_complete_line));
         mRecyclerView.addItemDecoration(itemDecoration);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
