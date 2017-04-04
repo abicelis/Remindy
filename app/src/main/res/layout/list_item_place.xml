@@ -5,16 +5,8 @@
     android:id="@+id/item_place_container"
     android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="92dp">
+    android:layout_height="72dp">
 
-    <ImageView
-        android:id="@+id/item_place_category_icon"
-        android:layout_width="@dimen/item_place_icon_size"
-        android:layout_height="@dimen/item_place_icon_size"
-        android:layout_marginRight="6dp"
-        android:layout_marginEnd="6dp"
-        android:src="@drawable/icon_round_location"
-        />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/item_place_map"
@@ -29,64 +21,50 @@
         tools:context="ve.com.abicelis.remindy.app.activities.PlaceListActivity" />
 
 
-
-    <!--<ImageView-->
-        <!--android:id="@+id/item_place_map"-->
-        <!--android:layout_width="@dimen/item_place_map_width"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:src="@color/primary"-->
-        <!--/>-->
-
-    <TextView
-        android:id="@+id/item_place_alias"
+    <LinearLayout
+        android:id="@+id/item_place_top_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/item_place_category_icon"
-        android:layout_toEndOf="@id/item_place_category_icon"
         android:layout_toLeftOf="@id/item_place_map"
         android:layout_toStartOf="@id/item_place_map"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginEnd="8dp"
-        android:includeFontPadding="false"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textColor="@color/primary_text"
-        android:textSize="@dimen/text_size_bigger"
-        android:text="Example Place Alias"
-        />
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/item_place_category_icon"
+            android:layout_width="@dimen/item_place_icon_size"
+            android:layout_height="@dimen/item_place_icon_size"
+            android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/icon_round_location"
+            />
+        <TextView
+            android:id="@+id/item_place_alias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/text_size_bigger"
+            android:text="Example Place Alias"
+            />
 
-    <!--<ImageView-->
-        <!--android:id="@+id/item_place_address_icon"-->
-        <!--android:layout_width="@dimen/item_task_other_icon_size"-->
-        <!--android:layout_height="@dimen/item_task_other_icon_size"-->
-        <!--android:layout_toRightOf="@id/item_place_category_icon"-->
-        <!--android:layout_toEndOf="@id/item_place_category_icon"-->
-        <!--android:layout_below="@id/item_place_alias"-->
-        <!--android:layout_marginRight="4dp"-->
-        <!--android:layout_marginEnd="4dp"-->
-        <!--android:src="@drawable/icon_place"-->
-        <!--android:tint="@color/gray_600"-->
-        <!--/>-->
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/item_place_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_toLeftOf="@id/item_place_map"
         android:layout_toStartOf="@id/item_place_map"
-        android:layout_below="@id/item_place_category_icon"
-        android:includeFontPadding="false"
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginEnd="8dp"
-        android:lines="2"
+        android:layout_below="@id/item_place_top_container"
+        android:lines="1"
         android:ellipsize="end"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/text_size_small"
-        android:text="Example place address ..."
+        android:text="Example place address Example place addres"
         />
 
 

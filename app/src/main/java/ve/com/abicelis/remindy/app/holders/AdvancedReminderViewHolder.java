@@ -12,7 +12,6 @@ import android.widget.Toast;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.enums.AttachmentType;
-import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 
@@ -145,7 +144,7 @@ public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implemen
             case 3:
                 return ContextCompat.getColor(mActivity, R.color.category_personal);
             case 4:
-                return ContextCompat.getColor(mActivity, R.color.category_other);
+                return ContextCompat.getColor(mActivity, R.color.category_shopping);
             default:
                 return ContextCompat.getColor(mActivity, R.color.category_health);
 
