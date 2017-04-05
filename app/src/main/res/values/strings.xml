@@ -23,6 +23,25 @@
     <string name="menu_home_action_about">About</string>
     <string name="menu_home_action_rate">Rate app</string>
 
+
+
+    /* Task Detail Activity */
+    <string name="activity_task_title">Task detail</string>
+    <string name="menu_activity_task_action_edit">Edit</string>
+    <string name="menu_activity_task_action_delete">Delete</string>
+    <string name="menu_activity_task_subtitle_attachments">Attachments</string>
+    <string name="activity_task_snackbar_error_no_task">No task specified. Closing</string>
+    <string name="activity_task_snackbar_error_deleting_task">Could not delete task</string>
+    <string name="activity_task_snackbar_task_deleted_successfully">Task deleted successfully</string>
+    <string name="fragment_location_based_reminder_detail_snackbar_error_no_reminder">No reminder specified. Closing</string>
+
+    <string name="activity_task_dialog_delete_title">Delete task?</string>
+    <string name="activity_task_dialog_delete_message">Are you sure you want to delete this task? This action cannot be undo</string>
+    <string name="activity_task_dialog_delete_positive">Delete</string>
+    <string name="activity_task_dialog_delete_negative">Cancel</string>
+
+
+
     /* List Places Activity */
     <string name="activity_place_list_title">Manage Places</string>
     <string name="activity_place_list_no_items">There are no places. Click the + button to add one</string>
@@ -84,8 +103,6 @@
     <string name="settings_time_format_key">remindy_settings_time_format</string>
     <string name="settings_time_format_title">Time Format</string>
 
-    <string name="settings_distance_format_key">remindy_settings_distance_format</string>
-    <string name="settings_distance_format_title">Distance Unit</string>
 
     <string name="settings_backup_key">remindy_settings_backup</string>
     <string name="settings_backup_title">Backup data</string>
@@ -145,9 +162,13 @@
 
     <string name="activity_reminder_extras_no_items">Add attachments by clicking the + button</string>
 
-    <string name="list_item_extras_image_tap_to_add">Tap to add an image</string>
-    <string name="item_extra_text_content_hint">Enter some text</string>
-    <string name="item_extra_link_content_hint">Enter a link</string>
+
+
+    <string name="item_attachment_image_hint">Tap to add an image</string>
+    <string name="item_attachment_list_hint">Tap to enter a list</string>
+    <string name="item_attachment_text_hint">Tap to enter text</string>
+    <string name="item_attachment_audio_hint">Tap to record</string>
+    <string name="item_attachment_link_hint">Tap to enter a link</string>
 
 
 
@@ -155,6 +176,13 @@
     <string name="fragment_reminder_list_no_items">There are no tasks here!</string>
     <string name="fragment_reminder_list_place_anywhere">Anywhere</string>
 
+
+
+
+    /* Transitions */
+    <string name="transition_task_list_title">title</string>
+    <string name="transition_task_list_category">category</string>
+    <string name="transition_task_list_description">description</string>
 
 
     /* ENUM TaskCategory */
@@ -179,6 +207,12 @@
     <string name="task_status_unprogrammed">UNPROGRAMMED</string>
     <string name="task_status_programmed">PROGRAMMED</string>
     <string name="task_status_done">DONE</string>
+
+    /* ENUM ReminderType */
+    <string name="reminder_type_none">None</string>
+    <string name="reminder_type_one_time">One-Time Reminder</string>
+    <string name="reminder_type_repeating">Repeating Reminder</string>
+    <string name="reminder_type_location_based">Location-based Reminder</string>
 
     /* ENUM ReminderTimeType */
     <string name="reminder_time_type_anytime">Anytime</string>

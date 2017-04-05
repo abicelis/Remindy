@@ -61,17 +61,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFab = (FloatingActionButton) findViewById(R.id.activity_home_fab);
         mFab.setOnClickListener(this);
 
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mShowLocationBasedTasksInOwnViewPagerTab = preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
         setupViewPagerAndTabLayout();
     }
+
 
     private void setupViewPagerAndTabLayout() {
 

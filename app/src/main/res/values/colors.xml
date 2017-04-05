@@ -7,6 +7,12 @@
     <color name="icons_disabled">#BDBDBD</color>
     <color name="icons_enabled">#212121</color>
 
+
+    <color name="map_circle_shade">#44FF0000</color>
+    <color name="map_circle_stroke">#FFFF0000</color>
+
+
+
     <!--<color name="primary">#4CAF50</color>-->
     <!--<color name="primary_dark">#388E3C</color>-->
     <!--<color name="primary_light">#C8E6C9</color>-->
@@ -26,6 +32,8 @@
     <color name="divider">#BDBDBD</color>
 
 
+
+
     <!--<color name="category_personal">#43A047</color>-->
     <!--<color name="category_business">#5C6BC0</color>-->
     <!--<color name="category_health">#AB47BC</color>-->
@@ -43,6 +51,10 @@
     <color name="category_health">#00BDD3</color>
     <color name="category_repairs">#FD392D</color>
     <color name="category_shopping">#B44781</color>
+
+
+
+
 
     <color name="gray_50">#FAFAFA</color>
     <color name="gray_100">#F5F5F5</color>

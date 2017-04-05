@@ -1,5 +1,6 @@
 package ve.com.abicelis.remindy.model.reminder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -56,6 +57,9 @@ public class RepeatingReminder extends Reminder implements Serializable {
     }
 
 
+    public String getRepeatText(Context context) {
+        return context.getResources().getString(getRepeatType().getFriendlyNameRes()) + ", " + context.getResources().getString(getRepeatEndType().getFriendlyNameRes());
+    }
 
 
     public Calendar getDate() {

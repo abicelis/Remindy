@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ve.com.abicelis.remindy.app.activities.MainActivity">
+    <item
+        android:id="@+id/menu_task_edit"
+        android:orderInCategory="100"
+        android:icon="@drawable/icon_edit"
+        android:title="@string/menu_activity_task_action_edit"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_task_delete"
+        android:orderInCategory="100"
+        android:icon="@drawable/icon_delete"
+        android:title="@string/menu_activity_task_action_delete"
+        app:showAsAction="always" />
+</menu>

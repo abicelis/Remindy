@@ -114,6 +114,7 @@ public class PlaceActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
 //        //Enable Lollipop Material Design transitions
+        //        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
 //        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         super.onCreate(savedInstanceState);

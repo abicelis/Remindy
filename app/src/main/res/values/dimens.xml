@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+
     /* About Activity */
     <dimen name="activity_about_app_logo">192dp</dimen>
     <dimen name="activity_about_app_title">22sp</dimen>
@@ -13,6 +14,9 @@
     <dimen name="item_place_icon_size">36dp</dimen>
     <dimen name="item_place_icon_small_size">14dp</dimen>
     <dimen name="item_place_map_width">128dp</dimen>
+
+    /* Task Activity */
+    <dimen name="item_task_icon_size">24dp</dimen>
 
 
     /* Task List Activity */
@@ -25,8 +29,10 @@
 
     /* Text sizes */
     <dimen name="text_size_huge">26sp</dimen>
+    <dimen name="text_size_biggest">24sp</dimen>
     <dimen name="text_size_bigger">20sp</dimen>
     <dimen name="text_size_big">16sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
 
 </resources>

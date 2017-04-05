@@ -1,7 +1,10 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.DateFormat;
@@ -126,19 +130,15 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
         int id = view.getId();
         switch (id) {
             case R.id.item_task_programmed_one_time_container:
-                Toast.makeText(mActivity, "One-time reminder Task '" + mCurrent.getTitle() + "' clicked! Pos=" + mReminderPosition, Toast.LENGTH_SHORT).show();
-//                Pair[] pairs = new Pair[1];
-//                pairs[0] = new Pair<View, String>(mImage, mFragment.getResources().getString(R.string.transition_name_expense_detail_image));
-//                //pairs[1] = new Pair<View, String>(mAmount,  mActivity.getResources().getString(R.string.transition_name_expense_detail_amount));
-//                //pairs[2] = new Pair<View, String>(mDescription,  mActivity.getResources().getString(R.string.transition_name_expense_detail_description));
-//                //pairs[3] = new Pair<View, String>(mDate,  mActivity.getResources().getString(R.string.transition_name_expense_detail_date));
-//
-//                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mFragment.getActivity(), pairs);
-//                Intent expenseDetailIntent = new Intent(mFragment.getActivity(), ExpenseDetailActivity.class);
-//                expenseDetailIntent.putExtra(ExpenseDetailActivity.INTENT_EXTRAS_EXPENSE, mCurrent);
-//                expenseDetailIntent.putExtra(ExpenseDetailActivity.INTENT_EXTRAS_CREDIT_PERIOD_ID, mCreditPeriodId);
-//                mFragment.startActivityForResult(expenseDetailIntent, Constants.EXPENSE_DETAIL_ACTIVITY_REQUEST_CODE, options.toBundle());
+                Pair[] pairs = new Pair[1];
+                pairs[0] = new Pair<View, String>(mCategoryIcon, mActivity.getResources().getString(R.string.transition_task_list_category));
+                //pairs[1] = new Pair<View, String>(mTitle, mActivity.getResources().getString(R.string.transition_task_list_title));
+                //pairs[2] = new Pair<View, String>(mDescription, mActivity.getResources().getString(R.string.transition_task_list_description));
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, pairs);
 
+                Intent openTaskDetailActivity = new Intent(mActivity, TaskDetailActivity.class);
+                openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_TO_DISPLAY, mCurrent);
+                mActivity.startActivity(openTaskDetailActivity, options.toBundle());
                 break;
         }
     }
