@@ -12,7 +12,9 @@
         android:layout_width="match_parent"
         android:layout_marginLeft="@dimen/item_task_margin_left"
         android:layout_marginStart="@dimen/item_task_margin_left"
-        android:layout_height="64dp">
+        android:layout_height="64dp"
+        android:background="?attr/selectableItemBackground"
+        >
 
         <ImageView
             android:id="@+id/item_task_programmed_one_time_category_icon"

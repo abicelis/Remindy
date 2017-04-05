@@ -8,7 +8,9 @@
         android:id="@+id/item_task_unprogrammed_container"
         android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="52dp">
+        android:layout_height="52dp"
+        android:background="?attr/selectableItemBackground"
+        >
 
         <ImageView
             android:id="@+id/item_task_unprogrammed_category_icon"
