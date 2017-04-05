@@ -64,11 +64,6 @@ public class TaskListFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        refreshRecyclerView();
-        super.onResume();
-    }
 
     @Nullable
     @Override
@@ -81,6 +76,9 @@ public class TaskListFragment extends Fragment {
 
         setUpRecyclerView();
         setUpSwipeRefresh();
+
+        refreshRecyclerView();
+
         return rootView;
     }
 
