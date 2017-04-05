@@ -2,7 +2,7 @@ package ve.com.abicelis.remindy.app.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by abice on 30/1/2017.
  */
 
-public class TasksViewPagerAdapter extends FragmentStatePagerAdapter {
+public class TasksViewPagerAdapter extends FragmentPagerAdapter {
 
     //DATA
     private List<String> mTitleList;
