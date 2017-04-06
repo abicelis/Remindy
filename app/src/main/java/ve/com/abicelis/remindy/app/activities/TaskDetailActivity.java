@@ -9,6 +9,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,11 +19,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
+import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.app.fragments.LocationBasedReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
@@ -59,12 +65,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private LinearLayout mDoneDateContainer;
     private TextView mDoneDate;
 
-
-//    //va pa ya
-//    private RecyclerView mRecyclerView;
-//    private LinearLayoutManager mLayoutManager;
-//    private TaskAdapter mAdapter;
-//    private RelativeLayout mNoItemsContainer;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private AttachmentAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,23 +120,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
 
 
-//        //va
-//        // pa ya
-//        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_task_list_recycler);
-//        mSwipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.fragment_task_list_swipe_refresh);
-//        mNoItemsContainer = (RelativeLayout) rootView.findViewById(R.id.fragment_task_list_no_items_container);
-//        setUpRecyclerView();
-//        setUpSwipeRefresh();
+        mRecyclerView = (RecyclerView) findViewById(R.id.activity_task_detail_recycler);
+
+        setUpRecyclerView();
     }
-
-//    @Override
-//    public void onResume() {
-//        //va
-//        // pa ya
-//        refreshRecyclerView();
-//        super.onResume();
-//    }
-
 
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.activity_task_detail_toolbar);
@@ -194,94 +184,22 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
 
 
-//    private void setUpRecyclerView() {
-//
-//        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-//        mAdapter = new TaskAdapter(getActivity(), mTasks);
-//
-//        //DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
-//        //itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
-//        //mRecyclerView.addItemDecoration(itemDecoration);
-//
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//        mRecyclerView.setAdapter(mAdapter);
-//    }
-//
-//    private void setUpSwipeRefresh() {
-//        mSwipeRefresh.setColorSchemeResources(R.color.swipe_refresh_green, R.color.swipe_refresh_red, R.color.swipe_refresh_yellow);
-//        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//                                               @Override
-//                                               public void onRefresh() {
-//                                                   refreshRecyclerView();
-//                                                   mSwipeRefresh.setRefreshing(false);
-//                                               }
-//                                           }
-//        );
-//    }
-//
-//
-//    private void refreshRecyclerView() {
-//
-//        if(mDao == null)
-//            mDao = new RemindyDAO(getActivity().getApplicationContext());
-//
-//        //Clear the list and refresh it with new data, this must be done so the mAdapter
-//        // doesn't lose track of the reminder list
-//        mTasks.clear();
-//
-//        try {
-//            switch (mReminderTypeToDisplay) {
-//                case UNPROGRAMMED:
-//                    mTasks.addAll(mDao.getUnprogrammedTasks());
-//                    break;
-//
-//                case LOCATION_BASED:
-//                    mTasks.addAll(mDao.getLocationBasedTasks(getResources()));
-//                    break;
-//
-//                case PROGRAMMED:
-//                    if(getShowLocationBasedReminderInNewTabValue())
-//                        mTasks.addAll(mDao.getProgrammedTasks(TaskSortType.DATE, false, getResources()));      //Force sorting by date, no location-based tasks in this tab!
-//                    else
-//                        mTasks.addAll(mDao.getProgrammedTasks(mTaskSortType, true, getResources()));
-//                    break;
-//
-//                case DONE:
-//                    mTasks.addAll(mDao.getDoneTasks(mTaskSortType, getResources()));
-//            }
-//        }catch (CouldNotGetDataException | InvalidClassException e) {
-//            SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_getting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
-//        }
-//
-//        mAdapter.notifyDataSetChanged();
-//
-//        if(mTasks.size() == 0) {
-//            mAttachmentsSubtitle.setVisibility(View.VISIBLE);
-//            mNoItemsContainer.setVisibility(View.VISIBLE);
-//            mRecyclerView.setVisibility(View.GONE);
-//        } else {
-    //      mAttachmentsSubtitle.setVisibility(View.VISIBLE);
-//            mRecyclerView.setVisibility(View.VISIBLE);
-//            mNoItemsContainer.setVisibility(View.GONE);
-//        }
-//    }
-//
-//
+    private void setUpRecyclerView() {
 
+        if(mTask.getAttachments().size() > 0) {
+            mAttachmentsSubtitle.setVisibility(View.VISIBLE);
 
+            mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            mAdapter = new AttachmentAdapter(this, mTask.getAttachments());
 
+            DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
+            itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
+            mRecyclerView.addItemDecoration(itemDecoration);
 
-
-
-
-
-
-
-
-
-
-
-
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
 
 
 
