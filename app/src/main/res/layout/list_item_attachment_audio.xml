@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_attachment_audio_container"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground"
+    >
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/icon_audio"
+        android:tint="@color/primary_dark"
+        />
+
+    <!--<ImageView-->
+        <!--android:id="@+id/item_attachment_audio_rec"-->
+        <!--android:layout_width="26dp"-->
+        <!--android:layout_height="26dp"-->
+        <!--android:src="@drawable/icon_record"-->
+        <!--android:tint="@color/swipe_refresh_red"-->
+        <!--/>-->
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/item_attachment_text_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:hint="@string/item_attachment_audio_hint"
+            android:visibility="visible"
+            />
+
+        <LinearLayout
+            android:id="@+id/item_attachment_image_tap_to_add_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:id="@+id/item_attachment_audio_play_pause"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/icon_play"
+                android:tint="@color/primary"
+                />
+            <TextView
+                android:id="@+id/item_attachment_audio_time_elapsed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:text="-:--"/>
+            <SeekBar
+                android:id="@+id/item_attachment_audio_seek"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:thumbTint="@color/primary"
+
+                />
+            <TextView
+                android:id="@+id/item_attachment_audio_time_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-:--"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

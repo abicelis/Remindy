@@ -20,7 +20,7 @@ public class ListAttachment extends Attachment {
 
     @Override
     public AttachmentType getType() {
-        return AttachmentType.TEXT;
+        return AttachmentType.LIST;
     }
 
 

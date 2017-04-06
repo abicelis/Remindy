@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_attachment_text_container"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground"
     >
 
     <ImageView
@@ -15,14 +17,13 @@
         android:layout_marginRight="24dp"
         android:layout_marginEnd="24dp"
         android:src="@drawable/icon_text"
-        android:tint="@color/accent"
+        android:tint="@color/primary_dark"
         />
 
-    <EditText
-        android:id="@+id/item_extra_text_content"
+    <TextView
+        android:id="@+id/item_attachment_text_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/item_extra_text_content_hint"
-        android:inputType="textMultiLine"
+        android:hint="@string/item_attachment_text_hint"
         />
 </LinearLayout>
