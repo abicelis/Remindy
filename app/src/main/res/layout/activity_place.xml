@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_huge"
                         android:ellipsize="end"
-                        android:text=""
+                        android:hint="@string/activity_place_alias_hint"
                         android:maxLines="1" />
                     <ImageView
                         android:id="@+id/activity_place_alias_address_edit"
