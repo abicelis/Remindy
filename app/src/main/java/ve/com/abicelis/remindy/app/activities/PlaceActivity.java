@@ -166,7 +166,7 @@ public class PlaceActivity extends AppCompatActivity implements
 
             @Override
             public void onError(Status status) {
-                Toast.makeText(PlaceActivity.this, "An error occurred: " + status, Toast.LENGTH_SHORT).show();
+                SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, null);
             }
         });
 
@@ -223,9 +223,9 @@ public class PlaceActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
     }
     @Override
-    public void onConnectionSuspended(int i) {Toast.makeText(this, "onConnectionSuspended() " + i, Toast.LENGTH_SHORT).show();}
+    public void onConnectionSuspended(int i) {Toast.makeText(this, "Connection suspended " + i, Toast.LENGTH_SHORT).show();}
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {Toast.makeText(this, "OnConnectionFailed()" + connectionResult.toString(), Toast.LENGTH_SHORT).show();}
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {Toast.makeText(this, "Connection failed " + connectionResult.toString(), Toast.LENGTH_SHORT).show();}
 
 
 
@@ -252,7 +252,7 @@ public class PlaceActivity extends AppCompatActivity implements
                 loc.setLatitude(mPlaceMarker.getPosition().latitude);
                 loc.setLongitude(mPlaceMarker.getPosition().longitude);
 
-                Toast.makeText(PlaceActivity.this, "Fetching address...", Toast.LENGTH_SHORT).show();
+                SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_fetching_address, SnackbarUtil.SnackbarDuration.LONG, null);
                 fetchAddressFromLocation(loc);
             }
         });
@@ -312,7 +312,7 @@ public class PlaceActivity extends AppCompatActivity implements
             mPlaceCircle.remove();
         mPlaceCircle = mMap.addCircle(circleOptions);
 
-        MarkerOptions markerOptions = new MarkerOptions().position(position).title("My Location");
+        MarkerOptions markerOptions = new MarkerOptions().position(position);
         if(mPlaceMarker != null)
             mPlaceMarker.remove();
         mPlaceMarker = mMap.addMarker(markerOptions);
@@ -369,7 +369,14 @@ public class PlaceActivity extends AppCompatActivity implements
         if (resultCode == FetchAddressIntentService.SUCCESS_RESULT) {
             setAliasAndAddress(alias, address);
         } else {
-            Toast.makeText(this, "There was an error fetching the address...", Toast.LENGTH_SHORT).show();
+            BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    setAliasAndAddress("", "");
+                }
+            };
+            SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_fetching_address, SnackbarUtil.SnackbarDuration.SHORT, callback);
         }
     }
 
@@ -496,7 +503,7 @@ public class PlaceActivity extends AppCompatActivity implements
             SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_no_place, SnackbarUtil.SnackbarDuration.LONG, null);
             return;
         }
-        if(mPlace.getAlias() == null || mPlace.getAlias().isEmpty()) {
+        if(mPlace.getAlias() == null || mPlace.getAlias().isEmpty() || mPlace.getAlias().equals(getResources().getString(R.string.activity_place_alias_hint))) {
             SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_error_no_alias, SnackbarUtil.SnackbarDuration.LONG, null);
             return;
         }
