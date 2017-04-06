@@ -94,45 +94,50 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/activity_task_detail_reminder_subtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_task_detail_done_date_container"
-                    android:layout_marginTop="12dp"
-                    android:lines="1"
-                    android:textColor="@color/primary"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_size_small"
-                    android:text="Reminder type"
-                    android:visibility="gone"
-                    />
-
-                <FrameLayout
-                    android:id="@+id/activity_task_detail_reminder_placeholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginStart="18dp"
-                    android:layout_below="@id/activity_task_detail_reminder_subtitle"
-                    android:layout_marginTop="4dp"
-                    />
-
-                <TextView
-                    android:id="@+id/activity_task_detail_attachments_subtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_task_detail_done_date_container"
-                    android:layout_marginTop="12dp"
-                    android:lines="1"
-                    android:textColor="@color/primary"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_size_small"
-                    android:text="@string/menu_activity_task_subtitle_attachments"
-                    android:visibility="gone"
-                    />
-
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/activity_task_detail_reminder_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:lines="1"
+                android:textColor="@color/primary"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_small"
+                android:text="Reminder type"
+                android:visibility="gone"
+                />
+
+            <FrameLayout
+                android:id="@+id/activity_task_detail_reminder_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="4dp"
+                />
+
+            <TextView
+                android:id="@+id/activity_task_detail_attachments_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:lines="1"
+                android:textColor="@color/primary"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_small"
+                android:text="@string/menu_activity_task_subtitle_attachments"
+                android:visibility="gone"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/activity_task_detail_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+
 
         </LinearLayout>
 
