@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.adapters.ReminderExtraAdapter;
+import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
@@ -40,7 +40,7 @@ public class ReminderExtrasActivity extends AppCompatActivity implements View.On
 
     //DATA
     private ArrayList<Attachment> mExtras;
-    private ReminderExtraAdapter mAdapter;
+    private AttachmentAdapter mAdapter;
 
     //UI
     private Toolbar mToolbar;
@@ -86,7 +86,7 @@ public class ReminderExtrasActivity extends AppCompatActivity implements View.On
     private void setUpRecyclerView() {
 
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mAdapter = new ReminderExtraAdapter(this, mExtras);
+        mAdapter = new AttachmentAdapter(this, mExtras);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
         itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
 
