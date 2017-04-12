@@ -35,4 +35,11 @@
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_small">12sp</dimen>
 
+
+    /* Dialog Record audio*/
+
+    <dimen name="dialog_record_audio_height">180dp</dimen>
+    <dimen name="dialog_record_audio_width">280dp</dimen>
+
+
 </resources>

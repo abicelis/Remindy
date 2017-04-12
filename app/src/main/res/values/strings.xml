@@ -262,6 +262,10 @@
     <string name="datepicker_ok">OK</string>
 
 
+    /* Record Audio Dialog */
+    <string name="dialog_record_audio_tap_to_record">Tap to start recording</string>
+    <string name="dialog_record_audio_snackbar_error_no_permissions">App needs microphone permissions</string>
+
 
     /* Edit Place (Alias/Address) Dialog */
     <string name="dialog_edit_place_title">Edit Place</string>
@@ -304,6 +308,10 @@
 
     /*  Generic messages  */
     <string name="error_unexpected">Unexpected error occurred. Please report this error</string>
+
+    /*  File subdirectories  */
+    <string name="subdirectory_attachments_audio" translatable="false">attachments/audio</string>
+    <string name="subdirectory_attachments_image" translatable="false">attachments/image</string>
 
 
 </resources>

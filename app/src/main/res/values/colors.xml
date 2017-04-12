@@ -11,6 +11,9 @@
     <color name="map_circle_shade">#44FF0000</color>
     <color name="map_circle_stroke">#FFFF0000</color>
 
+    /* RecordAudioDialogFragment */
+    <color name="fab_record_red">#FD4747</color>
+    <color name="fab_accept_green">#4BAE4F</color>
 
 
     <!--<color name="primary">#4CAF50</color>-->
