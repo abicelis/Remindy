@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,13 +50,13 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
     private static final int STATE_IDLE = 0;
     private static final int STATE_RECORDING = 1;
     private static final int STATE_PLAYING = 2;
-    private boolean permissionToRecordAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+    private static String [] permissions = {Manifest.permission.RECORD_AUDIO};
 
     //DATA
-    private static int mState = STATE_IDLE;
-    private static String mAudioFileName = null;
-    private static String mAudioFilePath = null;
+    private boolean permissionToRecordAccepted = false;
+    private int mState = STATE_IDLE;
+    private String mAudioFileName = null;
+    private String mAudioFilePath = null;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
     private Handler mVizHandler = null;                // Handler for updating the visualizer
@@ -69,6 +70,8 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
     private TextView mTapToStartRecording;
     private TextView mRecordTime;
     private VisualizerView mVisualizer;
+    private ImageView mRecIcon;
+    private ImageView mPlayIcon;
 
 
     public RecordAudioDialogFragment() {
@@ -139,6 +142,9 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         mRecordTime = (TextView) dialogView.findViewById(R.id.dialog_record_audio_time);
         mVisualizer = (VisualizerView) dialogView.findViewById(R.id.dialog_record_audio_visualizer);
         mVisualizer.setLineColor(ContextCompat.getColor(getContext(), R.color.primary));
+
+        mRecIcon = (ImageView) dialogView.findViewById(R.id.dialog_record_audio_rec_icon);
+        mPlayIcon = (ImageView) dialogView.findViewById(R.id.dialog_record_audio_play_icon);
 
         // create the Handlers
         mVizHandler = new Handler();
@@ -225,6 +231,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         mTapToStartRecording.setVisibility(View.GONE);
         mRecordTime.setVisibility(View.VISIBLE);
         mVisualizer.setVisibility(View.VISIBLE);
+        mRecIcon.setVisibility(View.VISIBLE);
 
 
         mRecorder = new MediaRecorder();
@@ -255,8 +262,12 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
     private void startPlaying() {
         //Reset time
         startTime = SystemClock.uptimeMillis();
+
+        TransitionManager.beginDelayedTransition(mContainer);
         mFab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.icon_check_fab_mini));
         mFab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.fab_accept_green)));
+        mRecIcon.setVisibility(View.INVISIBLE);
+        mPlayIcon.setVisibility(View.VISIBLE);
 
         mPlayer = new MediaPlayer();
         try {
@@ -284,8 +295,10 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
     }
 
     private void stopPlaying() {
-        mPlayer.release();
-        mPlayer = null;
+        if(mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
         handleDismissDialog();
     }
 
