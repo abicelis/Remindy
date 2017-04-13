@@ -69,6 +69,7 @@ public class VisualizerView extends View {
         // for each item in the amplitudes ArrayList
         for (float power : amplitudes) {
             float scaledHeight = power / LINE_SCALE; // scale the power
+            scaledHeight = (scaledHeight < 2 ? 2 : scaledHeight);
             curX += LINE_WIDTH; // increase X by LINE_WIDTH
 
             // draw a line representing this item in the amplitudes ArrayList
