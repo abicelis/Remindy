@@ -8,6 +8,10 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
+    <style name="SpinnerStyle" parent="AppTheme">
+        <item name="colorControlNormal">@color/gray_400</item>
+    </style>
+
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@android:color/white</item>   <!-- Text color of toolbar title text -->
         <item name="android:textColorSecondary">@android:color/white</item> <!-- Text color of navigation drawer icon-->

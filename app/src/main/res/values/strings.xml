@@ -131,6 +131,7 @@
 
 
     /* Create/Edit Reminder Activities */
+    //TODO: DELETE THIS
     <string name="activity_reminder_toolbar_title">Simple Reminder</string>
     <string name="activity_reminder_title">Title</string>
     <string name="activity_reminder_title_hint">Enter a Title</string>
@@ -161,10 +162,27 @@
 
 
     /* Create/Edit Extras Activity */
+    //TODO: DELETE THIS
     <string name="activity_reminder_extras_toolbar_title">Add Extras</string>
     <string name="activity_reminder_on_back_saving_extras">Saving Extras&#8230;</string>
 
     <string name="activity_reminder_extras_no_items">Add attachments by clicking the + button</string>
+
+
+    /* New Task Activity */
+    <string name="activity_new_task_toolbar_title">New Task</string>
+    <string name="activity_new_task_title_label">Title</string>
+    <string name="activity_new_task_title_hint">Add a title</string>
+    <string name="activity_new_task_description_label">Description</string>
+    <string name="activity_new_task_description_hint">Add a description</string>
+    <string name="activity_new_task_tap_to_add_attachment_hint">Tap to add attachments</string>
+    <string name="activity_new_task_header_basic_info">Basic Info</string>
+    <string name="activity_new_task_header_attachments">Attachments</string>
+
+    <string name="activity_new_task_exit_dialog_title">Discard task?</string>
+    <string name="activity_new_task_exit_dialog_message">Go back and discard Task?</string>
+    <string name="activity_new_task_exit_dialog_positive">Yes</string>
+    <string name="activity_new_task_exit_dialog_negative">Cancel</string>
 
 
 

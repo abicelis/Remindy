@@ -49,6 +49,11 @@
         </activity>
 
         <activity
+            android:name=".app.activities.NewTaskActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".app.activities.ReminderExtrasActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
