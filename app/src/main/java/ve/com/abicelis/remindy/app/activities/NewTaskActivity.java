@@ -210,6 +210,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        //TODO: Reenable this
         //itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
     }
