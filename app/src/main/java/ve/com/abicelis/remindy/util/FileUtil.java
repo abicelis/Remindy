@@ -1,9 +1,14 @@
 package ve.com.abicelis.remindy.util;
 
+import android.app.Activity;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+
+import ve.com.abicelis.remindy.R;
 
 /**
  * Created by Alex on 9/3/2017.
@@ -42,5 +47,9 @@ public class FileUtil {
                 }
             }
         }
+    }
+
+    public static File getAudioAttachmentDir(Activity activity) {
+        return new File(activity.getExternalFilesDir(null), activity.getResources().getString(R.string.subdirectory_attachments_audio));
     }
 }
