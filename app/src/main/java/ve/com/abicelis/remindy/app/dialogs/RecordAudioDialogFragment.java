@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.views.VisualizerView;
+import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -117,7 +118,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         View dialogView =  inflater.inflate(R.layout.dialog_record_audio, container);
 
 
-        File audioAttachmentDir = new File(getActivity().getExternalFilesDir(null), getResources().getString(R.string.subdirectory_attachments_audio));
+        File audioAttachmentDir = FileUtil.getAudioAttachmentDir(getActivity());
         try {
             createDirIfNotExists(audioAttachmentDir);
         }catch (IOException| SecurityException e) {
