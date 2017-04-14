@@ -171,6 +171,8 @@
 
     /* New Task Activity */
     <string name="activity_new_task_toolbar_title">New Task</string>
+    <string name="menu_activity_new_task_action_next">NEXT</string>
+
     <string name="activity_new_task_title_label">Title</string>
     <string name="activity_new_task_title_hint">Add a title</string>
     <string name="activity_new_task_description_label">Description</string>
@@ -179,12 +181,21 @@
     <string name="activity_new_task_header_basic_info">Basic Info</string>
     <string name="activity_new_task_header_attachments">Attachments</string>
     <string name="activity_new_task_no_items">No attachments</string>
+    <string name="activity_new_task_snackbar_error_no_title">Please add a title to the Task</string>
+    <string name="activity_new_task_snackbar_error_saving">There was an error saving the Task</string>
+    <string name="activity_new_task_snackbar_save_successful">Task saved successfully</string>
+
 
 
     <string name="activity_new_task_exit_dialog_title">Discard task?</string>
     <string name="activity_new_task_exit_dialog_message">Go back and discard Task?</string>
     <string name="activity_new_task_exit_dialog_positive">Yes</string>
     <string name="activity_new_task_exit_dialog_negative">Cancel</string>
+
+    <string name="activity_new_task_next_dialog_title">Add a reminder?</string>
+    <string name="activity_new_task_next_dialog_message">Add a reminder to this task or save as-is?</string>
+    <string name="activity_new_task_next_dialog_positive">Add Reminder</string>
+    <string name="activity_new_task_next_dialog_negative">Save As-is</string>
 
 
 
