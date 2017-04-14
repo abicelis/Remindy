@@ -197,7 +197,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 if(AttachmentType.AUDIO.equals(mTask.getAttachments().get(position).getType())) {
                     String filename = ((AudioAttachment)mTask.getAttachments().get(position)).getAudioFilename();
 
-                    if(!filename.isEmpty()) { //Delete file
+                    if(filename != null && !filename.isEmpty()) { //Delete file
                         File audioAttachmentDir = FileUtil.getAudioAttachmentDir(NewTaskActivity.this);
                         File audioFile = new File(audioAttachmentDir, filename);
                         audioFile.delete();
@@ -211,7 +211,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         //TODO: Reenable this
-        //itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
     }
 
