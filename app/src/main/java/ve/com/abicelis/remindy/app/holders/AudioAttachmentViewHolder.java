@@ -164,6 +164,7 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     isPlaying = false;
+                    mSeekBar.setProgress(0);
                     mRemaining.setText("00:00");
                     mElapsed.setText("00:00");
                 }
