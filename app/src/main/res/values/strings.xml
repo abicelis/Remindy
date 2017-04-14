@@ -178,6 +178,8 @@
     <string name="activity_new_task_tap_to_add_attachment_hint">Tap to add attachments</string>
     <string name="activity_new_task_header_basic_info">Basic Info</string>
     <string name="activity_new_task_header_attachments">Attachments</string>
+    <string name="activity_new_task_no_items">No attachments</string>
+
 
     <string name="activity_new_task_exit_dialog_title">Discard task?</string>
     <string name="activity_new_task_exit_dialog_message">Go back and discard Task?</string>
@@ -291,6 +293,20 @@
     <string name="dialog_edit_place_address_title">Address</string>
     <string name="dialog_edit_place_cancel">CANCEL</string>
     <string name="dialog_edit_place_ok">OK</string>
+
+
+    /* Edit Text Attachment Dialog */
+    <string name="dialog_edit_text_attachment_title">Edit Text</string>
+    <string name="dialog_edit_text_attachment_cancel">CANCEL</string>
+    <string name="dialog_edit_text_attachment_ok">OK</string>
+
+    /* Edit Link Attachment Dialog */
+    <string name="dialog_edit_link_attachment_title">Edit Link</string>
+    <string name="dialog_edit_link_attachment_cancel">CANCEL</string>
+    <string name="dialog_edit_link_attachment_ok">OK</string>
+    <string name="dialog_edit_link_attachment_malformed_link">Error, link is invalid</string>
+
+
 
 
 

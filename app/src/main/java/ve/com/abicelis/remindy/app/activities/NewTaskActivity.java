@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,10 +29,17 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.enums.TaskCategory;
+import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.model.attachment.Attachment;
+import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
+import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
+import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.util.ConversionUtil;
 
 /**
@@ -42,6 +53,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     //DATA
     private List<String> reminderCategories;
     private int addAttachmentHintState = 0;
+    private Task mTask = new Task();
+    private AttachmentAdapter mAdapter;
 
     //UI
     private Toolbar mToolbar;
@@ -60,6 +73,10 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private FloatingActionButton mAttachmentsFabLink;
     private FloatingActionButton mAttachmentsFabImage;
     private FloatingActionButton mAttachmentsFabAudio;
+
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private RelativeLayout mNoItemsContainer;
 
 
 
@@ -109,6 +126,11 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mAttachmentsFabImage.setOnClickListener(this);
         mAttachmentsFabAudio.setOnClickListener(this);
 
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.activity_new_task_recycler);
+        mNoItemsContainer = (RelativeLayout) findViewById(R.id.activity_new_task_no_items_container);
+
+        setUpRecyclerView();
         setupSpinners();
         setUpToolbar();
     }
@@ -125,6 +147,39 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    private void setUpRecyclerView() {
+
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mAdapter = new AttachmentAdapter(this, mTask.getAttachments());
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
+        itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
+
+        mRecyclerView.addItemDecoration(itemDecoration);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                int position = viewHolder.getAdapterPosition();
+                Toast.makeText(NewTaskActivity.this, "Swiped position " + position + " into direction=" + swipeDir, Toast.LENGTH_SHORT).show();
+                //TODO: Check if item had a recording and maybe delete the file?
+                mTask.getAttachments().remove(position);
+                mAdapter.notifyItemRemoved(position);
+                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+
+    }
 
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.activity_new_task_toolbar);
@@ -145,10 +200,22 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    private void addAttachment(Attachment attachment) {
+        mTask.addAttachment(attachment);
+        if(mAdapter.getItemCount() == 1)
+            mAdapter.notifyDataSetChanged();
+        else
+            mAdapter.notifyItemInserted(mAdapter.getItemCount());
+    }
+
     @Override
     public void onClick(View v) {
 
         int id = v.getId();
+
+
+
+        mAttachmentsFabMenu.close(true);
 
         if(addAttachmentHintState == 2) {
             addAttachmentHintState = 3;
@@ -164,30 +231,31 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         }
 
-        mAttachmentsFabMenu.close(true);
-
         switch (id) {
             case R.id.activity_new_task_add_list_attachment:
                 //TODO: Add list attachment to recycler!
                 Toast.makeText(this, "Added list attachment", Toast.LENGTH_SHORT).show();
                 break;
+
             case R.id.activity_new_task_add_text_attachment:
-                //TODO: Add text attachment to recycler!
-                Toast.makeText(this, "Added text attachment", Toast.LENGTH_SHORT).show();
+                addAttachment(new TextAttachment(""));
                 break;
+
             case R.id.activity_new_task_add_link_attachment:
-                //TODO: Add link attachment to recycler!
-                Toast.makeText(this, "Added link attachment", Toast.LENGTH_SHORT).show();
+                addAttachment(new LinkAttachment(""));
                 break;
+
             case R.id.activity_new_task_add_image_attachment:
                 //TODO: Add image attachment to recycler!
                 Toast.makeText(this, "Added image attachment", Toast.LENGTH_SHORT).show();
                 break;
+
             case R.id.activity_new_task_add_audio_attachment:
-                //TODO: Add audio attachment to recycler!
-                Toast.makeText(this, "Added audio attachment", Toast.LENGTH_SHORT).show();
+                addAttachment(new AudioAttachment());
                 break;
         }
+
+
     }
 
     @Override

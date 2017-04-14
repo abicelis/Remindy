@@ -2,6 +2,7 @@ package ve.com.abicelis.remindy.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,6 +29,10 @@ public class Task implements Serializable {
     private Reminder reminder;
     private Calendar doneDate;
     private ArrayList<Attachment> attachments;
+
+    public Task() {     //Empty constructor for creating new tasks
+        this.attachments = new ArrayList<>();
+    }
 
     public Task(@NonNull TaskStatus status, @NonNull String title, @NonNull String description, @NonNull TaskCategory category, @NonNull ReminderType reminderType, @Nullable Reminder reminder, @Nullable Calendar doneDate) {
         this.status = status;
