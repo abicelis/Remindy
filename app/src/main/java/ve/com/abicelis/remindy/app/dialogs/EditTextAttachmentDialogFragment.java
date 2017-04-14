@@ -70,7 +70,7 @@ public class EditTextAttachmentDialogFragment extends DialogFragment implements 
         switch(id) {
             case R.id.dialog_edit_text_attachment_cancel:
                 //Hide keyboard
-                ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mLink.getWindowToken(), 0);
+                ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mText.getWindowToken(), 0);
 
                 dismiss();
                 break;
@@ -79,7 +79,7 @@ public class EditTextAttachmentDialogFragment extends DialogFragment implements 
                 mListener.onFinishEditTextAttachmentDialog(mText.getText().toString());
 
                 //Hide keyboard
-                ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mLink.getWindowToken(), 0);
+                ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mText.getWindowToken(), 0);
 
                 dismiss();
                 break;
