@@ -91,7 +91,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case AUDIO:
                 AudioAttachmentViewHolder avh = (AudioAttachmentViewHolder) holder;
                 avh.setData(this, mActivity, (AudioAttachment) current, position);
-                avh.setListeners();
+                //avh.setListeners();
                 break;
 
             case IMAGE:

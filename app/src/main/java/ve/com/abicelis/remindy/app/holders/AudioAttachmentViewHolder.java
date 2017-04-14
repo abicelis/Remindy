@@ -1,12 +1,14 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,10 +27,12 @@ import java.util.Locale;
 import java.util.UUID;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.activities.NewTaskActivity;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.dialogs.RecordAudioDialogFragment;
 import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.util.ConversionUtil;
+import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
  * Created by abice on 13/3/2017.
@@ -57,6 +61,7 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
     private TextView mTapToAdd;
 
     private LinearLayout mPlayerContainer;
+    private ImageView mRecord;
     private ImageView mPlayPause;
     private SeekBar mSeekBar;
     private TextView mElapsed;
@@ -71,34 +76,35 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         mContainer = (LinearLayout) itemView.findViewById(R.id.item_attachment_audio_container);
         mTapToAdd = (TextView) itemView.findViewById(R.id.item_attachment_audio_tap_to_add);
         mPlayerContainer = (LinearLayout) itemView.findViewById(R.id.item_attachment_audio_player_container);
+        mRecord = (ImageView) itemView.findViewById(R.id.item_attachment_audio_record);
         mPlayPause = (ImageView) itemView.findViewById(R.id.item_attachment_audio_play_pause);
         mSeekBar = (SeekBar) itemView.findViewById(R.id.item_attachment_audio_seek);
         mSeekBar.setMax(100);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(isPlaying) {
-                    seekBar.setProgress(progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                if(isPlaying) {
-                    mPlayer.pause();
-                }
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if(isPlaying) {
-                    int seekTo = (int) ((double) mSeekBar.getProgress() * (1 / (double) mSeekBar.getMax()) * (double) mPlayer.getDuration());
-                    mPlayer.seekTo(seekTo);
-                    mPlayer.start();
-                }
-
-            }
-        });
+//        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                if(isPlaying) {
+//                    seekBar.setProgress(progress);
+//                }
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//                if(isPlaying) {
+//                    mPlayer.pause();
+//                }
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                if(isPlaying) {
+//                    int seekTo = (int) ((double) mSeekBar.getProgress() * (1 / (double) mSeekBar.getMax()) * (double) mPlayer.getDuration());
+//                    mPlayer.seekTo(seekTo);
+//                    mPlayer.start();
+//                }
+//
+//            }
+//        });
 
         mElapsed = (TextView) itemView.findViewById(R.id.item_attachment_audio_time_elapsed);
         mRemaining = (TextView) itemView.findViewById(R.id.item_attachment_audio_time_remaining);
@@ -117,26 +123,33 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         else
             hasRecording = false;
 
-        audioAttachmentDir = new File(mActivity.getExternalFilesDir(null), mActivity.getResources().getString(R.string.subdirectory_attachments_audio));
+        audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
         setupAudioPlayer();
         mTimeHandler = new Handler();
     }
 
     private void setupAudioPlayer() {
+        //Clear listeners
+        mContainer.setOnClickListener(null);
+        mPlayPause.setOnClickListener(null);
+        mRecord.setOnClickListener(null);
+
         if(hasRecording) {
+            mPlayPause.setOnClickListener(this);
+            mRecord.setOnClickListener(this);
             mTapToAdd.setVisibility(View.GONE);
             mPlayerContainer.setVisibility(View.VISIBLE);
+
         } else {
+            mContainer.setOnClickListener(this);
             mTapToAdd.setVisibility(View.VISIBLE);
             mPlayerContainer.setVisibility(View.GONE);
         }
-
     }
 
 
     public void setListeners() {
-        mContainer.setOnClickListener(this);
-        mPlayPause.setOnClickListener(this);
+        //Listeners set in setupAudioPlayer()
     }
 
     private void startPlaying() {
@@ -166,6 +179,13 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         }
     }
 
+    private void stopPlaying() {
+        if(mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -185,6 +205,38 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
                     dialog.setListener(this);
                     dialog.show(fm, "RecordAudioDialogFragment");
                 }
+                break;
+            case R.id.item_attachment_audio_record:
+                stopPlaying();
+                AlertDialog dialog = new AlertDialog.Builder(mActivity)
+                        .setTitle(mActivity.getResources().getString(R.string.dialog_record_audio_overwrite_title))
+                        .setMessage(mActivity.getResources().getString(R.string.dialog_record_audio_overwrite_message))
+                        .setPositiveButton(mActivity.getResources().getString(R.string.dialog_record_audio_overwrite_positive),  new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //Delete old audio
+                                if(!mCurrent.getAudioFilename().isEmpty()) {
+                                    File audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
+                                    File audioFile = new File(audioAttachmentDir, mCurrent.getAudioFilename());
+                                    audioFile.delete();
+                                }
+
+                                FragmentManager fm = ((AppCompatActivity) mActivity).getSupportFragmentManager();
+                                RecordAudioDialogFragment recordAudioDialog = RecordAudioDialogFragment.newInstance();
+                                recordAudioDialog.setListener(AudioAttachmentViewHolder.this);
+                                recordAudioDialog.show(fm, "RecordAudioDialogFragment");
+                            }
+                        })
+                        .setNegativeButton(mActivity.getResources().getString(R.string.dialog_record_audio_overwrite_negative), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                dialog.show();
+                break;
 
         }
     }
