@@ -35,7 +35,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/item_attachment_text_content"
+            android:id="@+id/item_attachment_audio_tap_to_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -44,7 +44,7 @@
             />
 
         <LinearLayout
-            android:id="@+id/item_attachment_image_tap_to_add_container"
+            android:id="@+id/item_attachment_audio_player_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
