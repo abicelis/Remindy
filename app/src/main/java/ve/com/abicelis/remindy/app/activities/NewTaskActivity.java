@@ -29,11 +29,13 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
+import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
@@ -41,6 +43,7 @@ import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.util.ConversionUtil;
+import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
  * Created by abice on 13/4/2017.
@@ -170,7 +173,17 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int position = viewHolder.getAdapterPosition();
                 Toast.makeText(NewTaskActivity.this, "Swiped position " + position + " into direction=" + swipeDir, Toast.LENGTH_SHORT).show();
-                //TODO: Check if item had a recording and maybe delete the file?
+
+                if(AttachmentType.AUDIO.equals(mTask.getAttachments().get(position).getType())) {
+                    String filename = ((AudioAttachment)mTask.getAttachments().get(position)).getAudioFilename();
+
+                    if(!filename.isEmpty()) { //Delete file
+                        File audioAttachmentDir = FileUtil.getAudioAttachmentDir(NewTaskActivity.this);
+                        File audioFile = new File(audioAttachmentDir, filename);
+                        audioFile.delete();
+                    }
+                }
+
                 mTask.getAttachments().remove(position);
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
