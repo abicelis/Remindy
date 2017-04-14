@@ -31,6 +31,10 @@ public class Task implements Serializable {
     private ArrayList<Attachment> attachments;
 
     public Task() {     //Empty constructor for creating new tasks
+        this.status = TaskStatus.UNPROGRAMMED;
+        this.title = "";
+        this.description = "";
+        this.reminderType = ReminderType.NONE;
         this.attachments = new ArrayList<>();
     }
 
