@@ -1,10 +1,12 @@
 package ve.com.abicelis.remindy.app.dialogs;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -67,11 +69,18 @@ public class EditTextAttachmentDialogFragment extends DialogFragment implements 
         int id = v.getId();
         switch(id) {
             case R.id.dialog_edit_text_attachment_cancel:
+                //Hide keyboard
+                ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mLink.getWindowToken(), 0);
+
                 dismiss();
                 break;
 
             case R.id.dialog_edit_text_attachment_ok:
                 mListener.onFinishEditTextAttachmentDialog(mText.getText().toString());
+
+                //Hide keyboard
+                ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mLink.getWindowToken(), 0);
+
                 dismiss();
                 break;
         }

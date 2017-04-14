@@ -1,6 +1,7 @@
 package ve.com.abicelis.remindy.app.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -87,7 +89,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);   //Don't show keyboard
 
 
         mHeaderBasicInfo = (RelativeLayout) findViewById(R.id.activity_new_task_header_basic_info);
@@ -99,7 +100,23 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mContainer = (LinearLayout) findViewById(R.id.activity_new_task_container);
         mContainerBasicInfo = (LinearLayout) findViewById(R.id.activity_new_task_basic_info_container);
         mTaskTitle = (TextView) findViewById(R.id.activity_new_task_title);
+        mTaskTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    mAttachmentsFabMenu.close(true);
+                }
+            }
+        });
         mTaskDescription = (TextView) findViewById(R.id.activity_new_task_description);
+        mTaskDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    mAttachmentsFabMenu.close(true);
+                }
+            }
+        });
         mTaskCategory = (Spinner) findViewById(R.id.activity_new_task_category);
         //mAttachmentsFabHintContainer = (FrameLayout) findViewById(R.id.activity_new_task_add_attachment_hint_container);
         mAttachmentsFabHint = (TextView) findViewById(R.id.activity_new_task_add_attachment_hint);
@@ -109,6 +126,9 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mAttachmentsFabMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean opened) {
+                //Hide keyboard
+                ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mContainer.getWindowToken(), 0);
+
                 if(addAttachmentHintState == 1) {     //Slide out FAB hint
                     addAttachmentHintState = 2;
 
