@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="24dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/dialog_edit_text_attachment_title"/>
+
+        <EditText
+            android:id="@+id/dialog_edit_text_attachment_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:imeOptions="actionNext"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginRight="-24dp"
+            android:layout_marginEnd="-24dp"
+            android:padding="8dp"
+            >
+
+            <Button
+                android:id="@+id/dialog_edit_text_attachment_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/dialog_edit_text_attachment_ok"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                style="?attr/borderlessButtonStyle"/>
+
+            <Button
+                android:id="@+id/dialog_edit_text_attachment_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_toStartOf="@id/dialog_edit_text_attachment_ok"
+                android:layout_toLeftOf="@id/dialog_edit_text_attachment_ok"
+                android:text="@string/dialog_edit_text_attachment_cancel"
+                style="?attr/borderlessButtonStyle"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
