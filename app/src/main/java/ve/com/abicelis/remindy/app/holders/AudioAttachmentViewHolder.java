@@ -116,8 +116,9 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         mTimeHandler = new Handler();
 
         if(mCurrent.getAudioFilename() != null && !mCurrent.getAudioFilename().isEmpty()) {
-            //hasRecording = true;
             setupAudioPlayer(true);
+            mElapsed.setText("00:00");
+            mRemaining.setText(mRemainingTimeStr);
         } else
             setupAudioPlayer(false);
 
@@ -269,6 +270,8 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         if(!audioFileName.isEmpty()) {
             mCurrent.setAudioFilename(audioFileName);
             setupAudioPlayer(true);
+            mElapsed.setText("00:00");
+            mRemaining.setText(mRemainingTimeStr);
         }
     }
 
