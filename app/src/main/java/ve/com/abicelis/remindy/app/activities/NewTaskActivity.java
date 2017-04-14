@@ -1,10 +1,14 @@
 package ve.com.abicelis.remindy.app.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,6 +17,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +43,10 @@ import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
+import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.TaskCategory;
+import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
@@ -46,6 +54,7 @@ import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
+import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 13/4/2017.
@@ -71,7 +80,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private TextView mTaskDescription;
     private Spinner mTaskCategory;
     private TextView mAttachmentsFabHint;
-    private ScrollView mScrollView;
     private FloatingActionMenu mAttachmentsFabMenu;
     private FloatingActionButton mAttachmentsFabList;
     private FloatingActionButton mAttachmentsFabText;
@@ -120,7 +128,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mTaskCategory = (Spinner) findViewById(R.id.activity_new_task_category);
         //mAttachmentsFabHintContainer = (FrameLayout) findViewById(R.id.activity_new_task_add_attachment_hint_container);
         mAttachmentsFabHint = (TextView) findViewById(R.id.activity_new_task_add_attachment_hint);
-        mScrollView = (ScrollView) findViewById(R.id.activity_new_task_scrollview);
 
         mAttachmentsFabMenu = (FloatingActionMenu) findViewById(R.id.activity_new_task_add_attachment);
         mAttachmentsFabMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
@@ -268,7 +275,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         switch (id) {
             case R.id.activity_new_task_add_list_attachment:
                 //TODO: Add list attachment to recycler!
-                Toast.makeText(this, "Added list attachment", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "TODO: add list attachment", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.activity_new_task_add_text_attachment:
@@ -281,7 +288,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.activity_new_task_add_image_attachment:
                 //TODO: Add image attachment to recycler!
-                Toast.makeText(this, "Added image attachment", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "TODO: add image attachment", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.activity_new_task_add_audio_attachment:
@@ -293,6 +300,13 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_task_new, menu);
+        return true;
+    }
+
+
+    @Override
     public void onBackPressed() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.activity_new_task_exit_dialog_title))
@@ -301,6 +315,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        setResult(RESULT_CANCELED);       //Task was NOT created, set result to CANCELLED
                         finish();
                     }
                 })
@@ -325,9 +340,74 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             case android.R.id.home:
                 onBackPressed();
                 return true;
+
+            case R.id.menu_task_new_next:
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.activity_new_task_next_dialog_title))
+                        .setMessage(getResources().getString(R.string.activity_new_task_next_dialog_message))
+                        .setPositiveButton(getResources().getString(R.string.activity_new_task_next_dialog_positive),  new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //TODO: Go to add-a-reminder activity
+                                Toast.makeText(NewTaskActivity.this, "Under construction!", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.activity_new_task_next_dialog_negative), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                handleTaskSave();
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                dialog.show();
+                break;
         }
 
         return false;
+    }
+
+    private void handleTaskSave() {
+
+        //Check data
+        if(mTaskTitle.getText().toString().isEmpty()) {
+            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_new_task_snackbar_error_no_title, SnackbarUtil.SnackbarDuration.LONG, null);
+            return;
+        }
+
+        TaskCategory category = TaskCategory.values()[mTaskCategory.getSelectedItemPosition()];
+        mTask.setCategory(category);
+        mTask.setTitle(mTaskTitle.getText().toString());
+        mTask.setDescription(mTaskDescription.getText().toString());
+
+        //TODO: Clear "blank" attachments, maybe warn user?
+
+        try {
+            RemindyDAO dao = new RemindyDAO(this);
+            dao.insertTask(mTask);
+
+            BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+
+                    //TODO: Do this better: Send the activity the type of reminder that was added,
+                    // then swipe viewpager to proper page, then insert item into recycler,
+                    // not just refresh the whole viewpager
+                    //Intent returnIntent = new Intent();
+                    //returnIntent.putExtra("REMIDNERTYPE", mTask.getReminderType().name());
+                    //setResult(RESULT_OK,returnIntent);       //Task was created, set result to OK
+
+                    setResult(RESULT_OK);       //Task was created, set result to OK
+                    finish();
+                }
+            };
+            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_new_task_snackbar_save_successful, SnackbarUtil.SnackbarDuration.SHORT, callback);
+
+        } catch (CouldNotInsertDataException e) {
+            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_new_task_snackbar_error_saving, SnackbarUtil.SnackbarDuration.SHORT, null);
+        }
     }
 
 }
