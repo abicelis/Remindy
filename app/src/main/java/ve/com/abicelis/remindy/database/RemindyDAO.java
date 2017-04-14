@@ -816,7 +816,7 @@ public class RemindyDAO {
 
         switch (attachment.getType()) {
             case AUDIO:
-                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((AudioAttachment) attachment).getAudio());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((AudioAttachment) attachment).getAudioFilename());
                 break;
             case IMAGE:
                 values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((ImageAttachment) attachment).getThumbnail());
@@ -953,7 +953,7 @@ public class RemindyDAO {
 
         switch (attachmentType) {
             case AUDIO:
-                return new AudioAttachment(id, reminderId, blobContent);
+                return new AudioAttachment(id, reminderId, textContent);
             case IMAGE:
                 return new ImageAttachment(id, reminderId, blobContent, textContent);
             case TEXT:
