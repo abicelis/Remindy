@@ -117,8 +117,6 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
 
         if(mCurrent.getAudioFilename() != null && !mCurrent.getAudioFilename().isEmpty()) {
             setupAudioPlayer(true);
-            mElapsed.setText("00:00");
-            mRemaining.setText(mRemainingTimeStr);
         } else
             setupAudioPlayer(false);
 
@@ -137,6 +135,10 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
             mRecord.setOnClickListener(this);
             mTapToAdd.setVisibility(View.GONE);
             mPlayerContainer.setVisibility(View.VISIBLE);
+
+            mElapsed.setText("00:00");
+            mRemaining.setText(mRemainingTimeStr);
+            mSeekBar.setProgress(0);
 
         } else {
             mContainer.setOnClickListener(this);
@@ -191,6 +193,7 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         if(mPlayer == null)
             initMediaPlayer();
 
+        mPlayPause.setImageResource(R.drawable.icon_pause);
         mPlayer.start();
         mTimeHandler.postDelayed(updateTime, 0);
     }
@@ -199,6 +202,7 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
     private void pausePlaying() {
         if(mPlayer != null)
             mPlayer.pause();
+        mPlayPause.setImageResource(R.drawable.icon_play);
     }
 
     private void stopPlaying() {
@@ -223,21 +227,21 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
             case R.id.item_attachment_audio_play_pause:
                 if(mPlayer.isPlaying()) {
                     pausePlaying();
-                    mPlayPause.setImageResource(R.drawable.icon_play);
                 } else {
                     startPlaying();
-                    mPlayPause.setImageResource(R.drawable.icon_pause);
                 }
                 break;
 
             case R.id.item_attachment_audio_record:
-                stopPlaying();
+                pausePlaying();
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setTitle(mActivity.getResources().getString(R.string.dialog_record_audio_overwrite_title))
                         .setMessage(mActivity.getResources().getString(R.string.dialog_record_audio_overwrite_message))
                         .setPositiveButton(mActivity.getResources().getString(R.string.dialog_record_audio_overwrite_positive),  new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
+                                stopPlaying();
 
                                 //Delete old audio
                                 if(!mCurrent.getAudioFilename().isEmpty()) {
@@ -270,8 +274,6 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         if(!audioFileName.isEmpty()) {
             mCurrent.setAudioFilename(audioFileName);
             setupAudioPlayer(true);
-            mElapsed.setText("00:00");
-            mRemaining.setText(mRemainingTimeStr);
         }
     }
 
