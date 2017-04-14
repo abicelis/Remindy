@@ -102,7 +102,7 @@
                     android:id="@+id/activity_new_task_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     android:inputType="text"
                     android:hint="@string/activity_new_task_description_hint"
                     android:backgroundTint="@color/gray_700"
