@@ -8,14 +8,16 @@ import ve.com.abicelis.remindy.enums.AttachmentType;
 
 public class AudioAttachment extends Attachment {
 
-    private byte[] audio;
+    private String audioFilename;
 
-    public AudioAttachment(byte[] audio) {
-        this.audio = audio;
+    public AudioAttachment() {      //Parameterless constructor for audio attachment creation
     }
-    public AudioAttachment(int id, int reminderId, byte[] audio) {
+    public AudioAttachment(String audioFilename) {
+        this.audioFilename = audioFilename;
+    }
+    public AudioAttachment(int id, int reminderId, String audioFilename) {
         super(id, reminderId);
-        this.audio = audio;
+        this.audioFilename = audioFilename;
     }
 
     @Override
@@ -23,10 +25,10 @@ public class AudioAttachment extends Attachment {
         return AttachmentType.AUDIO;
     }
 
-    public byte[] getAudio() {
-        return audio;
+    public String getAudioFilename() {
+        return audioFilename;
     }
-    public void setAudio(byte[] audio) {
-        this.audio = audio;
+    public void setAudioFilename(String audioFilename) {
+        this.audioFilename = audioFilename;
     }
 }
