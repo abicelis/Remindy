@@ -53,9 +53,20 @@
             >
 
             <ImageView
+                android:id="@+id/item_attachment_audio_record"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:padding="2dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/icon_record"
+                android:tint="@color/fab_record_red"
+                />
+            <ImageView
                 android:id="@+id/item_attachment_audio_play_pause"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:padding="2dp"
                 android:layout_marginLeft="6dp"
                 android:layout_marginStart="6dp"
                 android:src="@drawable/icon_play"
