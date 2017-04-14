@@ -19,14 +19,12 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
-import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.app.fragments.LocationBasedReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
@@ -220,7 +218,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_task, menu);
+        getMenuInflater().inflate(R.menu.menu_task_detail, menu);
         return true;
     }
 
