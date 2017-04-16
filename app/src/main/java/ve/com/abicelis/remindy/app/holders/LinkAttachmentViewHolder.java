@@ -1,12 +1,15 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.view.TextureView;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +17,6 @@ import android.widget.Toast;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.dialogs.EditLinkAttachmentDialogFragment;
-import ve.com.abicelis.remindy.app.dialogs.EditTextAttachmentDialogFragment;
 import ve.com.abicelis.remindy.exception.MalformedLinkException;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 
@@ -22,7 +24,7 @@ import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
  * Created by abice on 13/3/2017.
  */
 
-public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditLinkAttachmentDialogFragment.EditLinkAttachmentDialogDismissListener {
+public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, EditLinkAttachmentDialogFragment.EditLinkAttachmentDialogDismissListener {
 
     private AttachmentAdapter mAdapter;
     private Activity mActivity;
@@ -49,12 +51,16 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         mCurrent = current;
         mPosition = position;
 
-        mLink.setText(mCurrent.getLink());
+        if(current.getLink() != null && !current.getLink().isEmpty())
+            mLink.setText(mCurrent.getLink());
+        else
+            handleLinkEdit();
     }
 
 
     public void setListeners() {
         mContainer.setOnClickListener(this);
+        mContainer.setOnLongClickListener(this);
     }
 
 
@@ -65,16 +71,56 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_link_container:
-                handleTextEdit();
+                handleLinkEdit();
         }
     }
 
-    private void handleTextEdit(){
+    @Override
+    public boolean onLongClick(View view) {
+
+        int id = view.getId();
+        switch (id) {
+            case R.id.item_attachment_link_container:
+                CharSequence items[] = new CharSequence[]{
+                        mActivity.getResources().getString(R.string.dialog_link_attachment_options_copy),
+                        mActivity.getResources().getString(R.string.dialog_link_attachment_options_edit),
+                        mActivity.getResources().getString(R.string.dialog_link_attachment_options_delete)};
+
+
+                AlertDialog dialog = new AlertDialog.Builder(mActivity)
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                switch (which) {
+                                    case 0:
+                                        ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                                        ClipData clip = ClipData.newPlainText("Remindy text", mCurrent.getLink());
+                                        clipboard.setPrimaryClip(clip);
+                                        break;
+                                    case 1:
+                                        handleLinkEdit();
+                                        break;
+                                    case 2:
+                                        mAdapter.deleteAttachment(mPosition);
+                                        break;
+                                }
+                            }
+                        })
+                        .create();
+                dialog.show();
+                return true;
+        }
+        return false;
+
+    }
+
+    private void handleLinkEdit(){
         FragmentManager fm = ((AppCompatActivity)mActivity).getSupportFragmentManager();
 
         EditLinkAttachmentDialogFragment dialog = EditLinkAttachmentDialogFragment.newInstance(mLink.getText().toString());
         dialog.setListener(this);
-        dialog.show(fm, "EditTextAttachmentDialogFragment");
+        dialog.show(fm, "EditLinkAttachmentDialogFragment");
     }
 
     @Override
@@ -82,6 +128,7 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         try {
             mCurrent.setLink(text);
             mLink.setText(text);
+            mAdapter.triggerShowAttachmentHintListener();
         } catch (MalformedLinkException e) {
             Toast.makeText(mActivity, mActivity.getResources().getString(R.string.dialog_edit_link_attachment_malformed_link), Toast.LENGTH_SHORT).show();
         }

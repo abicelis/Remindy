@@ -1,7 +1,12 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,17 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.dialogs.EditPlaceDialogFragment;
 import ve.com.abicelis.remindy.app.dialogs.EditTextAttachmentDialogFragment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
+import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
  * Created by abice on 13/3/2017.
  */
 
-public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener, EditTextAttachmentDialogFragment.EditTextAttachmentDialogDismissListener {
+public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener, View.OnLongClickListener, EditTextAttachmentDialogFragment.EditTextAttachmentDialogDismissListener {
 
     private AttachmentAdapter mAdapter;
     private Activity mActivity;
@@ -47,12 +55,16 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         mCurrent = current;
         mPosition = position;
 
-        mText.setText(mCurrent.getText());
+        if(current.getText() != null && !current.getText().isEmpty())
+            mText.setText(mCurrent.getText());
+        else
+            handleTextEdit();
     }
 
 
     public void setListeners() {
         mContainer.setOnClickListener(this);
+        mContainer.setOnLongClickListener(this);
     }
 
 
@@ -67,6 +79,46 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         }
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+
+        int id = view.getId();
+        switch (id) {
+            case R.id.item_attachment_text_container:
+                CharSequence items[] = new CharSequence[]{
+                        mActivity.getResources().getString(R.string.dialog_text_attachment_options_copy),
+                        mActivity.getResources().getString(R.string.dialog_text_attachment_options_edit),
+                        mActivity.getResources().getString(R.string.dialog_text_attachment_options_delete)};
+
+
+                AlertDialog dialog = new AlertDialog.Builder(mActivity)
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                switch (which) {
+                                    case 0:
+                                        ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                                        ClipData clip = ClipData.newPlainText("Remindy text", mCurrent.getText());
+                                        clipboard.setPrimaryClip(clip);
+                                        break;
+                                    case 1:
+                                        handleTextEdit();
+                                        break;
+                                    case 2:
+                                        mAdapter.deleteAttachment(mPosition);
+                                        break;
+                                }
+                            }
+                        })
+                        .create();
+                dialog.show();
+                return true;
+        }
+        return false;
+
+    }
+
     private void handleTextEdit(){
         FragmentManager fm = ((AppCompatActivity)mActivity).getSupportFragmentManager();
 
@@ -79,5 +131,7 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
     public void onFinishEditTextAttachmentDialog(String text) {
         mText.setText(text);
         mCurrent.setText(text);
+        mAdapter.triggerShowAttachmentHintListener();
     }
+
 }
