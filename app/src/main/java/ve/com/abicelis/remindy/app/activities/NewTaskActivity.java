@@ -67,6 +67,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     //DATA
     private List<String> reminderCategories;
     private int addAttachmentHintState = 0;
+    private boolean attachmentLongClickOptionsDialogHintShown;
     private Task mTask = new Task();
     private AttachmentAdapter mAdapter;
 
@@ -181,6 +182,15 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mAdapter = new AttachmentAdapter(this, mTask.getAttachments());
+        mAdapter.setShowAttachmentHintListener(new AttachmentAdapter.ShowAttachmentHintListener() {
+            @Override
+            public void onShowAttachmentHint() {
+                if (!attachmentLongClickOptionsDialogHintShown) {
+                    attachmentLongClickOptionsDialogHintShown = true;
+                    SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_new_task_snackbar_notice_attachments_options_hint, SnackbarUtil.SnackbarDuration.LONG, null);
+                }
+            }
+        });
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
         itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
 
@@ -189,37 +199,36 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mRecyclerView.setAdapter(mAdapter);
 
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                int position = viewHolder.getAdapterPosition();
-                Toast.makeText(NewTaskActivity.this, "Swiped position " + position + " into direction=" + swipeDir, Toast.LENGTH_SHORT).show();
-
-                if(AttachmentType.AUDIO.equals(mTask.getAttachments().get(position).getType())) {
-                    String filename = ((AudioAttachment)mTask.getAttachments().get(position)).getAudioFilename();
-
-                    if(filename != null && !filename.isEmpty()) { //Delete file
-                        File audioAttachmentDir = FileUtil.getAudioAttachmentDir(NewTaskActivity.this);
-                        File audioFile = new File(audioAttachmentDir, filename);
-                        audioFile.delete();
-                    }
-                }
-
-                mTask.getAttachments().remove(position);
-                mAdapter.notifyItemRemoved(position);
-                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        //TODO: Reenable this
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
-
+        //TODO: Reenable or delete this code
+//        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+//
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+//                int position = viewHolder.getAdapterPosition();
+//                Toast.makeText(NewTaskActivity.this, "Swiped position " + position + " into direction=" + swipeDir, Toast.LENGTH_SHORT).show();
+//
+//                if(AttachmentType.AUDIO.equals(mTask.getAttachments().get(position).getType())) {
+//                    String filename = ((AudioAttachment)mTask.getAttachments().get(position)).getAudioFilename();
+//
+//                    if(filename != null && !filename.isEmpty()) { //Delete file
+//                        File audioAttachmentDir = FileUtil.getAudioAttachmentDir(NewTaskActivity.this);
+//                        File audioFile = new File(audioAttachmentDir, filename);
+//                        audioFile.delete();
+//                    }
+//                }
+//
+//                mTask.getAttachments().remove(position);
+//                mAdapter.notifyItemRemoved(position);
+//                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+//            }
+//        };
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+//        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     private void setUpToolbar() {
@@ -367,6 +376,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         return false;
     }
+
 
     private void handleTaskSave() {
 
