@@ -402,14 +402,9 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 public void onDismissed(Snackbar transientBottomBar, int event) {
                     super.onDismissed(transientBottomBar, event);
 
-                    //TODO: Do this better: Send the activity the type of reminder that was added,
-                    // then swipe viewpager to proper page, then insert item into recycler,
-                    // not just refresh the whole viewpager
-                    //Intent returnIntent = new Intent();
-                    //returnIntent.putExtra("REMIDNERTYPE", mTask.getReminderType().name());
-                    //setResult(RESULT_OK,returnIntent);       //Task was created, set result to OK
-
-                    setResult(RESULT_OK);       //Task was created, set result to OK
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(HomeActivity.NEW_TASK_RETURN_REMINDER_TYPE, mTask.getReminderType());
+                    setResult(RESULT_OK, returnIntent);       //Task was created, set result to OK
                     finish();
                 }
             };
