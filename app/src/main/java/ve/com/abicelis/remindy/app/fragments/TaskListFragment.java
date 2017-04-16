@@ -1,5 +1,6 @@
 package ve.com.abicelis.remindy.app.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.InvalidClassException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +26,15 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.TaskSortType;
+import ve.com.abicelis.remindy.enums.TaskViewModelType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
+import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by abice on 13/3/2017.
@@ -36,6 +43,13 @@ import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 public class TaskListFragment extends Fragment {
 
     public static final String TASK_TYPE_TO_DISPLAY = "TASK_TYPE_TO_DISPLAY";
+
+    public static final int TASK_DETAIL_REQUEST_CODE = 491;
+    public static final String TASK_DETAIL_RETURN_TASK_POSITION = "TASK_DETAIL_RETURN_TASK_POSITION";
+    public static final String TASK_DETAIL_RETURN_ACTION_TYPE = "TASK_DETAIL_RETURN_ACTION_TYPE";
+    public static final int TASK_DETAIL_RETURN_ACTION_DELETED = 920;
+    public static final int TASK_DETAIL_RETURN_ACTION_EDITED = 921;
+
 
     //DATA
     private List<TaskViewModel> mTasks = new ArrayList<>();
@@ -106,7 +120,7 @@ public class TaskListFragment extends Fragment {
     private void setUpRecyclerView() {
 
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mAdapter = new TaskAdapter(getActivity(), mTasks);
+        mAdapter = new TaskAdapter(this, mTasks);
 
         //DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
         //itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
@@ -134,7 +148,7 @@ public class TaskListFragment extends Fragment {
             refreshRecyclerView();
     }
 
-    private void refreshRecyclerView() {
+    public void refreshRecyclerView() {
 
         if(mDao == null)
             mDao = new RemindyDAO(getActivity().getApplicationContext());
@@ -183,4 +197,45 @@ public class TaskListFragment extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         return preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
     }
+
+
+
+    /**
+     * Comes from the various Task ViewHolders, which call TaskDetailActivity
+     * and may return with a deleted or edited task
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TASK_DETAIL_REQUEST_CODE && resultCode == RESULT_OK) {     //Task has been deleted or edited
+
+            //Try to get TASK_DETAIL_RETURN_TASK_POSITION and TASK_DETAIL_RETURN_ACTION_TYPE
+            if (data.hasExtra(TASK_DETAIL_RETURN_TASK_POSITION) && data.hasExtra(TASK_DETAIL_RETURN_ACTION_TYPE)) {
+                int position = data.getIntExtra(TASK_DETAIL_RETURN_TASK_POSITION, -1);
+
+                switch (data.getIntExtra(TASK_DETAIL_RETURN_ACTION_TYPE, -1)) {
+                    case TASK_DETAIL_RETURN_ACTION_DELETED:
+                        //Task was deleted, remove from recycler
+                        mTasks.remove(position);
+                        mAdapter.notifyItemRemoved(position);
+                        mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+                        break;
+                    case TASK_DETAIL_RETURN_ACTION_EDITED:
+                        //Task was edited, refresh task info and refresh recycler
+                        try {
+                            Task task = mDao.getTask(mTasks.get(position).getTask().getId());
+                            TaskViewModel taskViewModel = new TaskViewModel(task, ConversionUtil.taskReminderTypeToTaskViewmodelType(task.getReminderType()));
+                            mTasks.set(position, taskViewModel);
+                            mAdapter.notifyItemChanged(position);
+                        }catch (CouldNotGetDataException e) {
+                            SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_updating_task_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+
+
 }
