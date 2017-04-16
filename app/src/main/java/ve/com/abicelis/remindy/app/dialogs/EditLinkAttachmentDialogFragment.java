@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
 
@@ -76,12 +77,16 @@ public class EditLinkAttachmentDialogFragment extends DialogFragment implements 
                 break;
 
             case R.id.dialog_edit_link_attachment_ok:
-                mListener.onFinishEditLinkAttachmentDialog(mLink.getText().toString());
+                if(!mLink.getText().toString().isEmpty()) {
+                    mListener.onFinishEditLinkAttachmentDialog(mLink.getText().toString());
 
-                //Hide keyboard
-                ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mLink.getWindowToken(), 0);
+                    //Hide keyboard
+                    ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mLink.getWindowToken(), 0);
 
-                dismiss();
+                    dismiss();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.dialog_edit_link_error_empty_text), Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
