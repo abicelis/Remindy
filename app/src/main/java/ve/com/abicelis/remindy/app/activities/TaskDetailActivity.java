@@ -2,6 +2,7 @@ package ve.com.abicelis.remindy.app.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -28,6 +29,7 @@ import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.fragments.LocationBasedReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
+import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
@@ -49,6 +51,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
     //DATA
     private Task mTask;
+    private int mPosition;
     private DateFormat mDateFormat;
 
     //UI
@@ -77,10 +80,11 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
 
-
         mScrollviewContainer = (ScrollView) findViewById(R.id.activity_task_detail_scrollview_container);
-        if(getIntent().hasExtra(TASK_TO_DISPLAY)) {
+
+        if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION)) {
             mTask = (Task) getIntent().getSerializableExtra(TASK_TO_DISPLAY);
+            mPosition = getIntent().getIntExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, -1);
         } else {
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override
@@ -225,6 +229,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         switch (id) {
 
             // Respond to the mToolbar's back/home button
@@ -233,7 +238,14 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 return true;
 
             case R.id.menu_task_edit:
-                Toast.makeText(this, "edit!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Edit!", Toast.LENGTH_SHORT).show();
+                //TODO: remember to set  TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION and TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, TaskListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
+//                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+//                setResult(RESULT_OK, returnIntent);
+//                finish();
+
                 break;
 
             case R.id.menu_task_delete:
@@ -258,6 +270,12 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                                 @Override
                                 public void onDismissed(Snackbar transientBottomBar, int event) {
                                     super.onDismissed(transientBottomBar, event);
+
+                                    //Return task position to TaskListFragment, and also notify deletion
+                                    Intent returnIntent = new Intent();
+                                    returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, TaskListFragment.TASK_DETAIL_RETURN_ACTION_DELETED);
+                                    returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                                    setResult(RESULT_OK, returnIntent);
                                     finish();
                                 }
                             };
