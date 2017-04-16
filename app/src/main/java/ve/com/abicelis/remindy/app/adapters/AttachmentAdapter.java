@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.io.File;
 import java.security.InvalidParameterException;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.activities.NewTaskActivity;
 import ve.com.abicelis.remindy.app.holders.AudioAttachmentViewHolder;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.app.holders.LinkAttachmentViewHolder;
@@ -21,6 +23,7 @@ import ve.com.abicelis.remindy.model.attachment.ListAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
+import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
  * Created by abice on 19/3/2017.
@@ -33,6 +36,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<Attachment> mAttachments;
     private Activity mActivity;
     private LayoutInflater mInflater;
+    private ShowAttachmentHintListener showAttachmentHintListener;
 
     public AttachmentAdapter(Activity activity, List<Attachment> extras) {
         mActivity = activity;
@@ -105,9 +109,38 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-
     @Override
     public int getItemCount() {
         return mAttachments.size();
+    }
+
+
+    public void deleteAttachment(int position) {            //Called from viewHolders when deleting an attachment
+
+        if(AttachmentType.AUDIO.equals(mAttachments.get(position).getType())) {
+            String filename = ((AudioAttachment)mAttachments.get(position)).getAudioFilename();
+
+            if(filename != null && !filename.isEmpty()) { //Delete file
+                File audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
+                File audioFile = new File(audioAttachmentDir, filename);
+                audioFile.delete();
+            }
+        }
+        mAttachments.remove(position);
+
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount());
+
+    }
+
+    public void setShowAttachmentHintListener(ShowAttachmentHintListener listener) {
+        this.showAttachmentHintListener = listener;
+    }
+    public void triggerShowAttachmentHintListener() {       //Called from view holders
+        if(showAttachmentHintListener != null)
+            showAttachmentHintListener.onShowAttachmentHint();
+    }
+    public interface ShowAttachmentHintListener {
+        public void onShowAttachmentHint();
     }
 }
