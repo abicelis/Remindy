@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.app.holders;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
+import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.model.Task;
@@ -27,7 +29,7 @@ import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private TaskAdapter mAdapter;
-    private Activity mActivity;
+    private Fragment mFragment;
 
     //UI
     private RelativeLayout mContainer;
@@ -73,19 +75,19 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
     }
 
 
-    public void setData(TaskAdapter adapter, Activity activity, Task current, int position, boolean nextItemIsATask) {
+    public void setData(TaskAdapter adapter, Fragment fragment, Task current, int position, boolean nextItemIsATask) {
         mAdapter = adapter;
-        mActivity = activity;
+        mFragment = fragment;
         mCurrent = current;
         mReminderPosition = position;
 
         mCategoryIcon.setImageResource(mCurrent.getCategory().getIconRes());
 
-        mAttachmentList.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentLink.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentAudio.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentImage.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentText.setColorFilter(ContextCompat.getColor(mActivity, (hasExtrasOfType(AttachmentType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentList.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentLink.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentAudio.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentImage.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentText.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
 
         mTitle.setText(mCurrent.getTitle());
         if(!mCurrent.getDescription().isEmpty())
@@ -94,7 +96,7 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
             mDescription.setText("-");
 
         if(current.getReminderType() == ReminderType.REPEATING && current.getReminder() != null) {
-            mRepeat.setText(((RepeatingReminder)current.getReminder()).getRepeatText(mActivity));
+            mRepeat.setText(((RepeatingReminder)current.getReminder()).getRepeatText(mFragment.getActivity()));
             mTime.setText(((RepeatingReminder)current.getReminder()).getTime().toString());
         } else {
             mRepeat.setText("-");
@@ -123,14 +125,15 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
         switch (id) {
             case R.id.item_task_programmed_repeating_container:
                 Pair[] pairs = new Pair[1];
-                pairs[0] = new Pair<View, String>(mCategoryIcon, mActivity.getResources().getString(R.string.transition_task_list_category));
+                pairs[0] = new Pair<View, String>(mCategoryIcon, mFragment.getResources().getString(R.string.transition_task_list_category));
                 //pairs[1] = new Pair<View, String>(mTitle, mActivity.getResources().getString(R.string.transition_task_list_title));
                 //pairs[2] = new Pair<View, String>(mDescription, mActivity.getResources().getString(R.string.transition_task_list_description));
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, pairs);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mFragment.getActivity(), pairs);
 
-                Intent openTaskDetailActivity = new Intent(mActivity, TaskDetailActivity.class);
+                Intent openTaskDetailActivity = new Intent(mFragment.getActivity(), TaskDetailActivity.class);
                 openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_TO_DISPLAY, mCurrent);
-                mActivity.startActivity(openTaskDetailActivity, options.toBundle());
+                openTaskDetailActivity.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mReminderPosition);
+                mFragment.startActivityForResult(openTaskDetailActivity, TaskListFragment.TASK_DETAIL_REQUEST_CODE, options.toBundle());
                 break;
         }
     }

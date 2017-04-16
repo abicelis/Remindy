@@ -1,24 +1,21 @@
 package ve.com.abicelis.remindy.app.adapters;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.holders.AdvancedReminderViewHolder;
 import ve.com.abicelis.remindy.app.holders.ProgrammedLocationBasedTaskViewHolder;
 import ve.com.abicelis.remindy.app.holders.ProgrammedOneTimeTaskViewHolder;
 import ve.com.abicelis.remindy.app.holders.ProgrammedRepeatingTaskViewHolder;
 import ve.com.abicelis.remindy.app.holders.TaskHeaderViewHolder;
 import ve.com.abicelis.remindy.app.holders.UnprogrammedTaskViewHolder;
 import ve.com.abicelis.remindy.enums.TaskViewModelType;
-import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
 /**
@@ -30,12 +27,12 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //DATA
     private List<TaskViewModel> mTasks;
     private LayoutInflater mInflater;
-    private Activity mActivity;
+    private Fragment mFragment;
 
-    public TaskAdapter(Activity activity, List<TaskViewModel> tasks) {
+    public TaskAdapter(Fragment fragment, List<TaskViewModel> tasks) {
         mTasks = tasks;
-        mActivity = activity;
-        mInflater = LayoutInflater.from(activity);
+        mFragment = fragment;
+        mInflater = LayoutInflater.from(fragment.getActivity());
 
     }
 
@@ -78,30 +75,30 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (viewModelType) {
             case HEADER:
                 TaskHeaderViewHolder thHolder = (TaskHeaderViewHolder) holder;
-                thHolder.setData(this, mActivity, mTasks.get(position).getHeaderTitle(), mTasks.get(position).isHeaderTitleRed(), position);
+                thHolder.setData(this, mFragment, mTasks.get(position).getHeaderTitle(), mTasks.get(position).isHeaderTitleRed(), position);
                 break;
 
             case UNPROGRAMMED_REMINDER:
                 UnprogrammedTaskViewHolder uHolder = (UnprogrammedTaskViewHolder) holder;
-                uHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
+                uHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
                 uHolder.setListeners();
                 break;
 
             case ONE_TIME_REMINDER:
                 ProgrammedOneTimeTaskViewHolder poHolder = (ProgrammedOneTimeTaskViewHolder) holder;
-                poHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
+                poHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
                 poHolder.setListeners();
                 break;
 
             case REPEATING_REMINDER:
                 ProgrammedRepeatingTaskViewHolder prHolder = (ProgrammedRepeatingTaskViewHolder) holder;
-                prHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
+                prHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
                 prHolder.setListeners();
                 break;
 
             case LOCATION_BASED_REMINDER:
                 ProgrammedLocationBasedTaskViewHolder plHolder = (ProgrammedLocationBasedTaskViewHolder) holder;
-                plHolder.setData(this, mActivity, mTasks.get(position).getTask(), position, nextItemIsATask);
+                plHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
                 plHolder.setListeners();
                 break;
 
