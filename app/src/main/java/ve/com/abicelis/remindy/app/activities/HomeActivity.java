@@ -8,9 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,10 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.dialogs.RecordAudioDialogFragment;
 import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.app.adapters.TasksViewPagerAdapter;
+import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -32,8 +35,13 @@ import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
 
+    //CONST
+    public static final int NEW_TASK_REQUEST_CODE = 490;
+    public static final String NEW_TASK_RETURN_REMINDER_TYPE = "NEW_TASK_RETURN_REMINDER_TYPE";
+
     //UI
     private ViewPager mViewpager;
+    private TasksViewPagerAdapter mTasksViewPagerAdapter;
     private TabLayout mTabLayout;
     private FloatingActionButton mFab;
     private TaskListFragment mUnprogrammedTasksListFragment;
@@ -61,11 +69,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFab = (FloatingActionButton) findViewById(R.id.activity_home_fab);
         mFab.setOnClickListener(this);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        mShowLocationBasedTasksInOwnViewPagerTab = preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
+        mShowLocationBasedTasksInOwnViewPagerTab = SharedPreferenceUtil.getShowLocationBasedTasksInOwnTab(getApplicationContext());
         setupViewPagerAndTabLayout();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(SharedPreferenceUtil.getShowLocationBasedTasksInOwnTab(getApplicationContext()) != mShowLocationBasedTasksInOwnViewPagerTab) {
+            mShowLocationBasedTasksInOwnViewPagerTab = !mShowLocationBasedTasksInOwnViewPagerTab;
+            setupViewPagerAndTabLayout();
+        }
+    }
 
     private void setupViewPagerAndTabLayout() {
 
@@ -109,8 +124,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //Setup adapter, viewpager and tablayout
-        TasksViewPagerAdapter adapter = new TasksViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
-        mViewpager.setAdapter(adapter);
+        mTasksViewPagerAdapter = new TasksViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
+        mViewpager.setAdapter(mTasksViewPagerAdapter);
         mViewpager.setCurrentItem(1);     //Start at page 2
         mTabLayout.setupWithViewPager(mViewpager);
     }
@@ -152,10 +167,41 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.activity_home_fab:
-                //TODO: Open newTask Activity
+                Intent openNewTaskActivity = new Intent(this, NewTaskActivity.class);
+                startActivityForResult(openNewTaskActivity, NEW_TASK_REQUEST_CODE);
                 break;
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == NEW_TASK_REQUEST_CODE && resultCode == RESULT_OK) {
+            //Try to get NEW_TASK_RETURN_REMINDER_TYPE
+            ReminderType rt;
+            if (data.hasExtra(NEW_TASK_RETURN_REMINDER_TYPE)) {
+                rt = (ReminderType) data.getSerializableExtra(NEW_TASK_RETURN_REMINDER_TYPE);
 
+                switch (rt) {
+                    case NONE:
+                        mTasksViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();
+                        break;
+
+                    case LOCATION_BASED:
+                        mTasksViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();          //Location based tasks will always be in tab #1
+                        break;
+
+                    case ONE_TIME:
+                    case REPEATING:
+                        if (mShowLocationBasedTasksInOwnViewPagerTab)
+                            mTasksViewPagerAdapter.getRegisteredFragment(2).refreshRecyclerView();      //These tasks are in tab 2.
+                        else
+                            mTasksViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();      //Otherwise refresh tab 1, where all programmed tasks are.
+                        break;
+                }
+            } else {
+                setupViewPagerAndTabLayout();   //Just refresh everything
+            }
+        }
+    }
 }
