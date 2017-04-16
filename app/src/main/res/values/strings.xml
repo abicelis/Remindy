@@ -348,6 +348,7 @@
 
     /* Generic error/status toast/snackbar messages */
     <string name="error_problem_getting_tasks_from_database">There was an error getting the task list</string>
+    <string name="error_problem_updating_task_from_database">There was an error updating the task list</string>
     <string name="error_problem_inserting_reminder">There was a problem inserting the reminder into the database</string>
     <string name="error_invalid_title">Please enter a valid title</string>
     <string name="error_invalid_date">Please enter a valid date</string>
