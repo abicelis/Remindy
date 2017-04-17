@@ -51,7 +51,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
     private static final int STATE_IDLE = 0;
     private static final int STATE_RECORDING = 1;
     private static final int STATE_PLAYING = 2;
-    private static String [] permissions = {Manifest.permission.RECORD_AUDIO};
+    private static String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     //DATA
     private boolean permissionToRecordAccepted = false;
@@ -169,7 +169,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
             case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+                permissionToRecordAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED);
                 break;
         }
 
