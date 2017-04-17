@@ -19,6 +19,7 @@ import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.dialogs.EditLinkAttachmentDialogFragment;
 import ve.com.abicelis.remindy.exception.MalformedLinkException;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
+import ve.com.abicelis.remindy.util.ClipboardUtil;
 
 /**
  * Created by abice on 13/3/2017.
@@ -94,9 +95,8 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
 
                                 switch (which) {
                                     case 0:
-                                        ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                                        ClipData clip = ClipData.newPlainText("Remindy text", mCurrent.getLink());
-                                        clipboard.setPrimaryClip(clip);
+                                        ClipboardUtil.copyToClipboard(mActivity, mCurrent.getLink());
+
                                         break;
                                     case 1:
                                         handleLinkEdit();

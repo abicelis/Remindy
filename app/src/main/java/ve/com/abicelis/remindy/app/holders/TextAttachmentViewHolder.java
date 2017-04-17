@@ -22,6 +22,7 @@ import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.dialogs.EditPlaceDialogFragment;
 import ve.com.abicelis.remindy.app.dialogs.EditTextAttachmentDialogFragment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
+import ve.com.abicelis.remindy.util.ClipboardUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
@@ -98,9 +99,7 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
 
                                 switch (which) {
                                     case 0:
-                                        ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                                        ClipData clip = ClipData.newPlainText("Remindy text", mCurrent.getText());
-                                        clipboard.setPrimaryClip(clip);
+                                        ClipboardUtil.copyToClipboard(mActivity, mCurrent.getText());
                                         break;
                                     case 1:
                                         handleTextEdit();
