@@ -21,7 +21,7 @@ import ve.com.abicelis.remindy.util.FileUtil;
 public class RemindyDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Remindy.db";
-    private static final int DATABASE_VERSION = 1;                               // If you change the database schema, you must increment the database version.
+    private static final int DATABASE_VERSION = 2;                               // If you change the database schema, you must increment the database version.
     private static final String COMMA_SEP = ", ";
 
     private String mAppDbFilepath;
@@ -49,8 +49,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
         //TODO: FIGURE THIS PART OUT!
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        //deleteDatabase(sqLiteDatabase);
-        //onCreate(sqLiteDatabase);
+        deleteDatabase(sqLiteDatabase);
+        onCreate(sqLiteDatabase);
     }
 
 
@@ -193,7 +193,7 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 "(0, 0, 'LINK', 'http://www.mocklinkTask1.com', '')," +
                 "(1, 0, 'TEXT', 'Mock text', '')," +
                 "(2, 1, 'LINK', 'http://www.mocklinkTask2.com', '')," +
-                "(3, 2, 'LIST', 'Mock item #1|Mock item #2|Mock item #3', '')," +
+                "(3, 2, 'LINK', 'http://www.mocklinkTask3.com', '')," +
                 "(4, 2, 'LINK', 'http://www.mocklinkTask3.com', '')," +
                 "(5, 4, 'TEXT', 'Mock text task 5', '')," +
                 "(6, 5, 'TEXT', 'Mock text task 6', '')," +
