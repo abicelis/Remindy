@@ -39,6 +39,7 @@ import com.transitionseverywhere.TransitionManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
@@ -51,6 +52,8 @@ import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
+import ve.com.abicelis.remindy.model.attachment.ListAttachment;
+import ve.com.abicelis.remindy.model.attachment.ListItemAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
@@ -283,7 +286,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         switch (id) {
             case R.id.activity_new_task_add_list_attachment:
-                //TODO: Add list attachment to recycler!
+                addAttachment(new ListAttachment());
                 Toast.makeText(this, "TODO: add list attachment", Toast.LENGTH_SHORT).show();
                 break;
 
@@ -390,6 +393,19 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mTask.setCategory(category);
         mTask.setTitle(mTaskTitle.getText().toString());
         mTask.setDescription(mTaskDescription.getText().toString());
+
+        //If task has a list attachment, then remove the last item from that list since its a blank placeholder item.
+        for (Attachment attachment : mTask.getAttachments()) {
+            if(attachment.getType().equals(AttachmentType.LIST)) {
+
+                Iterator<ListItemAttachment> i = ((ListAttachment)attachment).getItems().iterator();
+                while (i.hasNext()) {
+                    ListItemAttachment item = i.next();
+                    if(item.getText() == null || item.getText().isEmpty())
+                        i.remove();
+                }
+            }
+        }
 
         //TODO: Clear "blank" attachments, maybe warn user?
 

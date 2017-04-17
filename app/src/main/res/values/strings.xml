@@ -308,12 +308,19 @@
     <string name="dialog_link_attachment_options_edit">Edit link</string>
     <string name="dialog_link_attachment_options_delete">Delete attachment</string>
 
+    /* List Attachment ViewHolder */
+    <string name="list_item_attachment_text_hint">Tap to add an item&#8230;</string>
+    <string name="dialog_list_attachment_options_copy">Copy list text</string>
+    <string name="dialog_list_attachment_options_delete">Delete list</string>
+    <string name="dialog_list_item_attachment_options_copy">Copy item text</string>
+    <string name="dialog_list_item_attachment_options_edit">Edit item text</string>
+    <string name="dialog_list_item_attachment_options_delete">Delete item</string>
 
 
 
     /* Record Audio Dialog */
     <string name="dialog_record_audio_tap_to_record">Tap to start recording</string>
-    <string name="dialog_record_audio_snackbar_error_no_permissions">App needs microphone permissions</string>
+    <string name="dialog_record_audio_snackbar_error_no_permissions">App needs microphone and storage permissions</string>
     <string name="dialog_record_audio_overwrite_title">Overwrite audio?</string>
     <string name="dialog_record_audio_overwrite_message">Are you sure you want to overwrite this audio?</string>
     <string name="dialog_record_audio_overwrite_positive">Yes</string>
@@ -342,7 +349,11 @@
     <string name="dialog_edit_link_attachment_malformed_link">Error, link is invalid</string>
     <string name="dialog_edit_link_error_empty_text">Please enter a link</string>
 
-
+    /* Edit List Item Attachment Dialog */
+    <string name="dialog_edit_list_item_attachment_title">Edit Item</string>
+    <string name="dialog_edit_list_item_attachment_cancel">CANCEL</string>
+    <string name="dialog_edit_list_item_attachment_ok">OK</string>
+    <string name="dialog_edit_list_item_error_empty_text">Please enter some text</string>
 
 
 

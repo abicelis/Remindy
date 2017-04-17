@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_attachment_list_container"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:paddingLeft="8dp"
+    android:paddingStart="8dp"
+    android:paddingRight="8dp"
+    android:paddingEnd="8dp"
+    android:gravity="center_vertical"
+    android:background="@color/gray_50"
+    >
+    <!--android:background="?attr/selectableItemBackground"-->
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/list_item_attachment_list_item_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         />
+
+    <ImageView
+        android:id="@+id/list_item_attachment_list_item_tap_to_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginEnd="2dp"
+        android:src="@drawable/icon_add"
+        android:tint="@color/gray_500"/>
+
+    <TextView
+        android:id="@+id/list_item_attachment_list_item_text"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:lines="2"
+        android:hint="@string/list_item_attachment_text_hint"
+        />
+
+    <ImageButton
+        android:id="@+id/list_item_attachment_list_item_more"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/icon_more"
+        android:tint="@color/primary_dark"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        />
+</LinearLayout>

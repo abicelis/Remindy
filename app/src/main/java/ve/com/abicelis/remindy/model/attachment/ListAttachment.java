@@ -1,21 +1,30 @@
 package ve.com.abicelis.remindy.model.attachment;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 import ve.com.abicelis.remindy.enums.AttachmentType;
 
 /**
  * Created by abice on 3/3/2017.
  */
 
-public class ListAttachment extends Attachment {
+public class ListAttachment extends Attachment implements Serializable {
 
-    private String text;
+    private List<ListItemAttachment> items;
 
-    public ListAttachment(String text) {
-        this.text = text;
+    public ListAttachment() {
+        this.items = new ArrayList<>();
     }
-    public ListAttachment(int id, int reminderId, String text) {
+    public ListAttachment(int id, int reminderId, String itemsJsonText) {
         super(id, reminderId);
-        this.text = text;
+
+        setItemsJson(itemsJsonText);
     }
 
     @Override
@@ -24,10 +33,23 @@ public class ListAttachment extends Attachment {
     }
 
 
-    public String getText() {
-        return text;
+    public List<ListItemAttachment> getItems() {
+        return items;
     }
-    public void setText(String text) {
-        this.text = text;
+
+    public void removeItem(int position) {
+
     }
+
+    public String getItemsJson() {
+        Gson gson = new Gson();
+        return gson.toJson(items);
+    }
+
+    public void setItemsJson(String itemsJsonText) {
+        Type listType = new TypeToken<List<ListItemAttachment>>() {}.getType();
+        Gson gson = new Gson();
+        items = gson.fromJson(itemsJsonText, listType);
+    }
+
 }
