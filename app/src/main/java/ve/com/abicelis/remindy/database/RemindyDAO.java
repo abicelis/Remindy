@@ -826,7 +826,7 @@ public class RemindyDAO {
                 values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((TextAttachment) attachment).getText());
                 break;
             case LIST:
-                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ListAttachment) attachment).getText());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ListAttachment) attachment).getItemsJson());
                 break;
             case LINK:
                 values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((LinkAttachment) attachment).getLink());
