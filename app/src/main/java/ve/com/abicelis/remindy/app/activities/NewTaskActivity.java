@@ -1,33 +1,32 @@
 package ve.com.abicelis.remindy.app.activities;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,26 +36,25 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionManager;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
+import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
+import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListItemAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.util.ConversionUtil;
-import ve.com.abicelis.remindy.util.FileUtil;
+import ve.com.abicelis.remindy.util.PermissionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -66,6 +64,7 @@ import ve.com.abicelis.remindy.util.SnackbarUtil;
 public class NewTaskActivity extends AppCompatActivity implements View.OnClickListener {
 
     //CONST
+    private static final String TAG = NewTaskActivity.class.getSimpleName();
 
     //DATA
     private List<String> reminderCategories;
@@ -184,7 +183,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private void setUpRecyclerView() {
 
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mAdapter = new AttachmentAdapter(this, mTask.getAttachments());
+        mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), true);
         mAdapter.setShowAttachmentHintListener(new AttachmentAdapter.ShowAttachmentHintListener() {
             @Override
             public void onShowAttachmentHint() {
@@ -287,7 +286,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         switch (id) {
             case R.id.activity_new_task_add_list_attachment:
                 addAttachment(new ListAttachment());
-                Toast.makeText(this, "TODO: add list attachment", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.activity_new_task_add_text_attachment:
@@ -299,17 +297,18 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.activity_new_task_add_image_attachment:
-                //TODO: Add image attachment to recycler!
-                Toast.makeText(this, "TODO: add image attachment", Toast.LENGTH_SHORT).show();
+                addAttachment(new ImageAttachment());
                 break;
 
             case R.id.activity_new_task_add_audio_attachment:
                 addAttachment(new AudioAttachment());
                 break;
         }
-
-
+        //Scroll to added item
+        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -380,6 +379,20 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         return false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on EditImageAttachmentActivity
+        if(requestCode == EditImageAttachmentActivity.EDIT_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra(EditImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
+            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(EditImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
+            if(position != -1) {
+                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
+                holder.updateImageAttachment(imageAttachment);
+            }
+        }
+    }
 
     private void handleTaskSave() {
 
@@ -394,20 +407,49 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mTask.setTitle(mTaskTitle.getText().toString());
         mTask.setDescription(mTaskDescription.getText().toString());
 
-        //If task has a list attachment, then remove the last item from that list since its a blank placeholder item.
-        for (Attachment attachment : mTask.getAttachments()) {
-            if(attachment.getType().equals(AttachmentType.LIST)) {
 
-                Iterator<ListItemAttachment> i = ((ListAttachment)attachment).getItems().iterator();
-                while (i.hasNext()) {
-                    ListItemAttachment item = i.next();
-                    if(item.getText() == null || item.getText().isEmpty())
-                        i.remove();
-                }
+        //Clear empty attachments
+        Iterator<Attachment> attachmentIterator = mTask.getAttachments().iterator();
+        while(attachmentIterator.hasNext()) {
+
+            Attachment attachment = attachmentIterator.next();
+            switch (attachment.getType()) {
+                case LINK:
+                    if (((LinkAttachment) attachment).getLink() == null || ((LinkAttachment) attachment).getLink().isEmpty())
+                        attachmentIterator.remove();
+                    break;
+
+                case TEXT:
+                    if (((TextAttachment) attachment).getText() == null || ((TextAttachment) attachment).getText().isEmpty())
+                        attachmentIterator.remove();
+                    break;
+
+                case AUDIO:
+                    if (((AudioAttachment) attachment).getAudioFilename() == null || ((AudioAttachment) attachment).getAudioFilename().isEmpty())
+                        attachmentIterator.remove();
+                    break;
+
+                case IMAGE:
+                    //TODO: clear empty imageAttachments
+                    break;
+
+                case LIST:
+                    //Iterate Items, remove empty ones
+                    Iterator<ListItemAttachment> i = ((ListAttachment) attachment).getItems().iterator();
+                    while (i.hasNext()) {
+                        ListItemAttachment item = i.next();
+                        if (item.getText() == null || item.getText().isEmpty())
+                            i.remove();
+                    }
+
+                    //If List Attachment has no items, delete the whole thing.
+                    if (((ListAttachment) attachment).getItems().size() == 0) {
+                        attachmentIterator.remove();
+                    }
+                    break;
             }
         }
 
-        //TODO: Clear "blank" attachments, maybe warn user?
 
         try {
             RemindyDAO dao = new RemindyDAO(this);

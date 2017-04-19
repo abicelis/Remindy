@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_edit_image_attachment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    >
+
+
+    <ImageView
+        android:id="@+id/activity_edit_image_attachment_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/activity_edit_image_attachment_button_container"
+        android:src="@drawable/icon_remindy"
+        android:scaleType="fitCenter"/>
+
+
+
+    <LinearLayout
+        android:id="@+id/activity_edit_image_attachment_button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        >
+        <Button
+            android:id="@+id/activity_edit_image_attachment_cancel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:text="@android:string/cancel"
+            style="?attr/borderlessButtonStyle"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/gray_400"
+            />
+        <Button
+            android:id="@+id/activity_edit_image_attachment_ok"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:text="@android:string/ok"
+            style="?attr/borderlessButtonStyle"/>
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_edit_image_attachment_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/activity_edit_image_attachment_button_container"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:elevation="0dp"
+        app:backgroundTint="@color/primary"
+        android:src="@drawable/icon_camera"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_edit_image_attachment_rotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/activity_edit_image_attachment_camera"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:elevation="0dp"
+        app:backgroundTint="@color/primary"
+        android:src="@drawable/icon_rotate"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_edit_image_attachment_crop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/activity_edit_image_attachment_rotate"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:elevation="0dp"
+        app:backgroundTint="@color/primary"
+        android:src="@drawable/icon_crop"/>
+</RelativeLayout>
+
+
+
+

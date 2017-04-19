@@ -207,6 +207,14 @@
     <string name="item_attachment_link_hint">Tap to enter a link</string>
 
 
+    /* Activity Edit Image Attachment*/
+    <string name="activity_edit_image_attachment_snackbar_error_could_not_rotate">Could not save image rotation</string>
+    <string name="activity_edit_image_attachment_snackbar_error_no_camera_installed">Cannot take image, no camera app in device</string>
+    <string name="activity_edit_image_attachment_snackbar_error_no_permissions">Please grant Remindy the required permissions</string>
+    <string name="activity_edit_image_attachment_snackbar_error_loading_cropped_image">Could not load cropped image</string>
+
+
+
 
     /* Fragment Reminders */
     <string name="fragment_reminder_list_no_items">There are no tasks here!</string>
@@ -316,7 +324,10 @@
     <string name="dialog_list_item_attachment_options_edit">Edit item text</string>
     <string name="dialog_list_item_attachment_options_delete">Delete item</string>
 
-
+    /* Image Attachment ViewHolder */
+    <string name="dialog_image_attachment_options_replace">Replace image</string>
+    <string name="dialog_image_attachment_options_delete">Delete attachment</string>
+    <string name="image_attachment_snackbar_warning_no_permissons">This app needs camera permissions to continue</string>
 
     /* Record Audio Dialog */
     <string name="dialog_record_audio_tap_to_record">Tap to start recording</string>
