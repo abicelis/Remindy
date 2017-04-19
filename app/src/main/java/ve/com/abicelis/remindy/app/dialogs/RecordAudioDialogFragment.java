@@ -33,6 +33,7 @@ import java.util.UUID;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.views.VisualizerView;
 import ve.com.abicelis.remindy.util.FileUtil;
+import ve.com.abicelis.remindy.util.PermissionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -120,7 +121,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
 
         File audioAttachmentDir = FileUtil.getAudioAttachmentDir(getActivity());
         try {
-            createDirIfNotExists(audioAttachmentDir);
+            FileUtil.createDirIfNotExists(audioAttachmentDir);
         }catch (IOException| SecurityException e) {
             Toast.makeText(getActivity(), "Problem!", Toast.LENGTH_SHORT).show();
         }
@@ -131,7 +132,9 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         Log.d(TAG, "FILENAME: " + mAudioFileName);
 
         //Check for permissions
-        permissionToRecordAccepted = ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        permissionToRecordAccepted = PermissionUtil.checkIfPermissionsAreGranted(getContext(), permissions) == null;
+//        permissionToRecordAccepted = (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED &&
+//                                        ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
 
 
 
@@ -152,40 +155,6 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         mTextHandler = new Handler();
 
         return dialogView;
-    }
-
-
-    private void createDirIfNotExists(File directory) throws IOException, SecurityException  {
-        if (directory.mkdirs()){
-            File nomedia = new File(directory, ".nomedia");
-            nomedia.createNewFile();
-        }
-    }
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED);
-                break;
-        }
-
-        if (permissionToRecordAccepted)
-            startRecording();
-         else  {
-            BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                @Override
-                public void onDismissed(Snackbar transientBottomBar, int event) {
-                    super.onDismissed(transientBottomBar, event);
-                    dismiss();
-                }
-            };
-            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.dialog_record_audio_snackbar_error_no_permissions, SnackbarUtil.SnackbarDuration.LONG, callback);
-        }
-
     }
 
     @Override
@@ -215,6 +184,29 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_RECORD_AUDIO_PERMISSION:
+                permissionToRecordAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED);
+                break;
+        }
+
+        if (permissionToRecordAccepted)
+            startRecording();
+        else  {
+            BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    dismiss();
+                }
+            };
+            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.dialog_record_audio_snackbar_error_no_permissions, SnackbarUtil.SnackbarDuration.LONG, callback);
+        }
+
+    }
 
     private void startRecording() {
 
