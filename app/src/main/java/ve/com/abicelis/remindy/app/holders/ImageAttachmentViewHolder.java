@@ -143,6 +143,7 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
         Intent goToViewImageAttachmentActivity = new Intent(mActivity, ViewImageAttachmentActivity.class);
         goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA, mCurrent);
         goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, mPosition);
+        goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.CAN_EDIT_EXTRA, mCanEdit);
         mActivity.startActivityForResult(goToViewImageAttachmentActivity, ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE);
     }
 

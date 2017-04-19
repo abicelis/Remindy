@@ -60,12 +60,14 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
     public static final String TAG = ViewImageAttachmentActivity.class.getSimpleName();
     public static final String IMAGE_ATTACHMENT_EXTRA = "IMAGE_ATTACHMENT_EXTRA";
     public static final String HOLDER_POSITION_EXTRA = "HOLDER_POSITION_EXTRA";
+    public static final String CAN_EDIT_EXTRA = "CAN_EDIT_EXTRA";
     public static final int VIEW_IMAGE_ATTACHMENT_REQUEST_CODE = 83;
 
 
     //DATA
     private ImageAttachment mImageAttachment;
     private int mHolderPosition;
+    private boolean mCanEdit;
 
     //UI
     private RelativeLayout mContainer;
@@ -93,9 +95,10 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
             mImage.setImageBitmap(ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename())));
         } else {
 
-            if(getIntent().hasExtra(HOLDER_POSITION_EXTRA) && getIntent().hasExtra(IMAGE_ATTACHMENT_EXTRA)) {
+            if(getIntent().hasExtra(HOLDER_POSITION_EXTRA) && getIntent().hasExtra(IMAGE_ATTACHMENT_EXTRA) && getIntent().hasExtra(CAN_EDIT_EXTRA)) {
                 mHolderPosition = getIntent().getIntExtra(HOLDER_POSITION_EXTRA, -1);
                 mImageAttachment = (ImageAttachment) getIntent().getSerializableExtra(IMAGE_ATTACHMENT_EXTRA);
+                mCanEdit =  getIntent().getBooleanExtra(CAN_EDIT_EXTRA, false);
 
                 if (mImageAttachment.getImageFilename() != null && !mImageAttachment.getImageFilename().isEmpty()) {
                     Bitmap imageBitmap = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
@@ -129,7 +132,11 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
         }
 
         setUpToolbar();
-        mEdit.setOnClickListener(this);
+
+        if(mCanEdit)
+            mEdit.setOnClickListener(this);
+        else
+            mEdit.setVisibility(View.GONE);
     }
 
     private void setUpToolbar() {
