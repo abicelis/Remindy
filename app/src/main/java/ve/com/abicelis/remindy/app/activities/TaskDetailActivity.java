@@ -37,6 +37,7 @@ import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
+import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
@@ -265,7 +266,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                     public void onClick(DialogInterface dialog, int which) {
 
                         try {
+                            FileUtil.deleteAttachmentFiles(TaskDetailActivity.this, mTask.getAttachments());
                             new RemindyDAO(TaskDetailActivity.this).deleteTask(mTask.getId());
+
                             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                                 @Override
                                 public void onDismissed(Snackbar transientBottomBar, int event) {

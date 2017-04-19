@@ -9,9 +9,13 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.model.attachment.Attachment;
+import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
+import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 
 /**
  * Created by Alex on 9/3/2017.
@@ -76,6 +80,36 @@ public class FileUtil {
         file.createNewFile();
         return file;
     }
+
+
+    /**
+     * Deletes the images and audio files from a list of attachments
+     */
+    public static void deleteAttachmentFiles(Activity activity, List<Attachment> attachments) {
+        for (Attachment attachment : attachments) {
+            switch (attachment.getType()) {
+                case AUDIO:
+                    String audioFilename = ((AudioAttachment)attachment).getAudioFilename();
+                    deleteAudioAttachment(activity, audioFilename);
+                case IMAGE:
+                    String imageFilename = ((ImageAttachment)attachment).getImageFilename();
+                    deleteImageAttachment(activity, imageFilename);
+            }
+        }
+    }
+    public static void deleteAudioAttachment(Activity activity, String filename) {
+        if(filename != null && !filename.isEmpty()) { //Delete file
+            File file = new File(FileUtil.getAudioAttachmentDir(activity), filename);
+            file.delete();
+        }
+    }
+    public static void deleteImageAttachment(Activity activity, String filename) {
+        if(filename != null && !filename.isEmpty()) { //Delete file
+            File file = new File(FileUtil.getImageAttachmentDir(activity), filename);
+            file.delete();
+        }
+    }
+
 
 //    public static File createTempImageFileInDir(File directory, String fileExtension) throws IOException, SecurityException {
 //        if(fileExtension.toCharArray()[0] != '.')
