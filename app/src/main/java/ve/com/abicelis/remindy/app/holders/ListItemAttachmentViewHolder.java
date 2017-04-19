@@ -51,6 +51,7 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
     //DATA
     private ListItemAttachment mCurrent;
     private int mPosition;
+    private boolean mCanEdit;
 
     public ListItemAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -63,11 +64,12 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
     }
 
 
-    public void setData(ListItemAttachmentAdapter adapter, Activity activity, ListItemAttachment current, int position) {
+    public void setData(ListItemAttachmentAdapter adapter, Activity activity, ListItemAttachment current, int position, boolean canEdit) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
+        mCanEdit = canEdit;
 
         setupViewHolder();
     }
@@ -96,6 +98,9 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
 
             mText.setText(mCurrent.getText());
             mCheckBox.setChecked(mCurrent.isChecked());
+
+            //TODO: checkbox shouldnt be disabled when cannot edit, instead db must be updated real-time when not "editing"
+            mCheckBox.setEnabled(mCanEdit);
         }
     }
 
@@ -107,11 +112,15 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
         int id = view.getId();
         switch (id) {
             case R.id.list_item_attachment_list_item_more:
-                CharSequence items[] = new CharSequence[] {
-                        mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_copy),
-                        mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_edit),
-                        mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_delete)};
-
+                CharSequence items[];
+                if(mCanEdit) {
+                    items = new CharSequence[]{
+                            mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_copy),
+                            mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_edit),
+                            mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_delete)};
+                } else {
+                    items = new CharSequence[]{mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_copy)};
+                }
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setItems(items, new DialogInterface.OnClickListener() {

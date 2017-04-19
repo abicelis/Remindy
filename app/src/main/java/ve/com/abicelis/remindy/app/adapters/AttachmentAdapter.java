@@ -37,10 +37,12 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Activity mActivity;
     private LayoutInflater mInflater;
     private ShowAttachmentHintListener showAttachmentHintListener;
+    private boolean mCanEdit;
 
-    public AttachmentAdapter(Activity activity, List<Attachment> extras) {
+    public AttachmentAdapter(Activity activity, List<Attachment> extras, boolean canEdit) {
         mActivity = activity;
         mAttachments = extras;
+        mCanEdit = canEdit;
         mInflater = LayoutInflater.from(activity);
     }
 
@@ -77,30 +79,30 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         switch (current.getType()) {
             case TEXT:
                 TextAttachmentViewHolder tvh = (TextAttachmentViewHolder) holder;
-                tvh.setData(this, mActivity, (TextAttachment)current, position);
+                tvh.setData(this, mActivity, (TextAttachment)current, position, mCanEdit);
                 tvh.setListeners();
                 break;
             case LIST:
                 ListAttachmentViewHolder listvh = (ListAttachmentViewHolder) holder;
-                listvh.setData(this, mActivity, (ListAttachment) current, position);
+                listvh.setData(this, mActivity, (ListAttachment) current, position, mCanEdit);
                 listvh.setListeners();
                 break;
 
             case LINK:
                 LinkAttachmentViewHolder lvh = (LinkAttachmentViewHolder) holder;
-                lvh.setData(this, mActivity, (LinkAttachment)current, position);
+                lvh.setData(this, mActivity, (LinkAttachment)current, position, mCanEdit);
                 lvh.setListeners();
                 break;
 
             case AUDIO:
                 AudioAttachmentViewHolder avh = (AudioAttachmentViewHolder) holder;
-                avh.setData(this, mActivity, (AudioAttachment) current, position);
+                avh.setData(this, mActivity, (AudioAttachment) current, position, mCanEdit);
                 //avh.setListeners();
                 break;
 
             case IMAGE:
                 ImageAttachmentViewHolder ivh = (ImageAttachmentViewHolder) holder;
-                ivh.setData(this, mActivity, (ImageAttachment) current, position);
+                ivh.setData(this, mActivity, (ImageAttachment) current, position, mCanEdit);
                 ivh.setListeners();
                 break;
 
@@ -121,17 +123,27 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             String filename = ((AudioAttachment)mAttachments.get(position)).getAudioFilename();
 
             if(filename != null && !filename.isEmpty()) { //Delete file
-                File audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
-                File audioFile = new File(audioAttachmentDir, filename);
-                audioFile.delete();
+                File file = new File(FileUtil.getAudioAttachmentDir(mActivity), filename);
+                file.delete();
             }
         }
-        mAttachments.remove(position);
 
+        if(AttachmentType.IMAGE.equals(mAttachments.get(position).getType())) {
+            String filename = ((ImageAttachment)mAttachments.get(position)).getImageFilename();
+
+            if(filename != null && !filename.isEmpty()) { //Delete file
+                File file = new File(FileUtil.getImageAttachmentDir(mActivity), filename);
+                file.delete();
+            }
+        }
+
+        mAttachments.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
 
     }
+
+
 
     public void setShowAttachmentHintListener(ShowAttachmentHintListener listener) {
         this.showAttachmentHintListener = listener;

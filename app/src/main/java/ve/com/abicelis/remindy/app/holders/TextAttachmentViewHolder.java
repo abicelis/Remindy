@@ -41,6 +41,7 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
     //DATA
     private TextAttachment mCurrent;
     private int mPosition;
+    private boolean mCanEdit;
 
     public TextAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -50,11 +51,12 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
     }
 
 
-    public void setData(AttachmentAdapter adapter, Activity activity, TextAttachment current, int position) {
+    public void setData(AttachmentAdapter adapter, Activity activity, TextAttachment current, int position, boolean canEdit) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
+        mCanEdit = canEdit;
 
         if(current.getText() != null && !current.getText().isEmpty())
             mText.setText(mCurrent.getText());
@@ -76,7 +78,8 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_text_container:
-                handleTextEdit();
+                if(mCanEdit)
+                    handleTextEdit();
         }
     }
 
@@ -86,10 +89,15 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_text_container:
-                CharSequence items[] = new CharSequence[]{
-                        mActivity.getResources().getString(R.string.dialog_text_attachment_options_copy),
-                        mActivity.getResources().getString(R.string.dialog_text_attachment_options_edit),
-                        mActivity.getResources().getString(R.string.dialog_text_attachment_options_delete)};
+                CharSequence items[];
+                if(mCanEdit) {
+                    items = new CharSequence[]{
+                            mActivity.getResources().getString(R.string.dialog_text_attachment_options_copy),
+                            mActivity.getResources().getString(R.string.dialog_text_attachment_options_edit),
+                            mActivity.getResources().getString(R.string.dialog_text_attachment_options_delete)};
+                } else
+                    items = new CharSequence[]{mActivity.getResources().getString(R.string.dialog_text_attachment_options_copy)};
+
 
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)

@@ -37,6 +37,7 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
     //DATA
     private LinkAttachment mCurrent;
     private int mPosition;
+    private boolean mCanEdit;
 
     public LinkAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -46,11 +47,12 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
     }
 
 
-    public void setData(AttachmentAdapter adapter, Activity activity, LinkAttachment current, int position) {
+    public void setData(AttachmentAdapter adapter, Activity activity, LinkAttachment current, int position, boolean canEdit) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
+        mCanEdit = canEdit;
 
         if(current.getLink() != null && !current.getLink().isEmpty())
             mLink.setText(mCurrent.getLink());
@@ -72,7 +74,8 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_link_container:
-                handleLinkEdit();
+                if(mCanEdit)
+                    handleLinkEdit();
         }
     }
 
@@ -82,11 +85,14 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_link_container:
-                CharSequence items[] = new CharSequence[]{
-                        mActivity.getResources().getString(R.string.dialog_link_attachment_options_copy),
-                        mActivity.getResources().getString(R.string.dialog_link_attachment_options_edit),
-                        mActivity.getResources().getString(R.string.dialog_link_attachment_options_delete)};
-
+                CharSequence items[];
+                if(mCanEdit) {
+                    items = new CharSequence[]{
+                            mActivity.getResources().getString(R.string.dialog_link_attachment_options_copy),
+                            mActivity.getResources().getString(R.string.dialog_link_attachment_options_edit),
+                            mActivity.getResources().getString(R.string.dialog_link_attachment_options_delete)};
+                } else
+                    items = new CharSequence[]{mActivity.getResources().getString(R.string.dialog_link_attachment_options_copy)};
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setItems(items, new DialogInterface.OnClickListener() {

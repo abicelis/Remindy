@@ -192,7 +192,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             mAttachmentsSubtitle.setVisibility(View.VISIBLE);
 
             mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            mAdapter = new AttachmentAdapter(this, mTask.getAttachments());
+            mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), false);
 
             DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
             itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));

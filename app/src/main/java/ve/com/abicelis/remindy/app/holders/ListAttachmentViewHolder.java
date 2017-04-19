@@ -47,6 +47,7 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
     //DATA
     private ListAttachment mCurrent;
     private int mPosition;
+    private boolean mCanEdit;
 
     public ListAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -56,11 +57,12 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
     }
 
 
-    public void setData(AttachmentAdapter adapter, Activity activity, ListAttachment current, int position) {
+    public void setData(AttachmentAdapter adapter, Activity activity, ListAttachment current, int position, boolean canEdit) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
+        mCanEdit = canEdit;
 
         setUpRecyclerView();
     }
@@ -77,7 +79,7 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
             items.add(new ListItemAttachment());
 
         mLayoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
-        ListItemAttachmentAdapter adapter = new ListItemAttachmentAdapter(mActivity, items);
+        ListItemAttachmentAdapter adapter = new ListItemAttachmentAdapter(mActivity, items, mCanEdit);
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(mActivity, mLayoutManager.getOrientation());
         itemDecoration.setDrawable(ContextCompat.getDrawable(mActivity, R.drawable.item_decoration_complete_line));
@@ -92,11 +94,13 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_list_container:
-
-                CharSequence items[] = new CharSequence[]{
-                        mActivity.getResources().getString(R.string.dialog_list_attachment_options_copy),
-                        mActivity.getResources().getString(R.string.dialog_list_attachment_options_delete)};
-
+                CharSequence items[];
+                if(mCanEdit) {
+                    items = new CharSequence[]{
+                            mActivity.getResources().getString(R.string.dialog_list_attachment_options_copy),
+                            mActivity.getResources().getString(R.string.dialog_list_attachment_options_delete)};
+                } else
+                    items = new CharSequence[]{mActivity.getResources().getString(R.string.dialog_list_attachment_options_copy)};
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setItems(items, new DialogInterface.OnClickListener() {
@@ -105,6 +109,7 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
 
                                 switch (which) {
                                     case 0:
+                                        //TODO: properly print items here, not json
                                         ClipboardUtil.copyToClipboard(mActivity, mCurrent.getItemsJson());
                                         break;
                                     case 1:

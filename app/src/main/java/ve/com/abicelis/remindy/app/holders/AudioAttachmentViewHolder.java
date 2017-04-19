@@ -44,6 +44,7 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
     private AttachmentAdapter mAdapter;
     private AudioAttachment mCurrent;
     private int mPosition;
+    private boolean mCanEdit;
 
     private MediaPlayer mPlayer;
     private File audioAttachmentDir;
@@ -107,11 +108,12 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
 
     }
 
-    public void setData(AttachmentAdapter adapter, Activity activity, AudioAttachment current, int position) {
+    public void setData(AttachmentAdapter adapter, Activity activity, AudioAttachment current, int position, boolean canEdit) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
+        mCanEdit = canEdit;
         audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
         mTimeHandler = new Handler();
 
@@ -140,7 +142,7 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         }
     }
     public void setListeners() {
-        //Listeners set in setupAudioPlayer()
+        //Listeners set in setData()
     }
 
 
@@ -225,36 +227,38 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_audio_container:
-                pausePlaying();
-                CharSequence items[] = new CharSequence[] {
-                        mActivity.getResources().getString(R.string.dialog_audio_attachment_options_replace),
-                        mActivity.getResources().getString(R.string.dialog_audio_attachment_options_delete)};
+                if(mCanEdit) {
+                    pausePlaying();
+                    CharSequence items[] = new CharSequence[] {
+                            mActivity.getResources().getString(R.string.dialog_audio_attachment_options_replace),
+                            mActivity.getResources().getString(R.string.dialog_audio_attachment_options_delete)};
 
 
-                AlertDialog dialog = new AlertDialog.Builder(mActivity)
-                        .setItems(items, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (which == 0) {
-                                    stopPlaying();
+                    AlertDialog dialog = new AlertDialog.Builder(mActivity)
+                            .setItems(items, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (which == 0) {
+                                        stopPlaying();
 
-                                    //Delete old audio
-                                    if(!mCurrent.getAudioFilename().isEmpty()) {
-                                        File audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
-                                        File audioFile = new File(audioAttachmentDir, mCurrent.getAudioFilename());
-                                        audioFile.delete();
+                                        //Delete old audio
+                                        if(!mCurrent.getAudioFilename().isEmpty()) {
+                                            File audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
+                                            File audioFile = new File(audioAttachmentDir, mCurrent.getAudioFilename());
+                                            audioFile.delete();
+                                        }
+                                        showRecordAudioDialogFragment();
+                                    }else if(which == 1) {
+                                        mAdapter.deleteAttachment(mPosition);
                                     }
-                                    showRecordAudioDialogFragment();
-                                }else if(which == 1) {
-                                    mAdapter.deleteAttachment(mPosition);
+
+
                                 }
-
-
-                            }
-                        })
-                        .create();
-                dialog.show();
-                break;
+                            })
+                            .create();
+                    dialog.show();
+                }
+                return true;
         }
 
         return false;

@@ -35,11 +35,13 @@ public class ListItemAttachmentAdapter extends RecyclerView.Adapter<ListItemAtta
     //DATA
     private List<ListItemAttachment> mListItems;
     private Activity mActivity;
+    private boolean mCanEdit;
     private LayoutInflater mInflater;
 
-    public ListItemAttachmentAdapter(Activity activity, List<ListItemAttachment> items) {
+    public ListItemAttachmentAdapter(Activity activity, List<ListItemAttachment> items, boolean canEdit) {
         mActivity = activity;
         mListItems = items;
+        mCanEdit = canEdit;
         mInflater = LayoutInflater.from(activity);
     }
 
@@ -54,7 +56,7 @@ public class ListItemAttachmentAdapter extends RecyclerView.Adapter<ListItemAtta
     public void onBindViewHolder(ListItemAttachmentViewHolder holder, int position) {
         ListItemAttachment current = mListItems.get(position);
 
-        holder.setData(this, mActivity, current, position);
+        holder.setData(this, mActivity, current, position, mCanEdit);
         holder.setListeners();
     }
 
