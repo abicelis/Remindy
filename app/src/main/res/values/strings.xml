@@ -229,6 +229,9 @@
     <string name="transition_task_list_category">category</string>
     <string name="transition_task_list_description">description</string>
 
+    /* Transitions */
+    <string name="transition_image_attachment_image">image_attachment_image</string>
+
 
     /* ENUM TaskCategory */
     <string name="task_category_business">Business</string>

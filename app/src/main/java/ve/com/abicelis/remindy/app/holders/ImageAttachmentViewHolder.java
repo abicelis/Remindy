@@ -3,6 +3,8 @@ package ve.com.abicelis.remindy.app.holders;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -140,11 +142,16 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
     }
 
     private void launchImageViewAttachmentActivity() {
+
+        Pair[] pairs = new Pair[1];
+        pairs[0] = new Pair<View, String>(mImage, mActivity.getResources().getString(R.string.transition_image_attachment_image));
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, pairs);
+
         Intent goToViewImageAttachmentActivity = new Intent(mActivity, ViewImageAttachmentActivity.class);
         goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA, mCurrent);
         goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, mPosition);
         goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.CAN_EDIT_EXTRA, mCanEdit);
-        mActivity.startActivityForResult(goToViewImageAttachmentActivity, ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE);
+        mActivity.startActivityForResult(goToViewImageAttachmentActivity, ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE, options.toBundle());
     }
 
 }

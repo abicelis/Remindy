@@ -20,7 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/activity_view_image_attachment_toolbar"
-        />
+        android:transitionName="@string/transition_image_attachment_image"
+
+    />
     <!--android:scaleType="fitCenter"
             android:src="@drawable/icon_remindy"
 -->

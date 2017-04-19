@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -80,6 +81,11 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Enable Lollipop Material Design transitions
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
         setContentView(R.layout.activity_view_image_attachment);
 
         mContainer = (RelativeLayout) findViewById(R.id.activity_view_image_attachment_container);
@@ -138,6 +144,7 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
         else
             mEdit.setVisibility(View.GONE);
     }
+
 
     private void setUpToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.activity_view_image_attachment_toolbar);
@@ -203,15 +210,26 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
 
         switch (id) {
             case android.R.id.home:
-                Intent returnData = new Intent();
-                returnData.putExtra(HOLDER_POSITION_EXTRA, mHolderPosition);
-                returnData.putExtra(IMAGE_ATTACHMENT_EXTRA, mImageAttachment);
-                setResult(RESULT_OK, returnData);
-                finish();
+                handleBackPressed();
+
                 return true;
         }
 
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        handleBackPressed();
+    }
+
+    private void handleBackPressed() {
+        Intent returnData = new Intent();
+        returnData.putExtra(HOLDER_POSITION_EXTRA, mHolderPosition);
+        returnData.putExtra(IMAGE_ATTACHMENT_EXTRA, mImageAttachment);
+        setResult(RESULT_OK, returnData);
+        supportFinishAfterTransition();     //When user backs out, transition back!
     }
 
 
