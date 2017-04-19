@@ -40,9 +40,6 @@ import ve.com.abicelis.remindy.model.reminder.Reminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
-import ve.com.abicelis.remindy.model.TasksByDoneDateComparator;
-import ve.com.abicelis.remindy.model.TasksByReminderDateComparator;
-import ve.com.abicelis.remindy.model.TasksByPlaceComparator;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.util.TaskHeaderUtil;
@@ -820,7 +817,7 @@ public class RemindyDAO {
                 break;
             case IMAGE:
                 values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_BLOB.getName(), ((ImageAttachment) attachment).getThumbnail());
-                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ImageAttachment) attachment).getFullImagePath());
+                values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((ImageAttachment) attachment).getImageFilename());
                 break;
             case TEXT:
                 values.put(RemindyContract.AttachmentTable.COLUMN_NAME_CONTENT_TEXT.getName(), ((TextAttachment) attachment).getText());

@@ -9,16 +9,17 @@ import ve.com.abicelis.remindy.enums.AttachmentType;
 public class ImageAttachment extends Attachment {
 
     private byte[] thumbnail;
-    private String fullImagePath;
+    private String imageFilename;
 
-    public ImageAttachment(byte[] thumbnail, String fullImagePath) {
+    public ImageAttachment() { /* Parameter-less constructor for image attachment creation */ }
+    public ImageAttachment(byte[] thumbnail, String imageFilename) {
         this.thumbnail = thumbnail;
-        this.fullImagePath = fullImagePath;
+        this.imageFilename = imageFilename;
     }
     public ImageAttachment(int id, int reminderId, byte[] thumbnail, String fullImagePath) {
         super(id, reminderId);
         this.thumbnail = thumbnail;
-        this.fullImagePath = fullImagePath;
+        this.imageFilename = fullImagePath;
     }
 
     @Override
@@ -34,10 +35,10 @@ public class ImageAttachment extends Attachment {
         this.thumbnail = thumbnail;
     }
 
-    public String getFullImagePath() {
-        return fullImagePath;
+    public String getImageFilename() {
+        return imageFilename;
     }
-    public void setFullImagePath(String fullImagePath) {
-        this.fullImagePath = fullImagePath;
+    public void setImageFilename(String imageFilename) {
+        this.imageFilename = imageFilename;
     }
 }
