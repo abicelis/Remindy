@@ -92,7 +92,7 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
         if(!mCurrent.getDescription().isEmpty())
             mDescription.setText(mCurrent.getDescription());
         else
-            mDescription.setText("-");
+            mDescription.setText("");
 
         if(current.getReminderType() == ReminderType.LOCATION_BASED && current.getReminder() != null) {
             mLocation.setText(((LocationBasedReminder)current.getReminder()).getPlace().getAddress());

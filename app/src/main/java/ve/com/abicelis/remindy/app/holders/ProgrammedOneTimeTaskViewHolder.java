@@ -100,7 +100,7 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
         if(!mCurrent.getDescription().isEmpty())
             mDescription.setText(mCurrent.getDescription());
         else
-            mDescription.setText("-");
+            mDescription.setText("");
 
         if(current.getReminderType() == ReminderType.ONE_TIME && current.getReminder() != null) {
             DateFormat df = SharedPreferenceUtil.getDateFormat(mFragment.getActivity());

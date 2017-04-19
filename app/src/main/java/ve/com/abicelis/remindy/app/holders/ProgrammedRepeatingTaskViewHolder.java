@@ -93,7 +93,7 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
         if(!mCurrent.getDescription().isEmpty())
             mDescription.setText(mCurrent.getDescription());
         else
-            mDescription.setText("-");
+            mDescription.setText("");
 
         if(current.getReminderType() == ReminderType.REPEATING && current.getReminder() != null) {
             mRepeat.setText(((RepeatingReminder)current.getReminder()).getRepeatText(mFragment.getActivity()));

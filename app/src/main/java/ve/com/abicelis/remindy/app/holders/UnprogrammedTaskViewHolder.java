@@ -87,7 +87,7 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
         if(!mCurrent.getDescription().isEmpty())
             mDescription.setText(mCurrent.getDescription());
         else
-            mDescription.setText("-");
+            mDescription.setText("");
 
         mItemDecoration.setVisibility(nextItemIsATask ? View.VISIBLE : View.INVISIBLE);
     }
