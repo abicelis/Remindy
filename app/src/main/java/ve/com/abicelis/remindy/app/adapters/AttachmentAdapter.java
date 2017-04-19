@@ -119,22 +119,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void deleteAttachment(int position) {            //Called from viewHolders when deleting an attachment
 
-        if(AttachmentType.AUDIO.equals(mAttachments.get(position).getType())) {
-            String filename = ((AudioAttachment)mAttachments.get(position)).getAudioFilename();
-
-            if(filename != null && !filename.isEmpty()) { //Delete file
-                File file = new File(FileUtil.getAudioAttachmentDir(mActivity), filename);
-                file.delete();
-            }
-        }
-
-        if(AttachmentType.IMAGE.equals(mAttachments.get(position).getType())) {
-            String filename = ((ImageAttachment)mAttachments.get(position)).getImageFilename();
-
-            if(filename != null && !filename.isEmpty()) { //Delete file
-                File file = new File(FileUtil.getImageAttachmentDir(mActivity), filename);
-                file.delete();
-            }
+        Attachment attachment = mAttachments.get(position);
+        switch (attachment.getType()) {
+            case AUDIO:
+                String audioFilename = ((AudioAttachment)attachment).getAudioFilename();
+                FileUtil.deleteAudioAttachment(mActivity, audioFilename);
+            case IMAGE:
+                String imageFilename = ((ImageAttachment)attachment).getImageFilename();
+                FileUtil.deleteImageAttachment(mActivity, imageFilename);
         }
 
         mAttachments.remove(position);
