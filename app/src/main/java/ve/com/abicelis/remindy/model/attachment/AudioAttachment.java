@@ -10,8 +10,7 @@ public class AudioAttachment extends Attachment {
 
     private String audioFilename;
 
-    public AudioAttachment() {      //Parameterless constructor for audio attachment creation
-    }
+    public AudioAttachment() { /* Parameter-less constructor for audio attachment creation */ }
     public AudioAttachment(String audioFilename) {
         this.audioFilename = audioFilename;
     }
