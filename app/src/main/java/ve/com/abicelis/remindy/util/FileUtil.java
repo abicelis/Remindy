@@ -91,9 +91,12 @@ public class FileUtil {
                 case AUDIO:
                     String audioFilename = ((AudioAttachment)attachment).getAudioFilename();
                     deleteAudioAttachment(activity, audioFilename);
+                    break;
+                
                 case IMAGE:
                     String imageFilename = ((ImageAttachment)attachment).getImageFilename();
                     deleteImageAttachment(activity, imageFilename);
+                    break;
             }
         }
     }
