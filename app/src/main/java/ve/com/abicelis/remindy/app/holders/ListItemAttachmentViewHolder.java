@@ -101,6 +101,8 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
 
             //TODO: checkbox shouldnt be disabled when cannot edit, instead db must be updated real-time when not "editing"
             mCheckBox.setEnabled(mCanEdit);
+            mCheckBox.setOnClickListener(this);
+
         }
     }
 
