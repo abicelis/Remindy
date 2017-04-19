@@ -430,7 +430,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                     break;
 
                 case IMAGE:
-                    //TODO: clear empty imageAttachments
+                    if (((ImageAttachment) attachment).getImageFilename() == null || ((ImageAttachment) attachment).getImageFilename().isEmpty())
+                        attachmentIterator.remove();
                     break;
 
                 case LIST:
