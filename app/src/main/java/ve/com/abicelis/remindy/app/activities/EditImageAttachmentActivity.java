@@ -101,8 +101,20 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
             mImage.setImageBitmap(mImageBackup);
         } else {
 
-            if(getIntent().hasExtra(HOLDER_POSITION_EXTRA)) {
+            if(getIntent().hasExtra(HOLDER_POSITION_EXTRA) && getIntent().hasExtra(IMAGE_ATTACHMENT_EXTRA)) {
                 mHolderPosition = getIntent().getIntExtra(HOLDER_POSITION_EXTRA, -1);
+                mImageAttachment = (ImageAttachment) getIntent().getSerializableExtra(IMAGE_ATTACHMENT_EXTRA);
+
+                if (mImageAttachment.getImageFilename() != null && !mImageAttachment.getImageFilename().isEmpty()) {
+                    mImageBackup = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
+                    mEditingExistingImageAttachment = true;
+                    mImage.setImageBitmap(mImageBackup);
+
+                } else {
+                    mImageAttachment = new ImageAttachment();
+                    mImageAttachment.setImageFilename(UUID.randomUUID().toString() + IMAGE_FILE_EXTENSION);
+                    handleImageCapture();
+                }
             } else {
                 BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
@@ -112,21 +124,9 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
                         finish();
                     }
                 };
-                Log.e(TAG, "Missing HOLDER_POSITION_EXTRA parameter in EditImageAttachmentActivity.");
+                Log.e(TAG, "Missing HOLDER_POSITION_EXTRA and/or IMAGE_ATTACHMENT_EXTRA parameters in EditImageAttachmentActivity.");
                 SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, callback);
                 finish();
-            }
-
-
-            if(getIntent().hasExtra(IMAGE_ATTACHMENT_EXTRA)) {
-                mImageAttachment = (ImageAttachment) getIntent().getSerializableExtra(IMAGE_ATTACHMENT_EXTRA);
-                mImageBackup = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
-                mEditingExistingImageAttachment = true;
-                mImage.setImageBitmap(mImageBackup);
-            } else {
-                mImageAttachment = new ImageAttachment();
-                mImageAttachment.setImageFilename(UUID.randomUUID().toString() + IMAGE_FILE_EXTENSION);
-                handleImageCapture();
             }
 
 //            mImageAttachment = new ImageAttachment(new byte[0], "09ce7135-86d6-4d93-bcc5-1fbff5651d0f.jpg");
