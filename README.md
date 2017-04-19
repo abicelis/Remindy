@@ -47,6 +47,7 @@ This Project uses external SDK's
 * [BetterPickers](https://github.com/code-troopers/android-betterpickers) - Datepicker library by code-troopers
 * [TransitionsEverywhere](https://github.com/andkulikov/Transitions-Everywhere) - Backported Transitions library by andkulikov
 * [FloatingActionButton](https://github.com/Clans/FloatingActionButton) - Custom Fab Button by Clans
+* [Image Cropper](https://github.com/ArthurHub/Android-Image-Cropper) - Image Cropping Library by ArthurHub
 
 ## Software used
 
