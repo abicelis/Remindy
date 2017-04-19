@@ -54,10 +54,6 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
     private int mPosition;
     private boolean mCanEdit;
 
-    private Uri mImageUri;
-    private String mImagePath = null;
-    private String mTempImagePath = null;
-
     public ImageAttachmentViewHolder(View itemView) {
         super(itemView);
 
