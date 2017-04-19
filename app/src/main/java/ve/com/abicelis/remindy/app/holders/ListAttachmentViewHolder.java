@@ -65,6 +65,7 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
         mCanEdit = canEdit;
 
         setUpRecyclerView();
+        mAdapter.triggerShowAttachmentHintListener();
     }
 
 
