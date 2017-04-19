@@ -1,37 +1,20 @@
 package ve.com.abicelis.remindy.app.holders;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.EditImageAttachmentActivity;
+import ve.com.abicelis.remindy.app.activities.ViewImageAttachmentActivity;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
-import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.ImageUtil;
-import ve.com.abicelis.remindy.util.PermissionUtil;
-import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 13/3/2017.
@@ -72,6 +55,7 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
 
         mContainer.setOnLongClickListener(this);
         mTapToAddContainer.setOnClickListener(this);
+        mImage.setOnClickListener(this);
 
         setupViewHolder();
 
@@ -105,11 +89,7 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
                 break;
 
             case R.id.item_attachment_image_content:
-                //TODO: build this activity to see image detail, where user can zoom in
-                //Intent viewImageFullscreenIntent = new Intent(mActivity, FUllScreenActivity.class);
-                //goToEditImageAttachmentActivity.putExtra(EditImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA, mCurrent);
-                //goToEditImageAttachmentActivity.putExtra(EditImageAttachmentActivity.HOLDER_POSITION_EXTRA, mPosition);
-                //mActivity.startActivity(viewImageFullscreenIntent);
+                launchImageViewAttachmentActivity();
                 break;
         }
     }
@@ -118,10 +98,10 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
     public boolean onLongClick(View view) {
         int id = view.getId();
         switch (id) {
-            case R.id.item_attachment_image_tap_to_add_container:
+            case R.id.item_attachment_image_container:
                     if(mCanEdit) {
                         CharSequence items[] = new CharSequence[] {
-                                mActivity.getResources().getString(R.string.dialog_image_attachment_options_replace),
+                                mActivity.getResources().getString(R.string.dialog_image_attachment_options_edit),
                                 mActivity.getResources().getString(R.string.dialog_image_attachment_options_delete)};
 
 
@@ -146,8 +126,10 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
 
 
     public void updateImageAttachment(ImageAttachment imageAttachment){
-        mCurrent = imageAttachment;
+        mCurrent.setThumbnail(imageAttachment.getThumbnail());
+        mCurrent.setImageFilename(imageAttachment.getImageFilename());
         setupViewHolder();
+        mAdapter.triggerShowAttachmentHintListener();
     }
 
     private void launchImageEditAttachmentActivity() {
@@ -155,6 +137,13 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
         goToEditImageAttachmentActivity.putExtra(EditImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA, mCurrent);
         goToEditImageAttachmentActivity.putExtra(EditImageAttachmentActivity.HOLDER_POSITION_EXTRA, mPosition);
         mActivity.startActivityForResult(goToEditImageAttachmentActivity, EditImageAttachmentActivity.EDIT_IMAGE_ATTACHMENT_REQUEST_CODE);
+    }
+
+    private void launchImageViewAttachmentActivity() {
+        Intent goToViewImageAttachmentActivity = new Intent(mActivity, ViewImageAttachmentActivity.class);
+        goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA, mCurrent);
+        goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, mPosition);
+        mActivity.startActivityForResult(goToViewImageAttachmentActivity, ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE);
     }
 
 }

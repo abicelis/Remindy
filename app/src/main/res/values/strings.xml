@@ -213,7 +213,8 @@
     <string name="activity_edit_image_attachment_snackbar_error_no_permissions">Please grant Remindy the required permissions</string>
     <string name="activity_edit_image_attachment_snackbar_error_loading_cropped_image">Could not load cropped image</string>
 
-
+    /* Activity View Image Attachment*/
+    <string name="activity_view_image_attachment_title">Image Attachment</string>
 
 
     /* Fragment Reminders */
@@ -325,7 +326,7 @@
     <string name="dialog_list_item_attachment_options_delete">Delete item</string>
 
     /* Image Attachment ViewHolder */
-    <string name="dialog_image_attachment_options_replace">Replace image</string>
+    <string name="dialog_image_attachment_options_edit">Edit image</string>
     <string name="dialog_image_attachment_options_delete">Delete attachment</string>
     <string name="image_attachment_snackbar_warning_no_permissons">This app needs camera permissions to continue</string>
 

@@ -43,6 +43,7 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.model.Task;
@@ -54,6 +55,7 @@ import ve.com.abicelis.remindy.model.attachment.ListAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListItemAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.util.ConversionUtil;
+import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.PermissionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
@@ -325,6 +327,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 .setPositiveButton(getResources().getString(R.string.activity_new_task_exit_dialog_positive),  new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        FileUtil.deleteAttachmentFiles(NewTaskActivity.this, mTask.getAttachments());
                         dialog.dismiss();
                         setResult(RESULT_CANCELED);       //Task was NOT created, set result to CANCELLED
                         finish();
@@ -339,6 +342,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 .create();
         dialog.show();
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -387,6 +392,16 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         if(requestCode == EditImageAttachmentActivity.EDIT_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
             int position = data.getIntExtra(EditImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
             ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(EditImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
+            if(position != -1) {
+                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
+                holder.updateImageAttachment(imageAttachment);
+            }
+        }
+
+        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on ViewImageAttachmentActivity
+        if(requestCode == ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
+            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
             if(position != -1) {
                 ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
                 holder.updateImageAttachment(imageAttachment);
@@ -473,5 +488,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_new_task_snackbar_error_saving, SnackbarUtil.SnackbarDuration.SHORT, null);
         }
     }
+
 
 }
