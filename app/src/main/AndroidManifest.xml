@@ -2,10 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ve.com.abicelis.remindy">
 
+    <!--FOR USING THE CAMERA-->
+    <uses-feature android:name="android.hardware.camera" />
+
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
 
 
     <application
@@ -39,8 +44,6 @@
         <activity
             android:name=".app.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-
-
         </activity>
 
         <activity
@@ -54,7 +57,7 @@
         </activity>
 
         <activity
-            android:name=".app.activities.ReminderExtrasActivity"
+            android:name=".app.activities.EditImageAttachmentActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
@@ -83,7 +86,22 @@
             android:theme="@style/AppPreferenceTheme">
         </activity>
 
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 
+
+
+        <!--FILE PROVIDER FOR CAMERA-->
+        <provider
+            android:authorities="ve.com.abicelis.remindy.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
 
         <!-- SERVICES -->
