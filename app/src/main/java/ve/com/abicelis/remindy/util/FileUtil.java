@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 import ve.com.abicelis.remindy.R;
 
@@ -52,4 +55,36 @@ public class FileUtil {
     public static File getAudioAttachmentDir(Activity activity) {
         return new File(activity.getExternalFilesDir(null), activity.getResources().getString(R.string.subdirectory_attachments_audio));
     }
+    public static File getImageAttachmentDir(Activity activity) {
+        return new File(activity.getExternalFilesDir(null), activity.getResources().getString(R.string.subdirectory_attachments_image));
+    }
+
+    public static void createDirIfNotExists(File directory) throws IOException, SecurityException  {
+        if (directory.mkdirs()){
+            File nomedia = new File(directory, ".nomedia");
+            nomedia.createNewFile();
+        }
+    }
+
+
+    /**
+     * Creates an empty file at the specified directory, with the given name if it doesn't already exist
+     *
+     */
+    public static File createNewFileIfNotExistsInDir(File directory, String fileName) throws IOException {
+        File file = new File(directory, fileName);
+        file.createNewFile();
+        return file;
+    }
+
+//    public static File createTempImageFileInDir(File directory, String fileExtension) throws IOException, SecurityException {
+//        if(fileExtension.toCharArray()[0] != '.')
+//            fileExtension = "." + fileExtension;
+//
+//        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String fileName = "TEMP_" + UUID.randomUUID().toString() + "_";
+//        File file = File.createTempFile(fileName, fileExtension, directory);
+//        return file;
+//    }
+
 }
