@@ -404,7 +404,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
     private void updateImageAttachmentThumbnail() {
         try {
             Bitmap thumbnail = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
-            thumbnail = ImageUtil.scaleBitmap(thumbnail, 120);
+            thumbnail = ImageUtil.scaleBitmap(thumbnail, 240);
             byte[] thumbnailBytes = ImageUtil.toByteArray(thumbnail);
             mImageAttachment.setThumbnail(thumbnailBytes);
         } catch (Exception e) {
