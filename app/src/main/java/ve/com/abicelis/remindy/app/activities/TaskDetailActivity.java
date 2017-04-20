@@ -24,19 +24,31 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.fragments.LocationBasedReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
+import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
+import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.model.attachment.Attachment;
+import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
+import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
+import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
+import ve.com.abicelis.remindy.model.attachment.ListAttachment;
+import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
+import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
@@ -54,6 +66,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private Task mTask;
     private int mPosition;
     private DateFormat mDateFormat;
+    private boolean mTaskDataUpdated = false;
 
     //UI
     private Toolbar mToolbar;
@@ -66,6 +79,12 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private TextView mReminderTitle;
     private LinearLayout mDoneDateContainer;
     private TextView mDoneDate;
+    private FloatingActionMenu mAttachmentsFabMenu;
+    private FloatingActionButton mAttachmentsFabList;
+    private FloatingActionButton mAttachmentsFabText;
+    private FloatingActionButton mAttachmentsFabLink;
+    private FloatingActionButton mAttachmentsFabImage;
+    private FloatingActionButton mAttachmentsFabAudio;
 
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
@@ -97,7 +116,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             SnackbarUtil.showSnackbar(mScrollviewContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_no_task, SnackbarUtil.SnackbarDuration.LONG, callback);
         }
 
-        //Get distance format preference
+        //Get date format preference
         mDateFormat = SharedPreferenceUtil.getDateFormat(getApplicationContext());
 
         mCategory = (ImageView) findViewById(R.id.activity_task_detail_category);
@@ -108,6 +127,18 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mDoneDateContainer = (LinearLayout) findViewById(R.id.activity_task_detail_done_date_container);
         mDoneDate = (TextView) findViewById(R.id.activity_task_detail_done_date);
 
+        mAttachmentsFabMenu = (FloatingActionMenu) findViewById(R.id.activity_task_detail_add_attachment);
+        mAttachmentsFabList = (FloatingActionButton) findViewById(R.id.activity_task_detail_add_list_attachment);
+        mAttachmentsFabText = (FloatingActionButton) findViewById(R.id.activity_task_detail_add_text_attachment);
+        mAttachmentsFabLink = (FloatingActionButton) findViewById(R.id.activity_task_detail_add_link_attachment);
+        mAttachmentsFabImage = (FloatingActionButton) findViewById(R.id.activity_task_detail_add_image_attachment);
+        mAttachmentsFabAudio = (FloatingActionButton) findViewById(R.id.activity_task_detail_add_audio_attachment);
+
+        mAttachmentsFabList.setOnClickListener(this);
+        mAttachmentsFabText.setOnClickListener(this);
+        mAttachmentsFabLink.setOnClickListener(this);
+        mAttachmentsFabImage.setOnClickListener(this);
+        mAttachmentsFabAudio.setOnClickListener(this);
 
         mCategory.setImageResource(mTask.getCategory().getIconRes());
         mTitle.setText(mTask.getTitle());
@@ -180,7 +211,27 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        supportFinishAfterTransition();     //When user backs out, transition back!
+
+        if(mTaskDataUpdated) {
+            try {
+
+                //Clean attachments
+                AttachmentUtil.cleanInvalidAttachments(mTask.getAttachments());
+
+                //Save changes
+                new RemindyDAO(this).updateTask(mTask);
+
+                //Return task position to TaskListFragment, and also notify edition!!
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, TaskListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
+                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                setResult(RESULT_OK, returnIntent);
+                supportFinishAfterTransition();     //When user backs out, transition back!
+
+            }catch (CouldNotUpdateDataException e) {
+                SnackbarUtil.showSnackbar(mScrollviewContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_updating_task, SnackbarUtil.SnackbarDuration.LONG, null);
+            }
+        }
     }
 
 
@@ -193,8 +244,13 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             mAttachmentsSubtitle.setVisibility(View.VISIBLE);
 
             mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), false);
-
+            mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), true);
+            mAdapter.setAttachmentDataUpdatedListener(new AttachmentAdapter.AttachmentDataUpdatedListener() {
+                @Override
+                public void onAttachmentDataUpdated() {
+                    mTaskDataUpdated = true;
+                }
+            });
             DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
             itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
             mRecyclerView.addItemDecoration(itemDecoration);
@@ -206,17 +262,51 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
 
 
+    private void addAttachment(Attachment attachment) {
+        mTaskDataUpdated = true;
+        mTask.addAttachment(attachment);
+
+        if(mAdapter == null)        //If recycler hasn't been instantiated (there were no attachments), set it up.
+            setUpRecyclerView();
+
+        if(mAdapter.getItemCount() == 1)
+            mAdapter.notifyDataSetChanged();
+        else
+            mAdapter.notifyItemInserted(mAdapter.getItemCount());
+    }
+
     @Override
     public void onClick(View v) {
+
         int id = v.getId();
-//        switch (id) {
-//            case R.id.activity_place_alias_address_edit:
-//                FragmentManager fm = getSupportFragmentManager();
-//                EditPlaceDialogFragment dialog = EditPlaceDialogFragment.newInstance(mPlace.getAlias(), mPlace.getAddress());
-//                dialog.setListener(this);
-//                dialog.show(fm, "EditPlaceDialogFragment");
-//        }
+        mAttachmentsFabMenu.close(true);
+
+        switch (id) {
+            case R.id.activity_task_detail_add_list_attachment:
+                addAttachment(new ListAttachment());
+                break;
+
+            case R.id.activity_task_detail_add_text_attachment:
+                addAttachment(new TextAttachment(""));
+                break;
+
+            case R.id.activity_task_detail_add_link_attachment:
+                addAttachment(new LinkAttachment(""));
+                break;
+
+            case R.id.activity_task_detail_add_image_attachment:
+                addAttachment(new ImageAttachment());
+                break;
+
+            case R.id.activity_task_detail_add_audio_attachment:
+                addAttachment(new AudioAttachment());
+                break;
+        }
+        //Scroll to added item
+        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
     }
+
+
 
 
 
@@ -254,6 +344,33 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on EditImageAttachmentActivity
+        if(requestCode == EditImageAttachmentActivity.EDIT_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra(EditImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
+            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(EditImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
+            if(position != -1) {
+                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
+                if(holder != null)
+                    holder.updateImageAttachment(imageAttachment);
+            }
+        }
+
+        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on ViewImageAttachmentActivity
+        if(requestCode == ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
+            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
+            if(position != -1) {
+                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
+                if(holder != null)
+                    holder.updateImageAttachment(imageAttachment);
+            }
+        }
     }
 
 
@@ -298,6 +415,5 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 .create();
         dialog.show();
     }
-
 
 }
