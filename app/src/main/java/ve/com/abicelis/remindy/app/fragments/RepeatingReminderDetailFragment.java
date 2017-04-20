@@ -62,7 +62,7 @@ public class RepeatingReminderDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_reminder_repeating, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail_reminder_repeating, container, false);
 
         mContainer = (LinearLayout) rootView.findViewById(R.id.fragment_reminder_repeating_container);
         mDateIcon = (ImageView) rootView.findViewById(R.id.fragment_reminder_repeating_date_icon);

@@ -61,7 +61,7 @@ public class OneTimeReminderDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_reminder_one_time, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail_reminder_one_time, container, false);
 
         mContainer = (LinearLayout) rootView.findViewById(R.id.fragment_reminder_one_time_container);
         mDateIcon = (ImageView) rootView.findViewById(R.id.fragment_reminder_one_time_date_icon);

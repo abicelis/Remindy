@@ -25,8 +25,6 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.List;
-
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.util.ConversionUtil;
@@ -75,7 +73,7 @@ public class LocationBasedReminderDetailFragment extends Fragment implements OnM
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_reminder_location_based, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail_reminder_location_based, container, false);
 
         mContainer = (LinearLayout) rootView.findViewById(R.id.fragment_reminder_location_based_container);
         mAddress = (TextView) rootView.findViewById(R.id.fragment_reminder_location_based_address);
