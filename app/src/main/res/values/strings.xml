@@ -32,6 +32,7 @@
     <string name="menu_activity_task_subtitle_attachments">Attachments</string>
     <string name="activity_task_snackbar_error_no_task">No task specified. Closing</string>
     <string name="activity_task_snackbar_error_deleting_task">Could not delete task</string>
+    <string name="activity_task_snackbar_error_updating_task">Could not update task</string>
     <string name="activity_task_snackbar_task_deleted_successfully">Task deleted successfully</string>
     <string name="fragment_location_based_reminder_detail_snackbar_error_no_reminder">No reminder specified. Closing</string>
 
@@ -405,6 +406,7 @@
 
     /*  Generic messages  */
     <string name="error_unexpected">Unexpected error occurred. Please report this error</string>
+    <string name="error_updating_attachment_data">Unexpected error while updating the attachment</string>
 
     /*  File subdirectories  */
     <string name="subdirectory_attachments_audio" translatable="false">attachments/audio</string>
