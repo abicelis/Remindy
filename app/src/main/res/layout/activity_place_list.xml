@@ -71,7 +71,7 @@
         android:layout_gravity="bottom|end"
         app:elevation="0dp"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/accent"
+        app:backgroundTint="@color/primary"
         android:src="@drawable/icon_add"/>
 
 </android.support.design.widget.CoordinatorLayout>
