@@ -38,9 +38,9 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private AttachmentDataUpdatedListener attachmentDataUpdatedListener;
     private boolean mRealTimeDataPersistence;
 
-    public AttachmentAdapter(Activity activity, List<Attachment> extras, boolean realTimeDataPersistence) {
+    public AttachmentAdapter(Activity activity, List<Attachment> attachments, boolean realTimeDataPersistence) {
         mActivity = activity;
-        mAttachments = extras;
+        mAttachments = attachments;
         mRealTimeDataPersistence = realTimeDataPersistence;
         mInflater = LayoutInflater.from(activity);
     }
@@ -49,8 +49,8 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        AttachmentType extraType = AttachmentType.values()[viewType];
-        switch (extraType) {
+        AttachmentType attachmentType = AttachmentType.values()[viewType];
+        switch (attachmentType) {
             case TEXT:
                 return new TextAttachmentViewHolder(mInflater.inflate(R.layout.list_item_attachment_text, parent, false));
             case LIST:

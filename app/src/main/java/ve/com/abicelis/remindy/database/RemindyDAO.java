@@ -446,7 +446,7 @@ public class RemindyDAO {
 
     /**
      * Deletes all Attachments linked to an Task, given the task's ID
-     * @param taskId The ID of the reminder whose extras will be deleted
+     * @param taskId The ID of the reminder whose attachments will be deleted
      */
     public boolean deleteAttachmentsOfTask(int taskId) throws CouldNotDeleteDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();

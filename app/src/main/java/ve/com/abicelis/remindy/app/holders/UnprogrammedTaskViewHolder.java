@@ -1,6 +1,5 @@
 package ve.com.abicelis.remindy.app.holders;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -11,14 +10,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
 import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.enums.AttachmentType;
-import ve.com.abicelis.remindy.enums.TaskCategory;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 
@@ -77,11 +74,11 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
 
         mCategoryIcon.setImageResource(mCurrent.getCategory().getIconRes());
 
-        mAttachmentList.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentLink.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentAudio.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentImage.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentText.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentList.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentLink.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentAudio.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentImage.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentText.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
 
         mTitle.setText(mCurrent.getTitle());
         if(!mCurrent.getDescription().isEmpty())
@@ -93,9 +90,9 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
     }
 
 
-    private boolean hasExtrasOfType(AttachmentType extraType) {
-        for (Attachment extra : mCurrent.getAttachments()) {
-            if(extra.getType().equals(extraType))
+    private boolean hasAttachmentsOfType(AttachmentType attachmentType) {
+        for (Attachment attachment : mCurrent.getAttachments()) {
+            if(attachment.getType().equals(attachmentType))
                 return true;
         }
         return false;

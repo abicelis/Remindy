@@ -162,14 +162,6 @@
 
 
 
-    /* Create/Edit Extras Activity */
-    //TODO: DELETE THIS
-    <string name="activity_reminder_extras_toolbar_title">Add Extras</string>
-    <string name="activity_reminder_on_back_saving_extras">Saving Extras&#8230;</string>
-
-    <string name="activity_reminder_extras_no_items">Add attachments by clicking the + button</string>
-
-
     /* New Task Activity */
     <string name="activity_new_task_toolbar_title">New Task</string>
     <string name="menu_activity_new_task_action_next">NEXT</string>

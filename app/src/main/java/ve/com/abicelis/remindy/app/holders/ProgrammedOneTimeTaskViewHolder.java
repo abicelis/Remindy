@@ -1,6 +1,5 @@
 package ve.com.abicelis.remindy.app.holders;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -11,10 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
@@ -23,12 +18,10 @@ import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderType;
-import ve.com.abicelis.remindy.exception.WrongReminderTypeException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
-import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 13/3/2017.
@@ -90,11 +83,11 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
 
         mCategoryIcon.setImageResource(mCurrent.getCategory().getIconRes());
 
-        mAttachmentList.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentLink.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentAudio.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentImage.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
-        mAttachmentText.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasExtrasOfType(AttachmentType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentList.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentLink.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentAudio.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.AUDIO) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentImage.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.IMAGE) ? R.color.icons_enabled : R.color.icons_disabled)));
+        mAttachmentText.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.TEXT) ? R.color.icons_enabled : R.color.icons_disabled)));
 
         mTitle.setText(mCurrent.getTitle());
         if(!mCurrent.getDescription().isEmpty())
@@ -115,9 +108,9 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
     }
 
 
-    private boolean hasExtrasOfType(AttachmentType extraType) {
-        for (Attachment extra : mCurrent.getAttachments()) {
-            if(extra.getType().equals(extraType))
+    private boolean hasAttachmentsOfType(AttachmentType attachmentType) {
+        for (Attachment attachment : mCurrent.getAttachments()) {
+            if(attachment.getType().equals(attachmentType))
                 return true;
         }
         return false;
