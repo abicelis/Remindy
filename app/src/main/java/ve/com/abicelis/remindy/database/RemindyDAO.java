@@ -456,6 +456,18 @@ public class RemindyDAO {
                 new String[]{String.valueOf(taskId)}) > 0;
     }
 
+    /**
+     * Deletes a single attachment, given its ID
+     * @param attachmentId The ID of the attachment to be deleted
+     */
+    public boolean deleteAttachment(int attachmentId) throws CouldNotDeleteDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        return db.delete(RemindyContract.AttachmentTable.TABLE_NAME,
+                RemindyContract.AttachmentTable._ID + " =?",
+                new String[]{String.valueOf(attachmentId)}) > 0;
+    }
+
 
     /**
      * Deletes the Reminder of type ReminderType associated to a Task
@@ -543,6 +555,27 @@ public class RemindyDAO {
     }
 
     /**
+     * Deletes previous attachments of a task and reinserts them
+     * @param task The Task whose attachments to delete and reinsert
+     */
+    public long[] updateAttachmentsOfTask(Task task) throws CouldNotUpdateDataException {
+        try {
+            deleteAttachmentsOfTask(task.getId());
+        } catch (CouldNotDeleteDataException e) {
+            throw new CouldNotUpdateDataException("Could not delete attachments while updating.", e.getCause());
+        }
+
+        long[] insertedRowIds;
+        try {
+            insertedRowIds = insertAttachmentsOfTask(task.getId(), task.getAttachments());
+        } catch (CouldNotInsertDataException e) {
+            throw new CouldNotUpdateDataException("Could not insert attachments while updating.", e.getCause());
+        }
+
+        return insertedRowIds;
+    }
+
+    /**
      * Updates the information stored about a List of Attachments
      * @param attachments The Attachments to update
      */
@@ -550,13 +583,24 @@ public class RemindyDAO {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
         long[] updatedRowIds = new long[attachments.size()];
 
-        for (int i = 0; i < attachments.size(); i++) {
+        for (int i = 0; i < attachments.size(); i++)
+            updatedRowIds[i] = updateAttachment(attachments.get(i));
 
-            updatedRowIds[i] = db.update(RemindyContract.AttachmentTable.TABLE_NAME,
-                    getValuesFromAttachment(attachments.get(i)),
+        return updatedRowIds;
+    }
+
+    /**
+     * Updates the information stored about an Attachment
+     * @param attachment The Attachment to update
+     */
+    public long updateAttachment(Attachment attachment) throws CouldNotUpdateDataException {
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+
+        long updatedRowIds = db.update(RemindyContract.AttachmentTable.TABLE_NAME,
+                    getValuesFromAttachment(attachment),
                     RemindyContract.AttachmentTable._ID + " =? ",
-                    new String[]{String.valueOf(attachments.get(i).getId())});
-        }
+                    new String[]{String.valueOf(attachment.getId())});
+
         return updatedRowIds;
     }
 
@@ -591,7 +635,7 @@ public class RemindyDAO {
     public long updateTask(Task task) throws CouldNotUpdateDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
-        updateAttachments(task.getAttachments());
+        updateAttachmentsOfTask(task);
 
         if(task.getReminderType() != ReminderType.NONE)
             updateReminder(task.getReminder());
