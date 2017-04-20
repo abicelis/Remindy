@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.util.Locale;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.dialogs.RecordAudioDialogFragment;
-import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.util.FileUtil;
 
@@ -44,7 +42,7 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
     private AttachmentAdapter mAdapter;
     private AudioAttachment mCurrent;
     private int mPosition;
-    private boolean mCanEdit;
+    private boolean mRealTimeDataPersistence;
 
     private MediaPlayer mPlayer;
     private File audioAttachmentDir;
@@ -71,7 +69,6 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         mContainer = (LinearLayout) itemView.findViewById(R.id.item_attachment_audio_container);
         mTapToAdd = (TextView) itemView.findViewById(R.id.item_attachment_audio_tap_to_add);
         mPlayerContainer = (LinearLayout) itemView.findViewById(R.id.item_attachment_audio_player_container);
-        //mRecord = (ImageView) itemView.findViewById(R.id.item_attachment_audio_record);
         mPlayPause = (ImageView) itemView.findViewById(R.id.item_attachment_audio_play_pause);
         mSeekBar = (SeekBar) itemView.findViewById(R.id.item_attachment_audio_seek);
         mSeekBar.setMax(SEEKBAR_MAX);
@@ -86,7 +83,6 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
                     mResumePlayingFlag = true;
                     pausePlaying();
                 }
-
             }
 
             @Override
@@ -108,26 +104,33 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
 
     }
 
-    public void setData(AttachmentAdapter adapter, Activity activity, AudioAttachment current, int position, boolean canEdit) {
+    public void setData(AttachmentAdapter adapter, Activity activity, AudioAttachment current, int position, boolean realTimeDataPersistence) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
-        mCanEdit = canEdit;
+        mRealTimeDataPersistence = realTimeDataPersistence;
         audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
         mTimeHandler = new Handler();
 
         mContainer.setOnLongClickListener(this);
         mPlayPause.setOnClickListener(this);
 
-        if(mCurrent.getAudioFilename() != null && !mCurrent.getAudioFilename().isEmpty()) {
-            setupAudioPlayer(true);
-        } else
-            setupAudioPlayer(false);
+        setupViewHolder();
+
+        if(mCurrent.getAudioFilename() == null || mCurrent.getAudioFilename().isEmpty())
+            showRecordAudioDialogFragment();
     }
 
-    private void setupAudioPlayer(boolean hasRecording) {
-        if(hasRecording) {
+    private void setupViewHolder() {
+        mPlayerContainer.setVisibility(View.GONE);
+        mTapToAdd.setVisibility(View.GONE);
+
+        if(mCurrent.getAudioFilename() == null || mCurrent.getAudioFilename().isEmpty()) {
+            mTapToAdd.setVisibility(View.VISIBLE);
+            mPlayerContainer.setVisibility(View.GONE);
+
+        } else {
             initMediaPlayer();
             mTapToAdd.setVisibility(View.GONE);
             mPlayerContainer.setVisibility(View.VISIBLE);
@@ -135,12 +138,9 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
             mElapsed.setText("00:00");
             mRemaining.setText(mRemainingTimeStr);
             mSeekBar.setProgress(0);
-        } else {
-            mTapToAdd.setVisibility(View.VISIBLE);
-            mPlayerContainer.setVisibility(View.GONE);
-            showRecordAudioDialogFragment();
         }
     }
+
     public void setListeners() {
         //Listeners set in setData()
     }
@@ -227,37 +227,35 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_audio_container:
-                if(mCanEdit) {
-                    pausePlaying();
-                    CharSequence items[] = new CharSequence[] {
-                            mActivity.getResources().getString(R.string.dialog_audio_attachment_options_replace),
-                            mActivity.getResources().getString(R.string.dialog_audio_attachment_options_delete)};
+                pausePlaying();
+                CharSequence items[] = new CharSequence[] {
+                        mActivity.getResources().getString(R.string.dialog_audio_attachment_options_replace),
+                        mActivity.getResources().getString(R.string.dialog_audio_attachment_options_delete)};
 
 
-                    AlertDialog dialog = new AlertDialog.Builder(mActivity)
-                            .setItems(items, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (which == 0) {
-                                        stopPlaying();
+                AlertDialog dialog = new AlertDialog.Builder(mActivity)
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    stopPlaying();
 
-                                        //Delete old audio
-                                        if(!mCurrent.getAudioFilename().isEmpty()) {
-                                            File audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
-                                            File audioFile = new File(audioAttachmentDir, mCurrent.getAudioFilename());
-                                            audioFile.delete();
-                                        }
-                                        showRecordAudioDialogFragment();
-                                    }else if(which == 1) {
-                                        mAdapter.deleteAttachment(mPosition);
+                                    //Delete old audio
+                                    if(!mCurrent.getAudioFilename().isEmpty()) {
+                                        File audioAttachmentDir = FileUtil.getAudioAttachmentDir(mActivity);
+                                        File audioFile = new File(audioAttachmentDir, mCurrent.getAudioFilename());
+                                        audioFile.delete();
                                     }
-
-
+                                    showRecordAudioDialogFragment();
+                                }else if(which == 1) {
+                                    mAdapter.deleteAttachment(mPosition);
                                 }
-                            })
-                            .create();
-                    dialog.show();
-                }
+
+
+                            }
+                        })
+                        .create();
+                dialog.show();
                 return true;
         }
 
@@ -266,16 +264,16 @@ public class AudioAttachmentViewHolder extends RecyclerView.ViewHolder implement
 
     private void showRecordAudioDialogFragment() {
         FragmentManager fm = ((AppCompatActivity) mActivity).getSupportFragmentManager();
-        RecordAudioDialogFragment recordDialog = RecordAudioDialogFragment.newInstance();
+        RecordAudioDialogFragment recordDialog = RecordAudioDialogFragment.newInstance(mCurrent);
         recordDialog.setListener(this);
         recordDialog.show(fm, "RecordAudioDialogFragment");
     }
 
     @Override
-    public void onFinishedRecording(String audioFileName) {
-        if(!audioFileName.isEmpty()) {
-            mCurrent.setAudioFilename(audioFileName);
-            setupAudioPlayer(true);
+    public void onFinishedRecording(AudioAttachment audioAttachment) {
+        if(!audioAttachment.getAudioFilename().isEmpty()) {
+            mCurrent.setAudioFilename(audioAttachment.getAudioFilename());
+            setupViewHolder();
             mAdapter.triggerShowAttachmentHintListener();
         }
     }

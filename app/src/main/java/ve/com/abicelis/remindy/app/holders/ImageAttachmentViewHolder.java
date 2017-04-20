@@ -37,7 +37,7 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
     //DATA
     private ImageAttachment mCurrent;
     private int mPosition;
-    private boolean mCanEdit;
+    private boolean mRealTimeDataPersistence;
 
     public ImageAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -48,12 +48,12 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
     }
 
 
-    public void setData(AttachmentAdapter adapter, Activity activity, ImageAttachment current, int position, boolean canEdit) {
+    public void setData(AttachmentAdapter adapter, Activity activity, ImageAttachment current, int position, boolean realTimeDataPersistence) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
-        mCanEdit = canEdit;
+        mRealTimeDataPersistence = realTimeDataPersistence;
 
         mContainer.setOnLongClickListener(this);
         mTapToAddContainer.setOnClickListener(this);
@@ -72,7 +72,6 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
         } else {
             mTapToAddContainer.setVisibility(View.GONE);
             mImage.setVisibility(View.VISIBLE);
-
             mImage.setImageBitmap(ImageUtil.getBitmap(mCurrent.getThumbnail()));
         }
     }
@@ -101,26 +100,23 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_image_container:
-                    if(mCanEdit) {
-                        CharSequence items[] = new CharSequence[] {
-                                mActivity.getResources().getString(R.string.dialog_image_attachment_options_edit),
-                                mActivity.getResources().getString(R.string.dialog_image_attachment_options_delete)};
+                CharSequence items[] = new CharSequence[] {
+                        mActivity.getResources().getString(R.string.dialog_image_attachment_options_edit),
+                        mActivity.getResources().getString(R.string.dialog_image_attachment_options_delete)};
 
 
-                        AlertDialog dialog = new AlertDialog.Builder(mActivity)
-                                .setItems(items, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (which == 0)
-                                            launchImageEditAttachmentActivity();
-                                        else if(which == 1)
-                                            mAdapter.deleteAttachment(mPosition);
-
-                                    }
-                                })
-                                .create();
-                        dialog.show();
-                    }
+                AlertDialog dialog = new AlertDialog.Builder(mActivity)
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0)
+                                    launchImageEditAttachmentActivity();
+                                else if(which == 1)
+                                    mAdapter.deleteAttachment(mPosition);
+                            }
+                        })
+                        .create();
+                dialog.show();
                 return true;
         }
         return false;
@@ -132,6 +128,9 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
         mCurrent.setImageFilename(imageAttachment.getImageFilename());
         setupViewHolder();
         mAdapter.triggerShowAttachmentHintListener();
+
+        if(mRealTimeDataPersistence)
+            mAdapter.triggerAttachmentDataUpdatedListener();
     }
 
     private void launchImageEditAttachmentActivity() {
@@ -150,7 +149,6 @@ public class ImageAttachmentViewHolder extends RecyclerView.ViewHolder implement
         Intent goToViewImageAttachmentActivity = new Intent(mActivity, ViewImageAttachmentActivity.class);
         goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA, mCurrent);
         goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, mPosition);
-        goToViewImageAttachmentActivity.putExtra(ViewImageAttachmentActivity.CAN_EDIT_EXTRA, mCanEdit);
         mActivity.startActivityForResult(goToViewImageAttachmentActivity, ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE, options.toBundle());
     }
 

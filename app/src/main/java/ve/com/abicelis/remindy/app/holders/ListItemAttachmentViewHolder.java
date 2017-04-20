@@ -2,12 +2,10 @@ package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
@@ -15,21 +13,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.File;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.adapters.ListItemAttachmentAdapter;
-import ve.com.abicelis.remindy.app.dialogs.EditLinkAttachmentDialogFragment;
 import ve.com.abicelis.remindy.app.dialogs.EditListItemAttachmentDialogFragment;
-import ve.com.abicelis.remindy.enums.AttachmentType;
-import ve.com.abicelis.remindy.exception.MalformedLinkException;
-import ve.com.abicelis.remindy.model.attachment.ListAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListItemAttachment;
 import ve.com.abicelis.remindy.util.ClipboardUtil;
-import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
  * Created by abice on 13/3/2017.
@@ -51,7 +40,7 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
     //DATA
     private ListItemAttachment mCurrent;
     private int mPosition;
-    private boolean mCanEdit;
+    private boolean mRealTimeDataPersistence;
 
     public ListItemAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -64,12 +53,12 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
     }
 
 
-    public void setData(ListItemAttachmentAdapter adapter, Activity activity, ListItemAttachment current, int position, boolean canEdit) {
+    public void setData(ListItemAttachmentAdapter adapter, Activity activity, ListItemAttachment current, int position, boolean realTimeDataPersistence) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
-        mCanEdit = canEdit;
+        mRealTimeDataPersistence = realTimeDataPersistence;
 
         setupViewHolder();
     }
@@ -99,10 +88,7 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
             mText.setText(mCurrent.getText());
             mCheckBox.setChecked(mCurrent.isChecked());
 
-            //TODO: checkbox shouldnt be disabled when cannot edit, instead db must be updated real-time when not "editing"
-            mCheckBox.setEnabled(mCanEdit);
             mCheckBox.setOnClickListener(this);
-
         }
     }
 
@@ -114,15 +100,10 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
         int id = view.getId();
         switch (id) {
             case R.id.list_item_attachment_list_item_more:
-                CharSequence items[];
-                if(mCanEdit) {
-                    items = new CharSequence[]{
+                CharSequence items[] = new CharSequence[]{
                             mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_copy),
                             mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_edit),
                             mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_delete)};
-                } else {
-                    items = new CharSequence[]{mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_copy)};
-                }
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setItems(items, new DialogInterface.OnClickListener() {
@@ -139,6 +120,8 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
 
                                     case 2:
                                         mAdapter.deleteItem(mPosition);
+                                        if(mRealTimeDataPersistence)
+                                            mAdapter.triggerAttachmentDataUpdatedListener();
                                         break;
                                 }
 
@@ -149,7 +132,10 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
                 break;
             case R.id.list_item_attachment_list_item_checkbox:
                 mCurrent.setChecked(!mCurrent.isChecked());
+                if(mRealTimeDataPersistence)
+                    mAdapter.triggerAttachmentDataUpdatedListener();
                 break;
+
             case R.id.item_attachment_list_container:
                 handleListItemEdit(true);
                 break;
@@ -165,6 +151,7 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
         dialog.show(fm, "EditLinkAttachmentDialogFragment");
     }
 
+
     @Override
     public void onFinishEditListItemAttachmentDialog(String text, boolean isANewItem) {
         mCurrent.setText(text);
@@ -172,5 +159,8 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
         setupViewHolder();
         if(isANewItem)
             mAdapter.insertNewBlankItem();
+
+        if(mRealTimeDataPersistence)
+            mAdapter.triggerAttachmentDataUpdatedListener();
     }
 }

@@ -5,12 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.io.File;
 import java.security.InvalidParameterException;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.activities.NewTaskActivity;
 import ve.com.abicelis.remindy.app.holders.AudioAttachmentViewHolder;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.app.holders.LinkAttachmentViewHolder;
@@ -18,11 +16,11 @@ import ve.com.abicelis.remindy.app.holders.ListAttachmentViewHolder;
 import ve.com.abicelis.remindy.app.holders.TextAttachmentViewHolder;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
+import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
+import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
-import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
-import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
@@ -37,12 +35,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Activity mActivity;
     private LayoutInflater mInflater;
     private ShowAttachmentHintListener showAttachmentHintListener;
-    private boolean mCanEdit;
+    private AttachmentDataUpdatedListener attachmentDataUpdatedListener;
+    private boolean mRealTimeDataPersistence;
 
-    public AttachmentAdapter(Activity activity, List<Attachment> extras, boolean canEdit) {
+    public AttachmentAdapter(Activity activity, List<Attachment> extras, boolean realTimeDataPersistence) {
         mActivity = activity;
         mAttachments = extras;
-        mCanEdit = canEdit;
+        mRealTimeDataPersistence = realTimeDataPersistence;
         mInflater = LayoutInflater.from(activity);
     }
 
@@ -79,30 +78,30 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         switch (current.getType()) {
             case TEXT:
                 TextAttachmentViewHolder tvh = (TextAttachmentViewHolder) holder;
-                tvh.setData(this, mActivity, (TextAttachment)current, position, mCanEdit);
+                tvh.setData(this, mActivity, (TextAttachment)current, position, mRealTimeDataPersistence);
                 tvh.setListeners();
                 break;
             case LIST:
                 ListAttachmentViewHolder listvh = (ListAttachmentViewHolder) holder;
-                listvh.setData(this, mActivity, (ListAttachment) current, position, mCanEdit);
+                listvh.setData(this, mActivity, (ListAttachment) current, position, mRealTimeDataPersistence);
                 listvh.setListeners();
                 break;
 
             case LINK:
                 LinkAttachmentViewHolder lvh = (LinkAttachmentViewHolder) holder;
-                lvh.setData(this, mActivity, (LinkAttachment)current, position, mCanEdit);
+                lvh.setData(this, mActivity, (LinkAttachment)current, position, mRealTimeDataPersistence);
                 lvh.setListeners();
                 break;
 
             case AUDIO:
                 AudioAttachmentViewHolder avh = (AudioAttachmentViewHolder) holder;
-                avh.setData(this, mActivity, (AudioAttachment) current, position, mCanEdit);
+                avh.setData(this, mActivity, (AudioAttachment) current, position, mRealTimeDataPersistence);
                 //avh.setListeners();
                 break;
 
             case IMAGE:
                 ImageAttachmentViewHolder ivh = (ImageAttachmentViewHolder) holder;
-                ivh.setData(this, mActivity, (ImageAttachment) current, position, mCanEdit);
+                ivh.setData(this, mActivity, (ImageAttachment) current, position, mRealTimeDataPersistence);
                 ivh.setListeners();
                 break;
 
@@ -124,6 +123,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case AUDIO:
                 String audioFilename = ((AudioAttachment)attachment).getAudioFilename();
                 FileUtil.deleteAudioAttachment(mActivity, audioFilename);
+                break;
             case IMAGE:
                 String imageFilename = ((ImageAttachment)attachment).getImageFilename();
                 FileUtil.deleteImageAttachment(mActivity, imageFilename);
@@ -133,8 +133,24 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
 
+        if(mRealTimeDataPersistence) {
+            triggerAttachmentDataUpdatedListener();
+        }
+
     }
 
+
+
+    public void setAttachmentDataUpdatedListener(AttachmentDataUpdatedListener listener) {
+        this.attachmentDataUpdatedListener = listener;
+    }
+    public void triggerAttachmentDataUpdatedListener() {       //Called from view holders when mRealTimeDataPersistence == true, to notify caller activity that the data has been updated
+        if(attachmentDataUpdatedListener != null)
+            attachmentDataUpdatedListener.onAttachmentDataUpdated();
+    }
+    public interface AttachmentDataUpdatedListener {
+        void onAttachmentDataUpdated();
+    }
 
 
     public void setShowAttachmentHintListener(ShowAttachmentHintListener listener) {
@@ -145,6 +161,6 @@ public class AttachmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             showAttachmentHintListener.onShowAttachmentHint();
     }
     public interface ShowAttachmentHintListener {
-        public void onShowAttachmentHint();
+        void onShowAttachmentHint();
     }
 }

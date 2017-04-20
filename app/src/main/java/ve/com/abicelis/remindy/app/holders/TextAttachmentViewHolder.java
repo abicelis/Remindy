@@ -1,29 +1,20 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.File;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
-import ve.com.abicelis.remindy.app.dialogs.EditPlaceDialogFragment;
 import ve.com.abicelis.remindy.app.dialogs.EditTextAttachmentDialogFragment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.util.ClipboardUtil;
-import ve.com.abicelis.remindy.util.FileUtil;
 
 /**
  * Created by abice on 13/3/2017.
@@ -41,7 +32,7 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
     //DATA
     private TextAttachment mCurrent;
     private int mPosition;
-    private boolean mCanEdit;
+    private boolean mRealTimeDataPersistence;
 
     public TextAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -51,12 +42,12 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
     }
 
 
-    public void setData(AttachmentAdapter adapter, Activity activity, TextAttachment current, int position, boolean canEdit) {
+    public void setData(AttachmentAdapter adapter, Activity activity, TextAttachment current, int position, boolean realTimeDataPersistence) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
-        mCanEdit = canEdit;
+        mRealTimeDataPersistence = realTimeDataPersistence;
 
         if(current.getText() != null && !current.getText().isEmpty())
             mText.setText(mCurrent.getText());
@@ -78,8 +69,8 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_text_container:
-                if(mCanEdit)
-                    handleTextEdit();
+                handleTextEdit();
+                break;
         }
     }
 
@@ -89,16 +80,10 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_text_container:
-                CharSequence items[];
-                if(mCanEdit) {
-                    items = new CharSequence[]{
+                CharSequence items[] = new CharSequence[]{
                             mActivity.getResources().getString(R.string.dialog_text_attachment_options_copy),
                             mActivity.getResources().getString(R.string.dialog_text_attachment_options_edit),
                             mActivity.getResources().getString(R.string.dialog_text_attachment_options_delete)};
-                } else
-                    items = new CharSequence[]{mActivity.getResources().getString(R.string.dialog_text_attachment_options_copy)};
-
-
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setItems(items, new DialogInterface.OnClickListener() {
@@ -139,6 +124,9 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         mText.setText(text);
         mCurrent.setText(text);
         mAdapter.triggerShowAttachmentHintListener();
+
+        if(mRealTimeDataPersistence)
+            mAdapter.triggerAttachmentDataUpdatedListener();
     }
 
 }

@@ -1,9 +1,6 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -37,7 +34,7 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
     //DATA
     private LinkAttachment mCurrent;
     private int mPosition;
-    private boolean mCanEdit;
+    private boolean mRealTimeDataPersistence;
 
     public LinkAttachmentViewHolder(View itemView) {
         super(itemView);
@@ -47,12 +44,12 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
     }
 
 
-    public void setData(AttachmentAdapter adapter, Activity activity, LinkAttachment current, int position, boolean canEdit) {
+    public void setData(AttachmentAdapter adapter, Activity activity, LinkAttachment current, int position, boolean realTimeDataPersistence) {
         mAdapter = adapter;
         mActivity = activity;
         mCurrent = current;
         mPosition = position;
-        mCanEdit = canEdit;
+        mRealTimeDataPersistence = realTimeDataPersistence;
 
         if(current.getLink() != null && !current.getLink().isEmpty())
             mLink.setText(mCurrent.getLink());
@@ -74,8 +71,8 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_link_container:
-                if(mCanEdit)
-                    handleLinkEdit();
+                handleLinkEdit();
+                break;
         }
     }
 
@@ -85,14 +82,10 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_link_container:
-                CharSequence items[];
-                if(mCanEdit) {
-                    items = new CharSequence[]{
+                CharSequence items[] = new CharSequence[]{
                             mActivity.getResources().getString(R.string.dialog_link_attachment_options_copy),
                             mActivity.getResources().getString(R.string.dialog_link_attachment_options_edit),
                             mActivity.getResources().getString(R.string.dialog_link_attachment_options_delete)};
-                } else
-                    items = new CharSequence[]{mActivity.getResources().getString(R.string.dialog_link_attachment_options_copy)};
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setItems(items, new DialogInterface.OnClickListener() {
@@ -102,7 +95,6 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
                                 switch (which) {
                                     case 0:
                                         ClipboardUtil.copyToClipboard(mActivity, mCurrent.getLink());
-
                                         break;
                                     case 1:
                                         handleLinkEdit();
@@ -138,5 +130,9 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
         } catch (MalformedLinkException e) {
             Toast.makeText(mActivity, mActivity.getResources().getString(R.string.dialog_edit_link_attachment_malformed_link), Toast.LENGTH_SHORT).show();
         }
+
+        if(mRealTimeDataPersistence)
+            mAdapter.triggerAttachmentDataUpdatedListener();
+
     }
 }
