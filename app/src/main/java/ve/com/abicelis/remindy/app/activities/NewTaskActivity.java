@@ -54,6 +54,7 @@ import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListItemAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
+import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.PermissionUtil;
@@ -185,7 +186,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private void setUpRecyclerView() {
 
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), true);
+        mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), false);
         mAdapter.setShowAttachmentHintListener(new AttachmentAdapter.ShowAttachmentHintListener() {
             @Override
             public void onShowAttachmentHint() {
@@ -423,49 +424,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mTask.setDescription(mTaskDescription.getText().toString());
 
 
-        //Clear empty attachments
-        Iterator<Attachment> attachmentIterator = mTask.getAttachments().iterator();
-        while(attachmentIterator.hasNext()) {
-
-            Attachment attachment = attachmentIterator.next();
-            switch (attachment.getType()) {
-                case LINK:
-                    if (((LinkAttachment) attachment).getLink() == null || ((LinkAttachment) attachment).getLink().isEmpty())
-                        attachmentIterator.remove();
-                    break;
-
-                case TEXT:
-                    if (((TextAttachment) attachment).getText() == null || ((TextAttachment) attachment).getText().isEmpty())
-                        attachmentIterator.remove();
-                    break;
-
-                case AUDIO:
-                    if (((AudioAttachment) attachment).getAudioFilename() == null || ((AudioAttachment) attachment).getAudioFilename().isEmpty())
-                        attachmentIterator.remove();
-                    break;
-
-                case IMAGE:
-                    if (((ImageAttachment) attachment).getImageFilename() == null || ((ImageAttachment) attachment).getImageFilename().isEmpty())
-                        attachmentIterator.remove();
-                    break;
-
-                case LIST:
-                    //Iterate Items, remove empty ones
-                    Iterator<ListItemAttachment> i = ((ListAttachment) attachment).getItems().iterator();
-                    while (i.hasNext()) {
-                        ListItemAttachment item = i.next();
-                        if (item.getText() == null || item.getText().isEmpty())
-                            i.remove();
-                    }
-
-                    //If List Attachment has no items, delete the whole thing.
-                    if (((ListAttachment) attachment).getItems().size() == 0) {
-                        attachmentIterator.remove();
-                    }
-                    break;
-            }
-        }
-
+        AttachmentUtil.cleanInvalidAttachments(mTask.getAttachments());
 
         try {
             RemindyDAO dao = new RemindyDAO(this);
