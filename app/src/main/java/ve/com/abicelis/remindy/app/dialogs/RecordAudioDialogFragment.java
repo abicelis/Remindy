@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.views.VisualizerView;
+import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.PermissionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
@@ -57,7 +58,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
     //DATA
     private boolean permissionToRecordAccepted = false;
     private int mState = STATE_IDLE;
-    private String mAudioFileName = null;
+    private AudioAttachment mAudioAttachment;
     private String mAudioFilePath = null;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
@@ -82,12 +83,11 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         // Use `newInstance` instead as shown below
     }
 
-    public static RecordAudioDialogFragment newInstance() {
+    public static RecordAudioDialogFragment newInstance(AudioAttachment audioAttachment) {
         RecordAudioDialogFragment frag = new RecordAudioDialogFragment();
-//        Bundle args = new Bundle();
-//        args.putString("alias", alias);
-//        args.putString("address", address);
-//        frag.setArguments(args);
+        Bundle args = new Bundle();
+        args.putSerializable("audioAttachment", audioAttachment);
+        frag.setArguments(args);
         return frag;
     }
 
@@ -112,12 +112,9 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
                              Bundle savedInstanceState) {
         setCancelable(false);
 
-//
-//        final String alias = getArguments().getString("alias");
-//        final String address = getArguments().getString("address");
+        mAudioAttachment = (AudioAttachment) getArguments().getSerializable("audioAttachment");
 
         View dialogView =  inflater.inflate(R.layout.dialog_record_audio, container);
-
 
         File audioAttachmentDir = FileUtil.getAudioAttachmentDir(getActivity());
         try {
@@ -126,16 +123,14 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
             Toast.makeText(getActivity(), "Problem!", Toast.LENGTH_SHORT).show();
         }
 
-        mAudioFileName = UUID.randomUUID().toString() + AUDIO_FILE_EXTENSION;
-        mAudioFilePath = new File(audioAttachmentDir, "/" + mAudioFileName).getAbsolutePath();
+        if (mAudioAttachment.getAudioFilename() == null || mAudioAttachment.getAudioFilename().isEmpty()) {
+            mAudioAttachment.setAudioFilename(UUID.randomUUID().toString() + AUDIO_FILE_EXTENSION);
+        }
+        mAudioFilePath = new File(audioAttachmentDir, "/" + mAudioAttachment.getAudioFilename()).getAbsolutePath();
 
-        Log.d(TAG, "FILENAME: " + mAudioFileName);
 
         //Check for permissions
         permissionToRecordAccepted = PermissionUtil.checkIfPermissionsAreGranted(getContext(), permissions) == null;
-//        permissionToRecordAccepted = (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED &&
-//                                        ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-
 
 
         mContainer = (RelativeLayout) dialogView.findViewById(R.id.dialog_record_audio_container);
@@ -283,7 +278,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
 
     private void handleDismissDialog() {
         if(mListener != null)
-            mListener.onFinishedRecording(mAudioFileName);
+            mListener.onFinishedRecording(mAudioAttachment);
         dismiss();
     }
 
@@ -356,6 +351,6 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
 
 
     public interface RecordAudioDialogFinishListener {
-        void onFinishedRecording(String audioFileName);
+        void onFinishedRecording(AudioAttachment audioAttachment);
     }
 }
