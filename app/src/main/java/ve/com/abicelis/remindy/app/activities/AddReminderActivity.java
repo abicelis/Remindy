@@ -22,8 +22,10 @@ import android.widget.Spinner;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.fragments.EditOneTimeReminderFragment;
 import ve.com.abicelis.remindy.app.fragments.EditRepeatingReminderFragment;
 import ve.com.abicelis.remindy.enums.ReminderType;
+import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.Reminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
@@ -96,15 +98,15 @@ public class AddReminderActivity extends AppCompatActivity {
 
 
     private void handleReminderTypeSelection(int position) {
-        position = ReminderType.REPEATING.ordinal();
-
         Bundle bundle = new Bundle();
-
-
         mReminderType = ReminderType.values()[position];
         switch (mReminderType) {
             case ONE_TIME:
-
+                mReminder = new OneTimeReminder();
+                mFragment = new EditOneTimeReminderFragment();
+                bundle.putSerializable(EditRepeatingReminderFragment.REMINDER_ARGUMENT, mReminder);
+                mFragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.activity_add_reminder_reminder_placeholder, mFragment).commit();
                 break;
 
             case REPEATING:
@@ -119,7 +121,11 @@ public class AddReminderActivity extends AppCompatActivity {
 
                 break;
             case NONE:
+                if(mFragment != null)
+                    getSupportFragmentManager().beginTransaction().remove(mFragment).commit();
+                mFragment = null;
                 mReminder = null;
+                break;
         }
     }
 
@@ -204,7 +210,8 @@ public class AddReminderActivity extends AppCompatActivity {
 
 
     private void updateReminderValues() {
-        ((AddReminderActivity.ReminderValueUpdater) mFragment).updateReminderValues();
+        if(mFragment != null)
+            ((AddReminderActivity.ReminderValueUpdater) mFragment).updateReminderValues();
     }
 
     private boolean checkReminderValues() {
@@ -218,6 +225,14 @@ public class AddReminderActivity extends AppCompatActivity {
                 return true;
 
             case ONE_TIME:
+                if( ((OneTimeReminder)mReminder).getDate() == null) {
+                    SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_add_reminder_one_time_snackbar_error_invalid_date, SnackbarUtil.SnackbarDuration.SHORT, null);
+                    return false;
+                }
+                if( ((OneTimeReminder)mReminder).getTime() == null) {
+                    SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_add_reminder_one_time_snackbar_error_invalid_time, SnackbarUtil.SnackbarDuration.SHORT, null);
+                    return false;
+                }
                 break;
 
             case REPEATING:

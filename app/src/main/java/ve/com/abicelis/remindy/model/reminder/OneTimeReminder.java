@@ -20,6 +20,7 @@ public class OneTimeReminder extends Reminder implements Serializable {
     private Calendar date;
     private Time time;
 
+    public OneTimeReminder() {} //Parameter-less constructor used when creating reminder
 
     public OneTimeReminder(@NonNull Calendar date, @NonNull Time time) {
         init(date, time);
