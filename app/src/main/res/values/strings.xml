@@ -201,6 +201,7 @@
 
     /* Add Reminder Activity */
     <string name="activity_add_reminder_title">Add Reminder</string>
+    <string name="activity_add_reminder_reminder_type">Reminder type</string>
     <string name="menu_activity_add_reminder_save">Save</string>
     <string name="activity_add_reminder_one_time_snackbar_error_invalid_date">Please add a valid date</string>
     <string name="activity_add_reminder_one_time_snackbar_error_invalid_time">Please add a valid time</string>
@@ -242,7 +243,10 @@
     <string name="fragment_edit_repeating_reminder_repeat_end_for_x_events_1">For</string>
     <string name="fragment_edit_repeating_reminder_repeat_end_for_x_events_2">event(s)</string>
 
-
+    //Edit Location-based reminder fragment
+    <string name="fragment_edit_location_based_reminder_place_title">Place</string>
+    <string name="fragment_edit_location_based_reminder_entering">Entering</string>
+    <string name="fragment_edit_location_based_reminder_exiting">Exiting</string>
 
 
 

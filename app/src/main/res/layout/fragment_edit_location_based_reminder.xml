@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/icon_place"
+                android:tint="@color/icons_enabled" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_edit_location_based_reminder_place_title"/>
+
+            <Spinner
+                android:id="@+id/fragment_edit_location_based_reminder_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/SpinnerStyle"/>
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/fragment_edit_location_based_reminder_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                map:cameraZoom="13"
+                map:mapType="normal"
+                map:liteMode="true"
+                tools:context="ve.com.abicelis.remindy.app.activities.AddReminderActivity" />
+
+            <TextView
+                android:id="@+id/fragment_edit_location_based_reminder_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+
+            <RadioGroup
+                android:id="@+id/fragment_edit_location_based_reminder_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/fragment_edit_location_based_reminder_entering"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:buttonTint="@color/primary"
+                    android:text="@string/fragment_edit_location_based_reminder_entering"
+                    />
+
+                <RadioButton
+                    android:id="@+id/fragment_edit_location_based_reminder_exiting"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:buttonTint="@color/primary"
+                    android:text="@string/fragment_edit_location_based_reminder_exiting"/>
+            </RadioGroup>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    
+</LinearLayout>

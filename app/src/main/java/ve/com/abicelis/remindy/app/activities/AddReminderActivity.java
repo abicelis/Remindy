@@ -22,9 +22,11 @@ import android.widget.Spinner;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.fragments.EditLocationBasedReminderFragment;
 import ve.com.abicelis.remindy.app.fragments.EditOneTimeReminderFragment;
 import ve.com.abicelis.remindy.app.fragments.EditRepeatingReminderFragment;
 import ve.com.abicelis.remindy.enums.ReminderType;
+import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.Reminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
@@ -118,8 +120,13 @@ public class AddReminderActivity extends AppCompatActivity {
                 break;
 
             case LOCATION_BASED:
-
+                mReminder = new LocationBasedReminder();
+                mFragment = new EditLocationBasedReminderFragment();
+                bundle.putSerializable(EditLocationBasedReminderFragment.REMINDER_ARGUMENT, mReminder);
+                mFragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.activity_add_reminder_reminder_placeholder, mFragment).commit();
                 break;
+
             case NONE:
                 if(mFragment != null)
                     getSupportFragmentManager().beginTransaction().remove(mFragment).commit();
