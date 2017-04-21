@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/activity_edit_image_attachment_button_container"
-        android:src="@drawable/icon_remindy"
         android:scaleType="fitCenter"/>
 
 
