@@ -7,10 +7,13 @@ import android.support.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Calendar;
 
+import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.model.Time;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 
 /**
  * Created by abice on 3/3/2017.
@@ -26,6 +29,8 @@ public class RepeatingReminder extends Reminder implements Serializable {
     private int repeatEndNumberOfEvents;
     private Calendar repeatEndDate;
 
+
+    public RepeatingReminder() {} //Parameter-less argument for Reminder creation
 
     public RepeatingReminder(@NonNull Calendar date, @NonNull Time time, @NonNull ReminderRepeatType repeatType, int repeatInterval,
                              @NonNull ReminderRepeatEndType repeatEndType, int repeatEndNumberOfEvents, @Nullable Calendar repeatEndDate) {
@@ -58,7 +63,39 @@ public class RepeatingReminder extends Reminder implements Serializable {
 
 
     public String getRepeatText(Context context) {
-        return context.getResources().getString(getRepeatType().getFriendlyNameRes()) + ", " + context.getResources().getString(getRepeatEndType().getFriendlyNameRes());
+        String result = context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_interval_every) + " ";
+        switch (getRepeatType()) {
+            case DAILY:
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_days);
+                break;
+            case WEEKLY:
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_weeks);
+                break;
+            case MONTHLY:
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_months);
+                break;
+            case YEARLY:
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_years);
+                break;
+        }
+
+        result += ", ";
+
+        switch (getRepeatEndType()) {
+            case FOREVER:
+                result  += context.getResources().getString(R.string.reminder_repeat_end_type_forever);
+                break;
+            case FOR_X_EVENTS:
+                result  += context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_end_for_x_events_1) + " " + getRepeatEndNumberOfEvents() + " " +
+                context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_end_for_x_events_2);
+                break;
+            case UNTIL_DATE:
+                DateFormat df = SharedPreferenceUtil.getDateFormat(context);
+                result  += context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_end_until_date) + " " + df.formatCalendar(getRepeatEndDate());
+                break;
+        }
+
+        return result;
     }
 
 
