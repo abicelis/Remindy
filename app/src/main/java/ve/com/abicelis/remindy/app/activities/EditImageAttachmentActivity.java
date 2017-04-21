@@ -261,7 +261,14 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
             case REQUEST_TAKE_PICTURE_PERMISSION:
                 for (int result : grantResults) {
                     if(result != PackageManager.PERMISSION_GRANTED) {
-                        SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_edit_image_attachment_snackbar_error_no_permissions, SnackbarUtil.SnackbarDuration.LONG, null);
+                        BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
+                                handleImageCapture();
+                            }
+                        };
+                        SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_edit_image_attachment_snackbar_error_no_permissions, SnackbarUtil.SnackbarDuration.SHORT, callback);
                         return;
                     }
                 }
