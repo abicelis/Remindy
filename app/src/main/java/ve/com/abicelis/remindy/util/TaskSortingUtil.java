@@ -26,7 +26,7 @@ import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
  * Created by abice on 26/3/2017.
  */
 
-public class TaskHeaderUtil {
+public class TaskSortingUtil {
 
     private CalendarPeriod periodLastYear;
     private CalendarPeriod periodLastMonth;
@@ -59,7 +59,7 @@ public class TaskHeaderUtil {
     private ArrayList<Task> tasksNextYear;
     private ArrayList<Task> tasksFuture;
 
-    public TaskHeaderUtil () {
+    public TaskSortingUtil() {
         periodLastYear = new CalendarPeriod(CalendarPeriodType.LAST_YEAR);
         periodLastMonth = new CalendarPeriod(CalendarPeriodType.LAST_MONTH);
         periodLastWeek = new CalendarPeriod(CalendarPeriodType.LAST_WEEK);
@@ -104,11 +104,11 @@ public class TaskHeaderUtil {
             for (Task current : tasks) {
 
                 if(current.getReminderType() == null)
-                    throw new NullPointerException("NULL ReminderType passed into TaskHeaderUtil.generateProgrammedTaskHeaderList()");
+                    throw new NullPointerException("NULL ReminderType passed into TaskSortingUtil.generateProgrammedTaskHeaderList()");
 
                 switch (current.getReminderType()) {
                     case NONE:
-                        throw new InvalidClassException("Wrong ReminderType passed into TaskHeaderUtil.generateProgrammedTaskHeaderList()");
+                        throw new InvalidClassException("Wrong ReminderType passed into TaskSortingUtil.generateProgrammedTaskHeaderList()");
                     case LOCATION_BASED:
                         tasksLocationBased.add(current);
                         break;
@@ -121,7 +121,7 @@ public class TaskHeaderUtil {
                         insertProgrammedTaskIntoBucket(current, ((RepeatingReminder)current.getReminder()).getDate());
                         break;
                     default:
-                        throw new InvalidParameterException("Unhandled ReminderType passed into TaskHeaderUtil.generateProgrammedTaskHeaderList()");
+                        throw new InvalidParameterException("Unhandled ReminderType passed into TaskSortingUtil.generateProgrammedTaskHeaderList()");
                 }
             }
 
@@ -204,7 +204,7 @@ public class TaskHeaderUtil {
             tasksNextWeek.add(task);
 
         else if (periodThisMonth.isInPeriod(taskDate))
-            tasksNextMonth.add(task);
+            tasksThisMonth.add(task);
 
         else if (periodNextMonth.isInPeriod(taskDate))
             tasksNextMonth.add(task);
@@ -236,7 +236,7 @@ public class TaskHeaderUtil {
             for (Task current : tasks) {
 
                 if(current.getReminderType() == null)
-                    throw new NullPointerException("NULL ReminderType passed into TaskHeaderUtil.generateProgrammedTaskHeaderList()");
+                    throw new NullPointerException("NULL ReminderType passed into TaskSortingUtil.generateProgrammedTaskHeaderList()");
 
                 insertDoneTaskIntoBucket(current, current.getDoneDate());
             }
@@ -306,7 +306,7 @@ public class TaskHeaderUtil {
             tasksLastWeek.add(task);
 
         else if (periodThisMonth.isInPeriod(taskDate))
-            tasksNextMonth.add(task);
+            tasksThisMonth.add(task);
 
         else if (periodLastMonth.isInPeriod(taskDate))
             tasksLastMonth.add(task);
@@ -399,7 +399,7 @@ public class TaskHeaderUtil {
                     break;
 
                 default:
-                    throw new InvalidParameterException("Unhandled ReminderType passed into TaskHeaderUtil.dumpTaskBucketIntoViewModelList()");
+                    throw new InvalidParameterException("Unhandled ReminderType passed into TaskSortingUtil.dumpTaskBucketIntoViewModelList()");
             }
         }
 

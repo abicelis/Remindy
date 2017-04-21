@@ -42,7 +42,7 @@ import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.Time;
-import ve.com.abicelis.remindy.util.TaskHeaderUtil;
+import ve.com.abicelis.remindy.util.TaskSortingUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
 /**
@@ -137,7 +137,7 @@ public class RemindyDAO {
         }
 
         //Generate List<TaskViewModel>
-        result = new TaskHeaderUtil().generateProgrammedTaskHeaderList(tasks, TaskSortType.PLACE, resources);
+        result = new TaskSortingUtil().generateProgrammedTaskHeaderList(tasks, TaskSortType.PLACE, resources);
 
         return result;
     }
@@ -181,7 +181,7 @@ public class RemindyDAO {
         }
 
         //Generate List<TaskViewModel>
-        result = new TaskHeaderUtil().generateProgrammedTaskHeaderList(tasks, sortType, resources);
+        result = new TaskSortingUtil().generateProgrammedTaskHeaderList(tasks, sortType, resources);
 
         return result;
     }
@@ -220,7 +220,7 @@ public class RemindyDAO {
         }
 
         //Generate List<TaskViewModel> This List will be sorted and grouped!
-        result = new TaskHeaderUtil().generateDoneTaskHeaderList(tasks, sortType, resources);
+        result = new TaskSortingUtil().generateDoneTaskHeaderList(tasks, sortType, resources);
 
         return result;
     }
