@@ -1,24 +1,19 @@
 package ve.com.abicelis.remindy.app.activities;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,22 +24,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.transitionseverywhere.Slide;
 import com.transitionseverywhere.TransitionManager;
 
-import java.util.Iterator;
+import java.io.Serializable;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.AttachmentType;
+import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskCategory;
+import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
@@ -52,12 +47,11 @@ import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListAttachment;
-import ve.com.abicelis.remindy.model.attachment.ListItemAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
+import ve.com.abicelis.remindy.model.reminder.Reminder;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
-import ve.com.abicelis.remindy.util.PermissionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -365,8 +359,9 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                         .setPositiveButton(getResources().getString(R.string.activity_new_task_next_dialog_positive),  new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO: Go to add-a-reminder activity
-                                Toast.makeText(NewTaskActivity.this, "Under construction!", Toast.LENGTH_SHORT).show();
+                                Intent goToAddReminderActivity = new Intent(getApplicationContext(), AddReminderActivity.class);
+                                //goToAddReminderActivity.putExtra(AddReminderActivity.TASK_EXTRA, mTask);
+                                startActivityForResult(goToAddReminderActivity, AddReminderActivity.ADD_REMINDER_REQUEST_CODE);
                                 dialog.dismiss();
                             }
                         })
@@ -407,6 +402,40 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
                 holder.updateImageAttachment(imageAttachment);
             }
+        }
+
+        //This request comes from AddReminderActivity
+        if(requestCode == AddReminderActivity.ADD_REMINDER_REQUEST_CODE) {
+            if(resultCode == RESULT_CANCELED) {
+                mTask.setReminderType(ReminderType.NONE);
+                mTask.setStatus(TaskStatus.UNPROGRAMMED);
+                mTask.setReminder(null);
+                return;
+            }
+
+            Serializable reminderObject = data.getSerializableExtra(AddReminderActivity.ADD_REMINDER_RETURN_REMINDER);
+            Reminder reminder = (reminderObject == null ? null : (Reminder) reminderObject);
+            mTask.setStatus(TaskStatus.PROGRAMMED);
+
+            switch (resultCode) {
+                case AddReminderActivity.RESULT_KEEP:
+                    saveReminder(reminder);
+                    break;
+                case AddReminderActivity.RESULT_SAVE:
+                    saveReminder(reminder);
+                    handleTaskSave();
+                    break;
+            }
+        }
+    }
+
+    private void saveReminder(Reminder reminder) {
+        if(reminder != null) {
+            mTask.setReminder(reminder);
+            mTask.setReminderType(reminder.getType());
+        } else {
+            mTask.setReminderType(ReminderType.NONE);
+            mTask.setReminder(null);
         }
     }
 
