@@ -1,12 +1,14 @@
 package ve.com.abicelis.remindy.model.reminder;
 
+import java.io.Serializable;
+
 import ve.com.abicelis.remindy.enums.ReminderType;
 
 /**
  * Created by abice on 24/3/2017.
  */
 
-public abstract class Reminder {
+public abstract class Reminder implements Serializable {
 
     private int id;
     private int taskId;
