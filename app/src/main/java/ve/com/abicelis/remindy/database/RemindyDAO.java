@@ -80,7 +80,7 @@ public class RemindyDAO {
 
                 //If Task !ReminderType.NONE, throw an error.
                 if(current.getReminderType() != ReminderType.NONE)
-                    throw new CouldNotGetDataException("Error, Task with TaskStatus=UNPROGRAMMED has not ReminderType=NONE");
+                    throw new CouldNotGetDataException("Error, found task with TaskStatus=UNPROGRAMMED with ReminderType != NONE");
 
                 tasks.add(current);
             }
