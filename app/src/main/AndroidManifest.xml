@@ -55,6 +55,10 @@
             android:name=".app.activities.NewTaskActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".app.activities.AddReminderActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <activity
             android:name=".app.activities.EditImageAttachmentActivity"

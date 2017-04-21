@@ -179,8 +179,6 @@
     <string name="activity_new_task_snackbar_save_successful">Task saved successfully</string>
     <string name="activity_new_task_snackbar_notice_attachments_options_hint">Long-press an attachment for more options</string>
 
-
-
     <string name="activity_new_task_exit_dialog_title">Discard task?</string>
     <string name="activity_new_task_exit_dialog_message">Go back and discard Task?</string>
     <string name="activity_new_task_exit_dialog_positive">Yes</string>
@@ -191,13 +189,53 @@
     <string name="activity_new_task_next_dialog_positive">Add Reminder</string>
     <string name="activity_new_task_next_dialog_negative">Save As-is</string>
 
-
-
     <string name="item_attachment_image_hint">Tap to add an image</string>
     <string name="item_attachment_list_hint">Tap to enter a list</string>
     <string name="item_attachment_text_hint">Tap to enter text</string>
     <string name="item_attachment_audio_hint">Tap to record</string>
     <string name="item_attachment_link_hint">Tap to enter a link</string>
+
+
+
+    /* Add Reminder Activity */
+    <string name="activity_add_reminder_title">Add Reminder</string>
+    <string name="menu_activity_add_reminder_save">Save</string>
+    <string name="activity_add_reminder_repeating_snackbar_error_invalid_date">Please add a valid date</string>
+    <string name="activity_add_reminder_repeating_snackbar_error_invalid_time">Please add a valid time</string>
+    <string name="activity_add_reminder_repeating_snackbar_error_invalid_interval">Please add a valid repeating interval</string>
+    <string name="activity_add_reminder_repeating_snackbar_error_invalid_number_events">Please add a valid number of events</string>
+    <string name="activity_add_reminder_repeating_snackbar_error_invalid_end_date">Please add a valid end date</string>
+    <string name="activity_add_reminder_repeating_snackbar_error_end_date_before_date">End date must be after reminder date</string>
+
+
+    <string name="fragment_edit_repeating_reminder_date_title">Date</string>
+    <string name="fragment_edit_repeating_reminder_date_hint">Enter a date</string>
+    <string name="fragment_edit_repeating_reminder_time_title">Time</string>
+    <string name="fragment_edit_repeating_reminder_time_hint">Enter a time</string>
+    <string name="fragment_edit_repeating_reminder_repeat_title">Repeat</string>
+    <string name="fragment_edit_repeating_reminder_repeat_interval_every">Every</string>
+    <string name="fragment_edit_repeating_reminder_repeat_interval_days">Day(s)</string>
+    <string name="fragment_edit_repeating_reminder_repeat_interval_weeks">Week(s)</string>
+    <string name="fragment_edit_repeating_reminder_repeat_interval_months">Month(s)</string>
+    <string name="fragment_edit_repeating_reminder_repeat_interval_years">Year(s)</string>
+    <string name="fragment_edit_repeating_reminder_repeat_end_until_date">Until</string>
+    <string name="fragment_edit_repeating_reminder_repeat_end_for_x_events_1">For</string>
+    <string name="fragment_edit_repeating_reminder_repeat_end_for_x_events_2">event(s)</string>
+    <string name="fragment_edit_repeating_reminder_exit_dialog_title">Go back?</string>
+    <string name="fragment_edit_repeating_reminder_exit_dialog_message">Go back and delete Reminder?</string>
+    <string name="fragment_edit_repeating_reminder_exit_dialog_positive">Yes</string>
+    <string name="fragment_edit_repeating_reminder_exit_dialog_negative">Cancel</string>
+
+    <string name="activity_add_reminder_save_dialog_title">Save task?</string>
+    <string name="activity_add_reminder_save_dialog_message">Save task and reminder?</string>
+    <string name="activity_add_reminder_save_dialog_positive">Save</string>
+    <string name="activity_add_reminder_save_dialog_negative">Cancel</string>
+
+    <string name="activity_add_reminder_back_dialog_title">Discard or keep?</string>
+    <string name="activity_add_reminder_back_dialog_message">Go back and discard or keep reminder?</string>
+    <string name="activity_add_reminder_back_dialog_positive">Keep</string>
+    <string name="activity_add_reminder_back_dialog_negative">Discard</string>
+
 
 
     /* Activity Edit Image Attachment*/
