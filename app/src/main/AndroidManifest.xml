@@ -42,12 +42,6 @@
         </activity>
 
         <activity
-            android:name=".app.activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
-
-        <activity
             android:name=".app.activities.NewTaskActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
