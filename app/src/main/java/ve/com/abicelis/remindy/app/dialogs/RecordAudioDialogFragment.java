@@ -9,9 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -56,7 +54,6 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
     private static String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     //DATA
-    private boolean permissionToRecordAccepted = false;
     private int mState = STATE_IDLE;
     private AudioAttachment mAudioAttachment;
     private String mAudioFilePath = null;
@@ -128,11 +125,6 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         }
         mAudioFilePath = new File(audioAttachmentDir, "/" + mAudioAttachment.getAudioFilename()).getAbsolutePath();
 
-
-        //Check for permissions
-        permissionToRecordAccepted = PermissionUtil.checkIfPermissionsAreGranted(getContext(), permissions) == null;
-
-
         mContainer = (RelativeLayout) dialogView.findViewById(R.id.dialog_record_audio_container);
         mFab = (FloatingActionButton) dialogView.findViewById(R.id.dialog_record_audio_fab);
         mFab.setOnClickListener(this);
@@ -159,11 +151,7 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
             case R.id.dialog_record_audio_fab:
                 switch (mState) {
                     case STATE_IDLE:
-                        if (permissionToRecordAccepted) {
-                            mState = STATE_RECORDING;
-                            startRecording();
-                        } else
-                            requestPermissions(permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+                        handleStartRecording();
                         break;
 
                     case STATE_RECORDING:
@@ -179,28 +167,36 @@ public class RecordAudioDialogFragment extends DialogFragment implements View.On
         }
     }
 
+    private void handleStartRecording() {
+
+        // Check for the recording permissions. If not granted yet, request permission.
+        String[] nonGrantedPermissions = PermissionUtil.checkIfPermissionsAreGranted(getActivity(), permissions);
+
+        if(nonGrantedPermissions == null) {
+            mState = STATE_RECORDING;
+            startRecording();
+        } else
+            requestPermissions(permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
             case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted = (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED);
+                for (int result : grantResults) {
+                    if(result != PackageManager.PERMISSION_GRANTED) {
+                        SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.dialog_record_audio_snackbar_error_no_permissions, SnackbarUtil.SnackbarDuration.LONG, null);
+                        return;
+                    }
+                }
+
+                //Permissions granted
+                mState = STATE_RECORDING;
+                startRecording();
                 break;
         }
-
-        if (permissionToRecordAccepted)
-            startRecording();
-        else  {
-            BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                @Override
-                public void onDismissed(Snackbar transientBottomBar, int event) {
-                    super.onDismissed(transientBottomBar, event);
-                    dismiss();
-                }
-            };
-            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.dialog_record_audio_snackbar_error_no_permissions, SnackbarUtil.SnackbarDuration.LONG, callback);
-        }
-
     }
 
     private void startRecording() {
