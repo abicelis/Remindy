@@ -19,7 +19,8 @@ import ve.com.abicelis.remindy.model.attachment.Attachment;
  * Created by abice on 13/3/2017.
  */
 
-public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+//TODO: DeleteThis
+public class AdvancedReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
 
     private TaskAdapter mAdapter;
     private Activity mActivity;
