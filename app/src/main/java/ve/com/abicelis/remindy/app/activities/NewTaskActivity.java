@@ -415,7 +415,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
             Serializable reminderObject = data.getSerializableExtra(AddReminderActivity.ADD_REMINDER_RETURN_REMINDER);
             Reminder reminder = (reminderObject == null ? null : (Reminder) reminderObject);
-            mTask.setStatus(TaskStatus.PROGRAMMED);
 
             switch (resultCode) {
                 case AddReminderActivity.RESULT_KEEP:
@@ -433,9 +432,13 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         if(reminder != null) {
             mTask.setReminder(reminder);
             mTask.setReminderType(reminder.getType());
+            mTask.setStatus(TaskStatus.PROGRAMMED);
+
         } else {
             mTask.setReminderType(ReminderType.NONE);
             mTask.setReminder(null);
+            mTask.setStatus(TaskStatus.UNPROGRAMMED);
+
         }
     }
 
