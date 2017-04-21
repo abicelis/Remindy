@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ve.com.abicelis.remindy.app.activities.MainActivity">
+    tools:context="ve.com.abicelis.remindy.app.activities.AddReminderActivity">
     <item
         android:id="@+id/menu_add_reminder_save"
         android:orderInCategory="100"
