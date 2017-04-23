@@ -81,6 +81,7 @@
                         android:id="@+id/activity_new_task_category"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        style="@style/Widget.AppCompat.Spinner.Underlined"
                         android:theme="@style/SpinnerStyle"/>
                 </LinearLayout>
 
