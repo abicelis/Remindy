@@ -172,7 +172,7 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 "(13,   'PROGRAMMED',       'Mock Task 13',     'Task 13 - One-time Reminder',      'SHOPPING',     'ONE_TIME',         -1)," +
                 "(14,   'PROGRAMMED',       'Mock Task 14',     'Task 14 - One-time Reminder',      'PERSONAL',     'ONE_TIME',         -1)," +
                 "(15,   'PROGRAMMED',       'Mock Task 15',     'Task 15 - One-time Reminder',      'HEALTH',       'ONE_TIME',         -1)," +
-                "(16,   'PROGRAMMED',       'Mock Task 16',     'Task 16 - Repeating Reminder',     'BUSINESS',     'REPEATING',        -1)," +
+                "(16,   'PROGRAMMED',       'Mock Task 16',     'Task 16 - Repeating Reminder',     'HEALTH',       'REPEATING',        -1)," +
                 "(17,   'PROGRAMMED',       'Mock Task 17',     'Task 17 - Repeating Reminder',     'BUSINESS',     'REPEATING',        -1)," +
                 "(18,   'PROGRAMMED',       'Mock Task 18',     'Task 18 - Repeating Reminder',     'SHOPPING',     'REPEATING',        -1)," +
                 "(19,   'PROGRAMMED',       'Mock Task 19',     'Task 19 - Location Reminder',      'REPAIRS',     'LOCATION_BASED',   -1)," +
@@ -242,8 +242,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName() +
                 ") VALUES " +
                 "(0,    16,     "+dateYesterday+",  "+time0600+", 'MONTHLY',    2,      'FOREVER',          -1,     -1)," +
-                "(1,    17,     "+dateNextWeek+",   "+time1800+", 'DAILY',      2,      'UNTIL_DATE',       -1,     "+dateNextWeek+")," +
-                "(2,    18,     "+dateNextYear+",   "+time1930+", 'WEEKLY',     1,      'FOR_X_EVENTS',     2,      -1);";
+                "(1,    17,     "+dateNextWeek+",   "+time1800+", 'DAILY',      2,      'UNTIL_DATE',       -1,     "+dateNextMonth+")," +
+                "(2,    18,     "+dateIn2Days+",    "+time1930+", 'WEEKLY',     1,      'FOR_X_EVENTS',     2,      -1);";
         sqLiteDatabase.execSQL(statement);
 
 
