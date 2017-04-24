@@ -1,53 +1,29 @@
 package ve.com.abicelis.remindy.app.activities;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.github.chrisbanes.photoview.PhotoView;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.transitionseverywhere.Rotate;
-import com.transitionseverywhere.TransitionManager;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.ImageUtil;
-import ve.com.abicelis.remindy.util.PermissionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
