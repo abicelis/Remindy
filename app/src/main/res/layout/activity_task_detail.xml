@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_task_detail_container"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical">
@@ -22,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:id="@+id/activity_task_detail_scrollview_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -138,19 +139,16 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/activity_task_detail_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     />
 
 
 
             </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
 
-
-
-        </ScrollView>
-        
         
         <com.github.clans.fab.FloatingActionMenu
             xmlns:fab="http://schemas.android.com/apk/res-auto"

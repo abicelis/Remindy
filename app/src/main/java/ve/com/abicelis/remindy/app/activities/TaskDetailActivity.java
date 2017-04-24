@@ -73,7 +73,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
     //UI
     private Toolbar mToolbar;
-    private ScrollView mScrollviewContainer;
+    private LinearLayout mContainer;
     private ImageView mCategory;
     private TextView mTitle;
     private TextView mDescription;
@@ -104,7 +104,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
 
-        mScrollviewContainer = (ScrollView) findViewById(R.id.activity_task_detail_scrollview_container);
+        mContainer = (LinearLayout) findViewById(R.id.activity_task_detail_container);
 
         if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION)) {
             mTask = (Task) getIntent().getSerializableExtra(TASK_TO_DISPLAY);
@@ -117,7 +117,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                     finish();
                 }
             };
-            SnackbarUtil.showSnackbar(mScrollviewContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_no_task, SnackbarUtil.SnackbarDuration.LONG, callback);
+            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_no_task, SnackbarUtil.SnackbarDuration.LONG, callback);
         }
 
         //Get date format preference
@@ -260,7 +260,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 supportFinishAfterTransition();     //When user backs out, transition back!
 
             }catch (CouldNotUpdateDataException e) {
-                SnackbarUtil.showSnackbar(mScrollviewContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_updating_task, SnackbarUtil.SnackbarDuration.LONG, null);
+                SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_updating_task, SnackbarUtil.SnackbarDuration.LONG, null);
             }
         }
     }
@@ -408,9 +408,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                                     finish();
                                 }
                             };
-                            SnackbarUtil.showSnackbar(mScrollviewContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_task_snackbar_task_deleted_successfully, SnackbarUtil.SnackbarDuration.SHORT, callback);
+                            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_task_snackbar_task_deleted_successfully, SnackbarUtil.SnackbarDuration.SHORT, callback);
                         }catch (CouldNotDeleteDataException e) {
-                            SnackbarUtil.showSnackbar(mScrollviewContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_deleting_task, SnackbarUtil.SnackbarDuration.LONG, null);
+                            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_deleting_task, SnackbarUtil.SnackbarDuration.LONG, null);
                         }
                         dialog.dismiss();
                     }
