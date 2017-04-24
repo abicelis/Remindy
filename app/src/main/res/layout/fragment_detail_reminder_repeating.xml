@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_reminder_repeating_container"
-
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical">
@@ -11,75 +10,166 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="6dp">
 
-        <ImageView
-            android:id="@+id/fragment_reminder_repeating_date_icon"
-            android:layout_width="@dimen/item_task_icon_size"
-            android:layout_height="@dimen/item_task_icon_size"
-            android:src="@drawable/icon_calendar"
-            android:tint="@color/gray_700" />
-
-        <TextView
-            android:id="@+id/fragment_reminder_repeating_date"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:text="6th May 2017"
-            android:textSize="@dimen/text_size_medium" />
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/fragment_reminder_repeating_date_icon"
+                android:layout_width="@dimen/item_task_icon_size"
+                android:layout_height="@dimen/item_task_icon_size"
+                android:src="@drawable/icon_calendar"
+                android:tint="@color/gray_700" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_detail_reminder_repeating_date_title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/fragment_reminder_repeating_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:text="May 23, 2017"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="6dp">
 
-        <ImageView
-            android:id="@+id/fragment_reminder_repeating_time_icon"
-            android:layout_width="@dimen/item_task_icon_size"
-            android:layout_height="@dimen/item_task_icon_size"
-            android:src="@drawable/icon_time"
-            android:tint="@color/gray_700" />
-
-        <TextView
-            android:id="@+id/fragment_reminder_repeating_time"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:text="19:00"
-            android:textSize="@dimen/text_size_medium" />
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/fragment_reminder_repeating_time_icon"
+                android:layout_width="@dimen/item_task_icon_size"
+                android:layout_height="@dimen/item_task_icon_size"
+                android:src="@drawable/icon_time"
+                android:tint="@color/gray_700" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_detail_reminder_repeating_time_title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/fragment_reminder_repeating_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:text="19:00"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
     </LinearLayout>
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="6dp">
 
-        <ImageView
-            android:id="@+id/fragment_reminder_repeating_repeat_icon"
-            android:layout_width="@dimen/item_task_icon_size"
-            android:layout_height="@dimen/item_task_icon_size"
-            android:src="@drawable/icon_repeat"
-            android:tint="@color/gray_700" />
-
-        <TextView
-            android:id="@+id/fragment_reminder_repeating_repeat"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:text="Repeating daily, every 9 days. Forever."
-            android:textSize="@dimen/text_size_medium" />
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/fragment_reminder_repeating_repeat_icon"
+                android:layout_width="@dimen/item_task_icon_size"
+                android:layout_height="@dimen/item_task_icon_size"
+                android:src="@drawable/icon_repeat"
+                android:tint="@color/gray_700" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_detail_reminder_repeating_repeat_title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/fragment_reminder_repeating_repeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:text="Repeating daily, every 9 days. Forever."
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_reminder_repeating_next_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/fragment_reminder_repeating_next_icon"
+                android:layout_width="@dimen/item_task_icon_size"
+                android:layout_height="@dimen/item_task_icon_size"
+                android:src="@drawable/icon_calendar"
+                android:tint="@color/gray_700" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_detail_reminder_repeating_next_title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/fragment_reminder_repeating_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:text="Apr 02, 2017"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
