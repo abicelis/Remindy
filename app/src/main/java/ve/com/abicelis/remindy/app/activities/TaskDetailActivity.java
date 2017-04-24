@@ -27,6 +27,8 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.util.Locale;
+
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
 import ve.com.abicelis.remindy.app.fragments.LocationBasedReminderDetailFragment;
@@ -52,6 +54,7 @@ import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
+import ve.com.abicelis.remindy.util.TaskUtil;
 
 /**
  * Created by abice on 30/3/2017.
@@ -78,6 +81,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private TextView mAttachmentsSubtitle;
     private TextView mReminderTitle;
     private LinearLayout mDoneDateContainer;
+    private ImageView mDoneDateIcon;
     private TextView mDoneDate;
     private FloatingActionMenu mAttachmentsFabMenu;
     private FloatingActionButton mAttachmentsFabList;
@@ -125,7 +129,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mReminderSubtitle = (TextView) findViewById(R.id.activity_task_detail_reminder_subtitle);
         mAttachmentsSubtitle = (TextView) findViewById(R.id.activity_task_detail_attachments_subtitle);
         mDoneDateContainer = (LinearLayout) findViewById(R.id.activity_task_detail_done_date_container);
+        mDoneDateIcon = (ImageView) findViewById(R.id.activity_task_detail_done_date_icon);
         mDoneDate = (TextView) findViewById(R.id.activity_task_detail_done_date);
+        mRecyclerView = (RecyclerView) findViewById(R.id.activity_task_detail_recycler);
 
         mAttachmentsFabMenu = (FloatingActionMenu) findViewById(R.id.activity_task_detail_add_attachment);
         mAttachmentsFabList = (FloatingActionButton) findViewById(R.id.activity_task_detail_add_list_attachment);
@@ -143,19 +149,22 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mCategory.setImageResource(mTask.getCategory().getIconRes());
         mTitle.setText(mTask.getTitle());
         mDescription.setText(mTask.getDescription());
+
         if(mTask.getDoneDate() != null) {
             mDoneDateContainer.setVisibility(View.VISIBLE);
             mDoneDate.setText(mDateFormat.formatCalendar(mTask.getDoneDate()));
+        } else {
+            if(TaskUtil.checkIfOverdue(mTask.getReminder())) {
+                mDoneDateIcon.setImageResource(R.drawable.icon_cross);
+                mDoneDateIcon.setColorFilter(ContextCompat.getColor(this, R.color.swipe_refresh_red));
+                mDoneDate.setText(String.format(Locale.getDefault(), getResources().getString(R.string.activity_task_overdue_since), mDateFormat.formatCalendar(TaskUtil.getReminderEndDate(mTask.getReminder()))));
+                mDoneDate.setTextColor(ContextCompat.getColor(this, R.color.swipe_refresh_red));
+                mDoneDateContainer.setVisibility(View.VISIBLE);
+            }
         }
 
         setUpToolbar();
-
         setUpReminderViews();
-
-
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.activity_task_detail_recycler);
-
         setUpRecyclerView();
     }
 
@@ -207,6 +216,28 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
 
+    private void setUpRecyclerView() {
+
+        if(mTask.getAttachments().size() > 0) {
+            mAttachmentsSubtitle.setVisibility(View.VISIBLE);
+
+            mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), true);
+            mAdapter.setAttachmentDataUpdatedListener(new AttachmentAdapter.AttachmentDataUpdatedListener() {
+                @Override
+                public void onAttachmentDataUpdated() {
+                    mTaskDataUpdated = true;
+                }
+            });
+            DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
+            itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
+            mRecyclerView.addItemDecoration(itemDecoration);
+
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -237,28 +268,6 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
 
 
-
-    private void setUpRecyclerView() {
-
-        if(mTask.getAttachments().size() > 0) {
-            mAttachmentsSubtitle.setVisibility(View.VISIBLE);
-
-            mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-            mAdapter = new AttachmentAdapter(this, mTask.getAttachments(), true);
-            mAdapter.setAttachmentDataUpdatedListener(new AttachmentAdapter.AttachmentDataUpdatedListener() {
-                @Override
-                public void onAttachmentDataUpdated() {
-                    mTaskDataUpdated = true;
-                }
-            });
-            DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
-            itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
-            mRecyclerView.addItemDecoration(itemDecoration);
-
-            mRecyclerView.setLayoutManager(mLayoutManager);
-            mRecyclerView.setAdapter(mAdapter);
-        }
-    }
 
 
 
