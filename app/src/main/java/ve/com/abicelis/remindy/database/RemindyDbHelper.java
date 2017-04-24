@@ -242,8 +242,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_END_DATE.getName() +
                 ") VALUES " +
                 "(0,    16,     "+dateYesterday+",  "+time0600+", 'MONTHLY',    2,      'FOREVER',          -1,     -1)," +
-                "(1,    17,     "+dateNextWeek+",   "+time1800+", 'DAILY',      2,      'UNTIL_DATE',       -1,     "+dateNextMonth+")," +
-                "(2,    18,     "+dateIn2Days+",    "+time1930+", 'WEEKLY',     1,      'FOR_X_EVENTS',     2,      -1);";
+                "(1,    17,     "+dateYesterday+",  "+time1800+", 'WEEKLY',     1,      'UNTIL_DATE',       -1,     "+dateNextMonth+")," +
+                "(2,    18,     "+dateLastWeek+",   "+time1930+", 'DAILY',      1,      'FOR_X_EVENTS',      2,      -1);";
         sqLiteDatabase.execSQL(statement);
 
 
