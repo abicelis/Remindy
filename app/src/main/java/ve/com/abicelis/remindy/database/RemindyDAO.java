@@ -42,7 +42,7 @@ import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.Time;
-import ve.com.abicelis.remindy.util.TaskSortingUtil;
+import ve.com.abicelis.remindy.util.sorting.TaskSortingUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
 /**
