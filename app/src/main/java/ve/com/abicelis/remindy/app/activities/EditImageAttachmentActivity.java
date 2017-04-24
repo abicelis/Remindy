@@ -54,6 +54,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
     public static final String TAG = EditImageAttachmentActivity.class.getSimpleName();
     public static final String IMAGE_FILE_EXTENSION = ".jpg";
     private static final int IMAGE_COMPRESSION_PERCENTAGE = 30;
+    private static final int THUMBNAIL_COMPRESSION_PERCENTAGE = 60;
     private static final int REQUEST_IMAGE_CAPTURE = 123;
 
 
@@ -411,8 +412,8 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
     private void updateImageAttachmentThumbnail() {
         try {
             Bitmap thumbnail = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
-            thumbnail = ImageUtil.scaleBitmap(thumbnail, 240);
-            byte[] thumbnailBytes = ImageUtil.toByteArray(thumbnail);
+            thumbnail = ImageUtil.scaleBitmap(thumbnail, 480);
+            byte[] thumbnailBytes = ImageUtil.toCompressedByteArray(thumbnail, THUMBNAIL_COMPRESSION_PERCENTAGE);
             mImageAttachment.setThumbnail(thumbnailBytes);
         } catch (Exception e) {
             Log.e(TAG, "There was a problem updating the thumbnail");
