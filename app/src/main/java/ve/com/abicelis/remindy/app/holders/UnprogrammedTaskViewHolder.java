@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
-import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
-import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
+import ve.com.abicelis.remindy.app.adapters.HomeAdapter;
+import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
@@ -25,7 +25,7 @@ import ve.com.abicelis.remindy.model.attachment.Attachment;
 
 public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private TaskAdapter mAdapter;
+    private HomeAdapter mAdapter;
     private Fragment mFragment;
 
     //UI
@@ -66,7 +66,7 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
     }
 
 
-    public void setData(TaskAdapter adapter, Fragment fragment, Task current, int position, boolean nextItemIsATask) {
+    public void setData(HomeAdapter adapter, Fragment fragment, Task current, int position, boolean nextItemIsATask) {
         mAdapter = adapter;
         mFragment = fragment;
         mCurrent = current;
@@ -115,8 +115,8 @@ public class UnprogrammedTaskViewHolder extends RecyclerView.ViewHolder implemen
 
                 Intent openTaskDetailActivity = new Intent(mFragment.getActivity(), TaskDetailActivity.class);
                 openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_TO_DISPLAY, mCurrent);
-                openTaskDetailActivity.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mReminderPosition);
-                mFragment.startActivityForResult(openTaskDetailActivity, TaskListFragment.TASK_DETAIL_REQUEST_CODE, options.toBundle());
+                openTaskDetailActivity.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mReminderPosition);
+                mFragment.startActivityForResult(openTaskDetailActivity, HomeListFragment.TASK_DETAIL_REQUEST_CODE, options.toBundle());
                 break;
         }
     }

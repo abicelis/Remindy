@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
+import ve.com.abicelis.remindy.app.adapters.HomeAdapter;
 
 /**
  * Created by abice on 14/3/2017.
@@ -19,7 +19,7 @@ public class TaskHeaderViewHolder extends RecyclerView.ViewHolder {
     private TextView mHeaderTitle;
 
     //DATA
-    private TaskAdapter mAdapter;
+    private HomeAdapter mAdapter;
     private Fragment mFragment;
     private int mPosition;
 
@@ -29,7 +29,7 @@ public class TaskHeaderViewHolder extends RecyclerView.ViewHolder {
         mHeaderTitle = (TextView) itemView.findViewById(R.id.item_task_header_title);
     }
 
-    public void setData(TaskAdapter adapter, Fragment fragment, String title, boolean headerTitleRed, int position) {
+    public void setData(HomeAdapter adapter, Fragment fragment, String title, boolean headerTitleRed, int position) {
         mAdapter = adapter;
         mFragment = fragment;
         mPosition = position;

@@ -1,28 +1,24 @@
 package ve.com.abicelis.remindy.app.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.dialogs.RecordAudioDialogFragment;
-import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
-import ve.com.abicelis.remindy.app.adapters.TasksViewPagerAdapter;
+import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
+import ve.com.abicelis.remindy.app.adapters.HomeViewPagerAdapter;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
@@ -41,13 +37,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     //UI
     private ViewPager mViewpager;
-    private TasksViewPagerAdapter mTasksViewPagerAdapter;
+    private HomeViewPagerAdapter mHomeViewPagerAdapter;
     private TabLayout mTabLayout;
     private FloatingActionButton mFab;
-    private TaskListFragment mUnprogrammedTasksListFragment;
-    private TaskListFragment mLocationBasedTasksListFragment;
-    private TaskListFragment mProgrammedTasksListFragment;
-    private TaskListFragment mDoneTasksListFragment;
+    private HomeListFragment mUnprogrammedTasksListFragment;
+    private HomeListFragment mLocationBasedTasksListFragment;
+    private HomeListFragment mProgrammedTasksListFragment;
+    private HomeListFragment mDoneTasksListFragment;
 
     //DATA
     private List<String> titleList = new ArrayList<>();
@@ -84,25 +80,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupViewPagerAndTabLayout() {
 
-        mUnprogrammedTasksListFragment = new TaskListFragment();
-        mLocationBasedTasksListFragment = new TaskListFragment();
-        mProgrammedTasksListFragment = new TaskListFragment();
-        mDoneTasksListFragment = new TaskListFragment();
+        mUnprogrammedTasksListFragment = new HomeListFragment();
+        mLocationBasedTasksListFragment = new HomeListFragment();
+        mProgrammedTasksListFragment = new HomeListFragment();
+        mDoneTasksListFragment = new HomeListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.UNPROGRAMMED);
+        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.UNPROGRAMMED);
         mUnprogrammedTasksListFragment.setArguments(bundle);
 
         bundle = new Bundle();
-        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.LOCATION_BASED);
+        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.LOCATION_BASED);
         mLocationBasedTasksListFragment.setArguments(bundle);
 
         bundle = new Bundle();
-        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.PROGRAMMED);
+        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.PROGRAMMED);
         mProgrammedTasksListFragment.setArguments(bundle);
 
         bundle = new Bundle();
-        bundle.putSerializable(TaskListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.DONE);
+        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.DONE);
         mDoneTasksListFragment.setArguments(bundle);
 
 
@@ -124,8 +120,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //Setup adapter, viewpager and tablayout
-        mTasksViewPagerAdapter = new TasksViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
-        mViewpager.setAdapter(mTasksViewPagerAdapter);
+        mHomeViewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
+        mViewpager.setAdapter(mHomeViewPagerAdapter);
         mViewpager.setCurrentItem(1);     //Start at page 2
         mTabLayout.setupWithViewPager(mViewpager);
     }
@@ -184,19 +180,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                 switch (rt) {
                     case NONE:
-                        mTasksViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();
+                        mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();
                         break;
 
                     case LOCATION_BASED:
-                        mTasksViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();          //Location based tasks will always be in tab #1
+                        mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();          //Location based tasks will always be in tab #1
                         break;
 
                     case ONE_TIME:
                     case REPEATING:
                         if (mShowLocationBasedTasksInOwnViewPagerTab)
-                            mTasksViewPagerAdapter.getRegisteredFragment(2).refreshRecyclerView();      //These tasks are in tab 2.
+                            mHomeViewPagerAdapter.getRegisteredFragment(2).refreshRecyclerView();      //These tasks are in tab 2.
                         else
-                            mTasksViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();      //Otherwise refresh tab 1, where all programmed tasks are.
+                            mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();      //Otherwise refresh tab 1, where all programmed tasks are.
                         break;
                 }
             } else {

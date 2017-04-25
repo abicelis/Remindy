@@ -18,15 +18,13 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.InvalidClassException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.adapters.TaskAdapter;
+import ve.com.abicelis.remindy.app.adapters.HomeAdapter;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.TaskSortType;
-import ve.com.abicelis.remindy.enums.TaskViewModelType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.model.Task;
@@ -40,7 +38,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by abice on 13/3/2017.
  */
 
-public class TaskListFragment extends Fragment {
+public class HomeListFragment extends Fragment {
 
     public static final String TASK_TYPE_TO_DISPLAY = "TASK_TYPE_TO_DISPLAY";
 
@@ -60,7 +58,7 @@ public class TaskListFragment extends Fragment {
     //UI
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
-    private TaskAdapter mAdapter;
+    private HomeAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefresh;
     private RelativeLayout mNoItemsContainer;
 
@@ -82,11 +80,11 @@ public class TaskListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_home_list, container, false);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_task_list_recycler);
-        mSwipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.fragment_task_list_swipe_refresh);
-        mNoItemsContainer = (RelativeLayout) rootView.findViewById(R.id.fragment_task_list_no_items_container);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_home_list_recycler);
+        mSwipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.fragment_home_list_swipe_refresh);
+        mNoItemsContainer = (RelativeLayout) rootView.findViewById(R.id.fragment_home_list_no_items_container);
 
         setUpRecyclerView();
         setUpSwipeRefresh();
@@ -120,7 +118,7 @@ public class TaskListFragment extends Fragment {
     private void setUpRecyclerView() {
 
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mAdapter = new TaskAdapter(this, mTasks);
+        mAdapter = new HomeAdapter(this, mTasks);
 
         //DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
         //itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));

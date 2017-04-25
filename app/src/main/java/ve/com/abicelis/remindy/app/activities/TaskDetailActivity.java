@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +30,10 @@ import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
+import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
 import ve.com.abicelis.remindy.app.fragments.LocationBasedReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
-import ve.com.abicelis.remindy.app.fragments.TaskListFragment;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.DateFormat;
@@ -106,9 +105,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
         mContainer = (LinearLayout) findViewById(R.id.activity_task_detail_container);
 
-        if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION)) {
+        if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION)) {
             mTask = (Task) getIntent().getSerializableExtra(TASK_TO_DISPLAY);
-            mPosition = getIntent().getIntExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, -1);
+            mPosition = getIntent().getIntExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, -1);
         } else {
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override
@@ -252,10 +251,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 //Save changes
                 new RemindyDAO(this).updateTask(mTask);
 
-                //Return task position to TaskListFragment, and also notify edition!!
+                //Return task position to HomeListFragment, and also notify edition!!
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, TaskListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
-                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
+                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
                 setResult(RESULT_OK, returnIntent);
                 supportFinishAfterTransition();     //When user backs out, transition back!
 
@@ -339,10 +338,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
             case R.id.menu_task_edit:
                 Toast.makeText(this, "Edit!", Toast.LENGTH_SHORT).show();
-                //TODO: remember to set  TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION and TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE
+                //TODO: remember to set  HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION and HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE
 //                Intent returnIntent = new Intent();
-//                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, TaskListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
-//                returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+//                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
+//                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
 //                setResult(RESULT_OK, returnIntent);
 //                finish();
 
@@ -400,10 +399,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                                 public void onDismissed(Snackbar transientBottomBar, int event) {
                                     super.onDismissed(transientBottomBar, event);
 
-                                    //Return task position to TaskListFragment, and also notify deletion
+                                    //Return task position to HomeListFragment, and also notify deletion
                                     Intent returnIntent = new Intent();
-                                    returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, TaskListFragment.TASK_DETAIL_RETURN_ACTION_DELETED);
-                                    returnIntent.putExtra(TaskListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                                    returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, HomeListFragment.TASK_DETAIL_RETURN_ACTION_DELETED);
+                                    returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
                                     setResult(RESULT_OK, returnIntent);
                                     finish();
                                 }

@@ -22,14 +22,14 @@ import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
  * Created by abice on 13/3/2017.
  */
 
-public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     //DATA
     private List<TaskViewModel> mTasks;
     private LayoutInflater mInflater;
     private Fragment mFragment;
 
-    public TaskAdapter(Fragment fragment, List<TaskViewModel> tasks) {
+    public HomeAdapter(Fragment fragment, List<TaskViewModel> tasks) {
         mTasks = tasks;
         mFragment = fragment;
         mInflater = LayoutInflater.from(fragment.getActivity());
@@ -58,7 +58,7 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case LOCATION_BASED_REMINDER:
                 return new ProgrammedLocationBasedTaskViewHolder(mInflater.inflate(R.layout.list_item_task_programmed_location_based, parent, false));
             default:
-                throw new InvalidParameterException("Wrong viewType passed to onCreateViewHolder in TaskAdapter");
+                throw new InvalidParameterException("Wrong viewType passed to onCreateViewHolder in HomeAdapter");
         }
     }
 
@@ -103,7 +103,7 @@ public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 break;
 
             default:
-                throw new InvalidParameterException("Wrong viewType passed to onBindViewHolder in TaskAdapter");
+                throw new InvalidParameterException("Wrong viewType passed to onBindViewHolder in HomeAdapter");
         }
 
     }
