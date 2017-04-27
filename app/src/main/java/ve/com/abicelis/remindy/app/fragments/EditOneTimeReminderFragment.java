@@ -16,17 +16,18 @@ import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFra
 import java.util.Calendar;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.activities.AddReminderActivity;
+import ve.com.abicelis.remindy.app.interfaces.TaskDataInterface;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
+import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 
 /**
  * Created by abice on 20/4/2017.
  */
 
-public class EditOneTimeReminderFragment extends Fragment implements AddReminderActivity.ReminderValueUpdater {
+public class EditOneTimeReminderFragment extends Fragment implements TaskDataInterface {
 
     //CONST
     public static final String REMINDER_ARGUMENT = "REMINDER_ARGUMENT";
@@ -72,6 +73,7 @@ public class EditOneTimeReminderFragment extends Fragment implements AddReminder
         mTime = (EditText) rootView.findViewById(R.id.fragment_edit_one_time_reminder_time);
 
         setupDateAndTimePickers();
+        setReminderValues();
 
         return rootView;
     }
@@ -91,11 +93,7 @@ public class EditOneTimeReminderFragment extends Fragment implements AddReminder
                             @Override
                             public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
                                 if(mDateCal == null) {
-                                    mDateCal = Calendar.getInstance();
-                                    mDateCal.set(Calendar.HOUR_OF_DAY, 0);
-                                    mDateCal.set(Calendar.MINUTE, 0);
-                                    mDateCal.set(Calendar.SECOND, 0);
-                                    mDateCal.set(Calendar.MILLISECOND, 0);
+                                    mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
                                 }
                                 mDateCal.set(year, monthOfYear, dayOfMonth);
                                 mDate.setText(mDateFormat.formatCalendar(mDateCal));
@@ -136,9 +134,24 @@ public class EditOneTimeReminderFragment extends Fragment implements AddReminder
         });
     }
 
+    private void setReminderValues() {
+        if(mReminder.getDate() != null) {
+            mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
+            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
+            mDate.setText(mDateFormat.formatCalendar(mDateCal));
+            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+        }
+
+        if(mReminder.getTime() != null) {
+            mTimeTime = mReminder.getTime();
+            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
+            mDate.setText(mDateFormat.formatCalendar(mDateCal));
+            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+        }
+    }
 
     @Override
-    public void updateReminderValues() {
+    public void updateData() {
         //Date, Time already set!
     }
 

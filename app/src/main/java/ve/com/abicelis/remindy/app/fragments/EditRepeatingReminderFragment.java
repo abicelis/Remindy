@@ -25,12 +25,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.activities.AddReminderActivity;
+import ve.com.abicelis.remindy.app.interfaces.TaskDataInterface;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
+import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.InputFilterMinMax;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 
@@ -38,7 +39,7 @@ import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
  * Created by abice on 20/4/2017.
  */
 
-public class EditRepeatingReminderFragment extends Fragment implements AddReminderActivity.ReminderValueUpdater {
+public class EditRepeatingReminderFragment extends Fragment implements TaskDataInterface {
 
     //CONST
     public static final String REMINDER_ARGUMENT = "REMINDER_ARGUMENT";
@@ -116,6 +117,7 @@ public class EditRepeatingReminderFragment extends Fragment implements AddRemind
 
         setupSpinners();
         setupDateAndTimePickers();
+        setReminderValues();
 
         return rootView;
     }
@@ -164,11 +166,7 @@ public class EditRepeatingReminderFragment extends Fragment implements AddRemind
                             @Override
                             public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
                                 if(mDateCal == null) {
-                                    mDateCal = Calendar.getInstance();
-                                    mDateCal.set(Calendar.HOUR_OF_DAY, 0);
-                                    mDateCal.set(Calendar.MINUTE, 0);
-                                    mDateCal.set(Calendar.SECOND, 0);
-                                    mDateCal.set(Calendar.MILLISECOND, 0);
+                                    mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
                                 }
                                 mDateCal.set(year, monthOfYear, dayOfMonth);
                                 mDate.setText(mDateFormat.formatCalendar(mDateCal));
@@ -192,11 +190,7 @@ public class EditRepeatingReminderFragment extends Fragment implements AddRemind
                             @Override
                             public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
                                 if(mRepeatUntilCal == null) {
-                                    mRepeatUntilCal = Calendar.getInstance();
-                                    mRepeatUntilCal.set(Calendar.HOUR_OF_DAY, 0);
-                                    mRepeatUntilCal.set(Calendar.MINUTE, 0);
-                                    mRepeatUntilCal.set(Calendar.SECOND, 0);
-                                    mRepeatUntilCal.set(Calendar.MILLISECOND, 0);
+                                    mRepeatUntilCal = CalendarUtil.getNewInstanceZeroedCalendar();
                                 }
                                 mRepeatUntilCal.set(year, monthOfYear, dayOfMonth);
                                 mRepeatUntilDate.setText(mDateFormat.formatCalendar(mRepeatUntilCal));
@@ -238,6 +232,46 @@ public class EditRepeatingReminderFragment extends Fragment implements AddRemind
         });
     }
 
+
+    private void setReminderValues() {
+        if(mReminder.getDate() != null) {
+            mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
+            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
+            mDate.setText(mDateFormat.formatCalendar(mDateCal));
+            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+        }
+
+        if(mReminder.getTime() != null) {
+            mTimeTime = mReminder.getTime();
+            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
+            mDate.setText(mDateFormat.formatCalendar(mDateCal));
+            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+        }
+
+        if(mReminder.getRepeatType() != null) {
+            mRepeatType.setSelection(mReminder.getRepeatType().ordinal());
+        }
+
+        mRepeatInterval.setText(mReminder.getRepeatInterval());
+
+        if(mReminder.getRepeatEndType() != null) {
+            mRepeatEndType.setSelection(mReminder.getRepeatEndType().ordinal());
+
+            switch (mReminder.getRepeatEndType()) {
+                case UNTIL_DATE:
+                    if(mReminder.getRepeatEndDate() != null) {
+                        mRepeatUntilCal = CalendarUtil.getNewInstanceZeroedCalendar();
+                        mRepeatUntilCal.setTimeInMillis(mReminder.getRepeatEndDate().getTimeInMillis());
+                        mRepeatUntilDate.setText(mDateFormat.formatCalendar(mRepeatUntilCal));
+                        mRepeatUntilDatePicker.setPreselectedDate(mRepeatUntilCal.get(Calendar.YEAR), mRepeatUntilCal.get(Calendar.MONTH), mRepeatUntilCal.get(Calendar.DAY_OF_MONTH));
+                    }
+                    break;
+                case FOR_X_EVENTS:
+                    mRepeatEndForXEvents.setText(mReminder.getRepeatEndNumberOfEvents());
+            }
+        }
+
+    }
 
     private void handleRepeatTypeSelected(int position) {
 
@@ -289,10 +323,9 @@ public class EditRepeatingReminderFragment extends Fragment implements AddRemind
     }
 
     @Override
-    public void updateReminderValues() {
+    public void updateData() {
 
         //Date, Time, RepeatType and RepeatEndType already set
-        //TODO this is hacky
         try {
             mReminder.setRepeatInterval(Integer.parseInt(mRepeatInterval.getText().toString()));
         }catch (NumberFormatException e) {
@@ -302,7 +335,6 @@ public class EditRepeatingReminderFragment extends Fragment implements AddRemind
         switch (mReminder.getRepeatEndType()){
             case FOR_X_EVENTS:
                 mReminder.setRepeatEndDate(null);
-                //TODO this is hacky
                 try {
                     mReminder.setRepeatEndNumberOfEvents(Integer.parseInt(mRepeatEndForXEvents.getText().toString()));
                 }catch (NumberFormatException e) {
