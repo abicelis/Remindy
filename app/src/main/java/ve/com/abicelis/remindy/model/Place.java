@@ -97,4 +97,16 @@ public class Place implements Serializable {
                 " radius=" + radius + "\r\n" +
                 " isOneOff=" + isOneOff;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
+
+        if(obj instanceof Place) {
+            Place that = (Place) obj;
+            return (this.getLatitude() == that.getLatitude() && this.getLongitude() == that.getLongitude() && this.getAlias() == that.getAlias());
+        }
+        return false;
+    }
 }
