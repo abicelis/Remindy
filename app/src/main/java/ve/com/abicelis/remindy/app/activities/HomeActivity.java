@@ -163,8 +163,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.activity_home_fab:
-                Intent openNewTaskActivity = new Intent(this, NewTaskActivity.class);
-                startActivityForResult(openNewTaskActivity, NEW_TASK_REQUEST_CODE);
+                //Intent openNewTaskActivity = new Intent(this, NewTaskActivity.class);
+                // startActivityForResult(openNewTaskActivity, NEW_TASK_REQUEST_CODE);
+
+                Intent openTaskActivity = new Intent(this, TaskActivity.class);
+                startActivityForResult(openTaskActivity, NEW_TASK_REQUEST_CODE);
                 break;
         }
     }

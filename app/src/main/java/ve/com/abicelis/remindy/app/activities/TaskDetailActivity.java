@@ -149,6 +149,14 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mTitle.setText(mTask.getTitle());
         mDescription.setText(mTask.getDescription());
 
+
+        setUpViews();
+        setUpToolbar();
+        setUpReminderViews();
+        setUpRecyclerView();
+    }
+
+    private void setUpViews() {
         if(mTask.getDoneDate() != null) {
             mDoneDateContainer.setVisibility(View.VISIBLE);
             mDoneDate.setText(mDateFormat.formatCalendar(mTask.getDoneDate()));
@@ -161,10 +169,6 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 mDoneDateContainer.setVisibility(View.VISIBLE);
             }
         }
-
-        setUpToolbar();
-        setUpReminderViews();
-        setUpRecyclerView();
     }
 
     private void setUpToolbar() {
@@ -337,14 +341,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 return true;
 
             case R.id.menu_task_edit:
-                Toast.makeText(this, "Edit!", Toast.LENGTH_SHORT).show();
-                //TODO: remember to set  HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION and HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE
-//                Intent returnIntent = new Intent();
-//                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
-//                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
-//                setResult(RESULT_OK, returnIntent);
-//                finish();
-
+                Intent goToTaskActivityIntent = new Intent(getApplicationContext(), TaskActivity.class);
+                goToTaskActivityIntent.putExtra(TaskActivity.TASK_TO_EDIT, mTask);
+                startActivityForResult(goToTaskActivityIntent, TaskActivity.TASK_ACTIVITY_REQUEST_CODE);
                 break;
 
             case R.id.menu_task_delete:
@@ -378,6 +377,18 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 if(holder != null)
                     holder.updateImageAttachment(imageAttachment);
             }
+        }
+
+        //This request comes from TaskActivity, which was called from menu edit button
+        if(requestCode == TaskActivity.TASK_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            //Task was edited
+            mTaskDataUpdated = true;
+            mTask = (Task) data.getSerializableExtra(TaskActivity.TASK_TO_EDIT);
+
+            setUpViews();
+            setUpToolbar();
+            setUpReminderViews();
+            setUpRecyclerView();
         }
     }
 
