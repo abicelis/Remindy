@@ -145,11 +145,6 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mAttachmentsFabImage.setOnClickListener(this);
         mAttachmentsFabAudio.setOnClickListener(this);
 
-        mCategory.setImageResource(mTask.getCategory().getIconRes());
-        mTitle.setText(mTask.getTitle());
-        mDescription.setText(mTask.getDescription());
-
-
         setUpViews();
         setUpToolbar();
         setUpReminderViews();
@@ -157,6 +152,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setUpViews() {
+        mCategory.setImageResource(mTask.getCategory().getIconRes());
+        mTitle.setText(mTask.getTitle());
+        mDescription.setText(mTask.getDescription());
+
         if(mTask.getDoneDate() != null) {
             mDoneDateContainer.setVisibility(View.VISIBLE);
             mDoneDate.setText(mDateFormat.formatCalendar(mTask.getDoneDate()));
