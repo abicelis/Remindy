@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.activities.AddReminderActivity;
+import ve.com.abicelis.remindy.app.interfaces.TaskDataInterface;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
@@ -39,7 +38,7 @@ import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
  * Created by abice on 20/4/2017.
  */
 
-public class EditLocationBasedReminderFragment extends Fragment implements AddReminderActivity.ReminderValueUpdater, OnMapReadyCallback {
+public class EditLocationBasedReminderFragment extends Fragment implements TaskDataInterface, OnMapReadyCallback {
 
     //CONST
     public static final String REMINDER_ARGUMENT = "REMINDER_ARGUMENT";
@@ -51,6 +50,7 @@ public class EditLocationBasedReminderFragment extends Fragment implements AddRe
     private List<String> mPlaceTypes = new ArrayList<>();
     private List<Place> mPlaces;
     private LocationBasedReminder mReminder;
+    private boolean mDontSetEnteringFlag;
 
     //UI
     private Spinner mPlace;
@@ -87,7 +87,6 @@ public class EditLocationBasedReminderFragment extends Fragment implements AddRe
 
         for (Place p : mPlaces)
             mPlaceTypes.add(p.getAlias());
-        Log.d("POOP", "OnCreate");
     }
 
     @Nullable
@@ -117,13 +116,14 @@ public class EditLocationBasedReminderFragment extends Fragment implements AddRe
             }
         });
         setupSpinners();
+        setReminderValues();
+
 
 
         // Initialise the MapView
         mMapView.onCreate(null);
         // Set the map ready callback to receive the GoogleMap object
         mMapView.getMapAsync(this);
-        Log.d("POOP", "OnCreateView");
 
         return rootView;
 
@@ -131,7 +131,6 @@ public class EditLocationBasedReminderFragment extends Fragment implements AddRe
 
 
     private void setupSpinners() {
-        Log.d("POOP", "setupSpinners");
 
         ArrayAdapter placeTypeAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item, mPlaceTypes);
         placeTypeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
@@ -146,24 +145,38 @@ public class EditLocationBasedReminderFragment extends Fragment implements AddRe
         });
     }
 
+    private void setReminderValues() {
+        mDontSetEnteringFlag = true;
+        if(mReminder.getPlace() != null) {
+            for (int i = 0; i < mPlaces.size(); i++ ) {
+                if(mReminder.getPlace().equals(mPlaces.get(i)))
+                    mPlace.setSelection(i);
+            }
+        }
+        mDontSetEnteringFlag = false;
+
+        mEntering.setChecked(mReminder.isEntering());
+    }
+
 
     private void handlePlaceTypeSelected(int position) {
-        Log.d("POOP", "handlePlaceTypeSelected");
-
         Place selectedPlace = mPlaces.get(position);
 
         mReminder.setPlace(selectedPlace);
         mReminder.setPlaceId(selectedPlace.getId());
-        mReminder.setEntering(true);
+        mAddress.setText(selectedPlace.getAddress());
+
+        if(mDontSetEnteringFlag) {
+            mReminder.setEntering(true);
+            mEntering.setChecked(true);
+        }
 
         updateMapView();
-        mAddress.setText(selectedPlace.getAddress());
-        mEntering.setChecked(true);
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("POOP", "onMapReady");
 
         mMap = googleMap;
 
@@ -175,10 +188,8 @@ public class EditLocationBasedReminderFragment extends Fragment implements AddRe
     }
 
     private void updateMapView() {
-        Log.d("POOP", "updateMapView");
 
         if (mMap != null && mReminder != null) {
-            Log.d("POOP", "updateMapView GOOD");
 
             mMap.clear();
 
@@ -195,7 +206,7 @@ public class EditLocationBasedReminderFragment extends Fragment implements AddRe
 
 
     @Override
-    public void updateReminderValues() {
+    public void updateData() {
         //Place, PlaceId and isEntering already set
     }
 
