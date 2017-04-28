@@ -35,7 +35,7 @@ public class TasksByReminderDateComparator implements Comparator<Task> {
             o2Date = ((OneTimeReminder) o2.getReminder()).getDate();
         else {  //Repeating reminder
             Calendar cal = TaskUtil.getRepeatingReminderNextDate(((RepeatingReminder) o2.getReminder()));
-            o1Date = (cal != null ? cal : TaskUtil.getRepeatingReminderEndDate(((RepeatingReminder) o2.getReminder())));
+            o2Date = (cal != null ? cal : TaskUtil.getRepeatingReminderEndDate(((RepeatingReminder) o2.getReminder())));
         }
 
         //Calendar o1Date = (o1.getReminderType() == ReminderType.ONE_TIME ? ((OneTimeReminder) o1.getReminder()).getDate() : TaskUtil.getRepeatingReminderNextDate(((RepeatingReminder) o1.getReminder())) );
