@@ -143,7 +143,7 @@
 
 
     /* Create/Edit Reminder Activities */
-    //TODO: DELETE THIS
+    <!--//TODO: DELETE THIS-->
     <string name="activity_reminder_toolbar_title">Simple Reminder</string>
     <string name="activity_reminder_title">Title</string>
     <string name="activity_reminder_title_hint">Enter a Title</string>
@@ -172,11 +172,69 @@
     <string name="activity_reminder_simple_exit_dialog_negative">Cancel</string>
 
 
+    /* Task Activity */
+    <string name="activity_task_toolbar_title_new">New Task</string>
+    <string name="activity_task_toolbar_title_edit">Edit Task</string>
+    <string name="menu_activity_task_action_save">SAVE</string>
+    <string name="activity_task_snackbar_error_saving">There was an error saving the Task</string>
+    <string name="activity_task_snackbar_save_successful">Task saved successfully</string>
+    <string name="activity_task_snackbar_error_no_title">Please add a title to the Task</string>
+    <string name="activity_task_one_time_snackbar_error_invalid_date">Please add a valid date</string>
+    <string name="activity_task_one_time_snackbar_error_invalid_time">Please add a valid time</string>
+    <string name="activity_task_repeating_snackbar_error_invalid_date">Please add a valid date</string>
+    <string name="activity_task_repeating_snackbar_error_invalid_time">Please add a valid time</string>
+    <string name="activity_task_repeating_snackbar_error_invalid_interval">Please add a valid repeating interval</string>
+    <string name="activity_task_repeating_snackbar_error_invalid_number_events">Please add a valid number of events</string>
+    <string name="activity_task_repeating_snackbar_error_invalid_end_date">Please add a valid end date</string>
+    <string name="activity_task_repeating_snackbar_error_end_date_before_date">End date must be after reminder date</string>
+
+    <string name="activity_task_fragment_task_tab_title">Task</string>
+    <string name="activity_task_fragment_reminder_tab_title">Reminder</string>
+
+    <string name="activity_task_exit_dialog_title">Discard task?</string>
+    <string name="activity_task_exit_dialog_message">Go back and discard Task?</string>
+    <string name="activity_task_exit_dialog_positive">Yes</string>
+    <string name="activity_task_exit_dialog_negative">Cancel</string>
+
+    <string name="activity_task_warn_no_reminder_dialog_title">Task has no reminder</string>
+    <string name="activity_task_warn_no_reminder_dialog_message">Add a reminder to this task or save as-is?</string>
+    <string name="activity_task_warn_no_reminder_dialog_positive">Add Reminder</string>
+    <string name="activity_task_warn_no_reminder_dialog_negative">Save As-is</string>
+
+    <string name="activity_task_save_dialog_title">Save?</string>
+    <string name="activity_task_save_dialog_message">Save this task?</string>
+    <string name="activity_task_save_dialog_positive">Save</string>
+    <string name="activity_task_save_dialog_negative">Cancel</string>
+
+
+    /* Task Fragment */
+    <string name="fragment_task_title_label">Title</string>
+    <string name="fragment_task_title_hint">Add a title</string>
+    <string name="fragment_task_category_label">Category</string>
+    <string name="fragment_task_description_label">Description</string>
+    <string name="fragment_task_description_hint">Add a description</string>
+
+    <string name="fragment_task_tap_to_add_attachment_hint">Tap to add attachments</string>
+    <string name="fragment_task_header_basic_info">Basic Info</string>
+    <string name="fragment_task_header_attachments">Attachments</string>
+    <string name="fragment_task_no_items">No attachments</string>
+    <string name="fragment_task_snackbar_notice_attachments_options_hint">Long-press an attachment for more options</string>
+
+
+    /* Reminder Fragment */
+    <string name="fragment_reminder_reminder_type">Reminder type</string>
+
+
+
+
+
+
+
 
     /* New Task Activity */
+    <!--TODO: kill this-->
     <string name="activity_new_task_toolbar_title">New Task</string>
     <string name="menu_activity_new_task_action_next">NEXT</string>
-
     <string name="activity_new_task_title_label">Title</string>
     <string name="activity_new_task_title_hint">Add a title</string>
     <string name="activity_new_task_description_label">Description</string>
@@ -185,10 +243,14 @@
     <string name="activity_new_task_header_basic_info">Basic Info</string>
     <string name="activity_new_task_header_attachments">Attachments</string>
     <string name="activity_new_task_no_items">No attachments</string>
+    <string name="activity_new_task_snackbar_notice_attachments_options_hint">Long-press an attachment for more options</string>
+
+
+    <!--TO USE-->
     <string name="activity_new_task_snackbar_error_no_title">Please add a title to the Task</string>
     <string name="activity_new_task_snackbar_error_saving">There was an error saving the Task</string>
     <string name="activity_new_task_snackbar_save_successful">Task saved successfully</string>
-    <string name="activity_new_task_snackbar_notice_attachments_options_hint">Long-press an attachment for more options</string>
+
 
     <string name="activity_new_task_exit_dialog_title">Discard task?</string>
     <string name="activity_new_task_exit_dialog_message">Go back and discard Task?</string>
@@ -199,6 +261,7 @@
     <string name="activity_new_task_next_dialog_message">Add a reminder to this task or save as-is?</string>
     <string name="activity_new_task_next_dialog_positive">Add Reminder</string>
     <string name="activity_new_task_next_dialog_negative">Save As-is</string>
+
 
     <string name="item_attachment_image_hint">Tap to add an image</string>
     <string name="item_attachment_list_hint">Tap to enter a list</string>
@@ -211,9 +274,12 @@
 
 
     /* Add Reminder Activity */
+    <!--KILL THESE-->
     <string name="activity_add_reminder_title">Add Reminder</string>
     <string name="activity_add_reminder_reminder_type">Reminder type</string>
     <string name="menu_activity_add_reminder_save">Save</string>
+
+    <!--TO USE-->
     <string name="activity_add_reminder_one_time_snackbar_error_invalid_date">Please add a valid date</string>
     <string name="activity_add_reminder_one_time_snackbar_error_invalid_time">Please add a valid time</string>
     <string name="activity_add_reminder_repeating_snackbar_error_invalid_date">Please add a valid date</string>
@@ -371,6 +437,7 @@
     <string name="dialog_text_attachment_options_copy">Copy text</string>
     <string name="dialog_text_attachment_options_edit">Edit text</string>
     <string name="dialog_text_attachment_options_delete">Delete attachment</string>
+    <string name="dialog_text_attachment_text_copied_clipboard">Text copied to clipboard</string>
 
     /* Link Attachment ViewHolder */
     <string name="dialog_link_attachment_options_copy">Copy link</string>
@@ -419,7 +486,7 @@
     <string name="dialog_edit_link_attachment_cancel">CANCEL</string>
     <string name="dialog_edit_link_attachment_ok">OK</string>
     <string name="dialog_edit_link_attachment_malformed_link">Error, link is invalid</string>
-    <string name="dialog_edit_link_error_empty_text">Please enter a link</string>
+    <string name="dialog_edit_link_error_empty_text">Please enter a valid link</string>
 
     /* Edit List Item Attachment Dialog */
     <string name="dialog_edit_list_item_attachment_title">Edit Item</string>
