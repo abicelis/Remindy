@@ -427,7 +427,7 @@ public class RemindyDAO {
 
         if(tasks.size() > 0) {      //Remove Location-based reminders from task, and update task ReminderType to NONE.
             for (Task task : tasks) {
-                deleteReminderOfTask(task.getId(), task.getReminderType());
+                deleteReminderOfTask(task.getId());
                 task.setStatus(TaskStatus.UNPROGRAMMED);
                 task.setReminderType(ReminderType.NONE);
                 try {
@@ -472,30 +472,23 @@ public class RemindyDAO {
     /**
      * Deletes the Reminder of type ReminderType associated to a Task
      * @param taskId The ID of the task
-     * @param reminderType The Type of reminder
      */
-    public boolean deleteReminderOfTask(int taskId, ReminderType reminderType) throws CouldNotDeleteDataException {
+    public void deleteReminderOfTask(int taskId) throws CouldNotDeleteDataException {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
 
         String tableName, whereClause;
-        switch (reminderType) {
-            case ONE_TIME:
-                whereClause = RemindyContract.OneTimeReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
-                tableName = RemindyContract.OneTimeReminderTable.TABLE_NAME;
-                break;
-            case REPEATING:
-                whereClause = RemindyContract.RepeatingReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
-                tableName = RemindyContract.RepeatingReminderTable.TABLE_NAME;
-                break;
-            case LOCATION_BASED:
-                whereClause = RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
-                tableName = RemindyContract.LocationBasedReminderTable.TABLE_NAME;
-                break;
-            default:
-                throw new CouldNotDeleteDataException("ReminderType is invalid. Type=" + reminderType);
-        }
 
-        return db.delete(tableName, whereClause, new String[]{String.valueOf(taskId)}) > 0;
+        whereClause = RemindyContract.OneTimeReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+        tableName = RemindyContract.OneTimeReminderTable.TABLE_NAME;
+        db.delete(tableName, whereClause, new String[]{String.valueOf(taskId)});
+
+        whereClause = RemindyContract.RepeatingReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+        tableName = RemindyContract.RepeatingReminderTable.TABLE_NAME;
+        db.delete(tableName, whereClause, new String[]{String.valueOf(taskId)});
+
+        whereClause = RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName() + " =?";
+        tableName = RemindyContract.LocationBasedReminderTable.TABLE_NAME;
+        db.delete(tableName, whereClause, new String[]{String.valueOf(taskId)});
     }
 
 
@@ -520,7 +513,7 @@ public class RemindyDAO {
 
         //If task has a reminder, delete it
         if(task.getReminderType() != ReminderType.NONE) {
-            deleteReminderOfTask(taskId, task.getReminderType());
+            deleteReminderOfTask(taskId);
         }
 
         //Finally, delete the task
@@ -608,20 +601,22 @@ public class RemindyDAO {
      * Updates the information stored about a Reminder
      * @param reminder The Reminder to update
      */
-    public boolean updateReminder(Reminder reminder) throws CouldNotUpdateDataException {
+    public boolean updateReminderOfTask(Reminder reminder, int taskId) throws CouldNotUpdateDataException {
 
         //Need to delete old reminder and insert new one
         //Old and New reminderType may be different, which are stored in different tables
         try {
-            deleteReminderOfTask(reminder.getTaskId(), reminder.getType());
+            deleteReminderOfTask(taskId);
         }catch (CouldNotDeleteDataException e) {
             throw new CouldNotUpdateDataException("Error while deleting old reminder in dao.updateReminder(). Reminder=" + reminder.toString(), e);
         }
 
-        try {
-            insertReminderOfTask(reminder.getTaskId(), reminder);
-        }catch (CouldNotInsertDataException e) {
-            throw new CouldNotUpdateDataException("Error while inserting new reminder in dao.updateReminder(). Reminder=" + reminder.toString(), e);
+        if(reminder != null) {
+            try {
+                insertReminderOfTask(taskId, reminder);
+            }catch (CouldNotInsertDataException e) {
+                throw new CouldNotUpdateDataException("Error while inserting new reminder in dao.updateReminder(). Reminder=" + reminder.toString(), e);
+            }
         }
 
         return true;
@@ -637,8 +632,7 @@ public class RemindyDAO {
 
         updateAttachmentsOfTask(task);
 
-        if(task.getReminderType() != ReminderType.NONE)
-            updateReminder(task.getReminder());
+        updateReminderOfTask(task.getReminder(), task.getId());
 
         return db.update(
                 RemindyContract.TaskTable.TABLE_NAME,
