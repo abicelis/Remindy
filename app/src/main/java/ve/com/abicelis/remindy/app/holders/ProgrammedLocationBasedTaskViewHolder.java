@@ -127,8 +127,8 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
 
                 Intent openTaskDetailActivity = new Intent(mFragment.getActivity(), TaskDetailActivity.class);
                 openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_TO_DISPLAY, mCurrent);
-                openTaskDetailActivity.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mReminderPosition);
-                mFragment.startActivityForResult(openTaskDetailActivity, HomeListFragment.TASK_DETAIL_REQUEST_CODE, options.toBundle());
+                openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_POSITION, mReminderPosition);
+                mFragment.getActivity().startActivityForResult(openTaskDetailActivity, TaskDetailActivity.TASK_DETAIL_REQUEST_CODE, options.toBundle());
                 break;
         }
     }
