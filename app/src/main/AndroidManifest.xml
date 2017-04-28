@@ -41,12 +41,6 @@
             </intent-filter>
         </activity>
 
-        <!--TODO: KILL THIS-->
-        <activity
-            android:name=".app.activities.NewTaskActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
         <activity
             android:name=".app.activities.TaskActivity"
             android:theme="@style/AppTheme.NoActionBar">
