@@ -34,8 +34,6 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
 
     //DATA
     OneTimeReminder mReminder;
-    Calendar mDateCal;
-    Time mTimeTime;
     DateFormat mDateFormat;
 
     //UI
@@ -92,12 +90,11 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
                         .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
                             @Override
                             public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
-                                if(mDateCal == null) {
-                                    mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
+                                if(mReminder.getDate() == null) {
+                                    mReminder.setDate(CalendarUtil.getNewInstanceZeroedCalendar());
                                 }
-                                mDateCal.set(year, monthOfYear, dayOfMonth);
-                                mDate.setText(mDateFormat.formatCalendar(mDateCal));
-                                mReminder.setDate(mDateCal);
+                                mReminder.getDate().set(year, monthOfYear, dayOfMonth);
+                                mDate.setText(mDateFormat.formatCalendar(mReminder.getDate()));
                             }
                         })
                         .setFirstDayOfWeek(Calendar.MONDAY)
@@ -116,14 +113,13 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
                         .setOnTimeSetListener(new RadialTimePickerDialogFragment.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
-                                if(mTimeTime == null) {
-                                    mTimeTime = new Time();
+                                if(mReminder.getTime() == null) {
+                                    mReminder.setTime(new Time());
                                     //TODO: grab timeFormat from preferences and mTimeTime.setDisplayTimeFormat();
                                 }
-                                mTimeTime.setHour(hourOfDay);
-                                mTimeTime.setMinute(minute);
-                                mTime.setText(mTimeTime.toString());
-                                mReminder.setTime(mTimeTime);
+                                mReminder.getTime().setHour(hourOfDay);
+                                mReminder.getTime().setMinute(minute);
+                                mTime.setText(mReminder.getTime().toString());
                             }
                         })
                         .setStartTime(12, 0)
@@ -136,17 +132,13 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
 
     private void setReminderValues() {
         if(mReminder.getDate() != null) {
-            mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
-            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
-            mDate.setText(mDateFormat.formatCalendar(mDateCal));
-            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+            mDate.setText(mDateFormat.formatCalendar(mReminder.getDate()));
+            //mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
         }
 
         if(mReminder.getTime() != null) {
-            mTimeTime = mReminder.getTime();
-            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
-            mDate.setText(mDateFormat.formatCalendar(mDateCal));
-            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+            mTime.setText(mReminder.getTime().toString());
+            //mTimePicker.setStartTime(mReminder.getTime().getHour(), mReminder.getTime().getMinute());
         }
     }
 
