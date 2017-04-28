@@ -50,9 +50,6 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
     private List<String> reminderRepeatTypes;
     private List<String> reminderRepeatEndTypes;
     RepeatingReminder mReminder;
-    Calendar mDateCal;
-    Time mTimeTime;
-    Calendar mRepeatUntilCal;
     DateFormat mDateFormat;
 
 
@@ -114,6 +111,8 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
         mRepeatInterval.setFilters(new InputFilter[]{new InputFilterMinMax("1", "99")});
         mRepeatEndForXEvents.setFilters(new InputFilter[]{new InputFilterMinMax("1", "99")});
 
+        mDatePicker = new CalendarDatePickerDialogFragment();
+        mRepeatUntilDatePicker = new CalendarDatePickerDialogFragment();
 
         setupSpinners();
         setupDateAndTimePickers();
@@ -161,16 +160,14 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
         mDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatePicker = new CalendarDatePickerDialogFragment()
-                        .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
+                mDatePicker.setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
                             @Override
                             public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
-                                if(mDateCal == null) {
-                                    mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
+                                if(mReminder.getDate() == null) {
+                                    mReminder.setDate(CalendarUtil.getNewInstanceZeroedCalendar());
                                 }
-                                mDateCal.set(year, monthOfYear, dayOfMonth);
-                                mDate.setText(mDateFormat.formatCalendar(mDateCal));
-                                mReminder.setDate(mDateCal);
+                                mReminder.getDate().set(year, monthOfYear, dayOfMonth);
+                                mDate.setText(mDateFormat.formatCalendar(mReminder.getDate()));
                             }
                         })
                         .setFirstDayOfWeek(Calendar.MONDAY)
@@ -185,17 +182,14 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
         mRepeatUntilDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRepeatUntilDatePicker = new CalendarDatePickerDialogFragment()
-                        .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
+                mRepeatUntilDatePicker.setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
                             @Override
                             public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
-                                if(mRepeatUntilCal == null) {
-                                    mRepeatUntilCal = CalendarUtil.getNewInstanceZeroedCalendar();
+                                if(mReminder.getRepeatEndDate() == null) {
+                                    mReminder.setRepeatEndDate(CalendarUtil.getNewInstanceZeroedCalendar());
                                 }
-                                mRepeatUntilCal.set(year, monthOfYear, dayOfMonth);
-                                mRepeatUntilDate.setText(mDateFormat.formatCalendar(mRepeatUntilCal));
-                                mReminder.setRepeatEndDate(mRepeatUntilCal);
-
+                                mReminder.getRepeatEndDate().set(year, monthOfYear, dayOfMonth);
+                                mRepeatUntilDate.setText(mDateFormat.formatCalendar(mReminder.getRepeatEndDate()));
                             }
                         })
                         .setFirstDayOfWeek(Calendar.MONDAY)
@@ -214,14 +208,13 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
                         .setOnTimeSetListener(new RadialTimePickerDialogFragment.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
-                                if(mTimeTime == null) {
-                                    mTimeTime = new Time();
+                                if(mReminder.getTime() == null) {
+                                    mReminder.setTime(new Time());
                                     //TODO: grab timeFormat from preferences and mTimeTime.setDisplayTimeFormat();
                                 }
-                                mTimeTime.setHour(hourOfDay);
-                                mTimeTime.setMinute(minute);
-                                mTime.setText(mTimeTime.toString());
-                                mReminder.setTime(mTimeTime);
+                                mReminder.getTime().setHour(hourOfDay);
+                                mReminder.getTime().setMinute(minute);
+                                mTime.setText(mReminder.getTime().toString());
                             }
                         })
                         .setStartTime(12, 0)
@@ -235,24 +228,20 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
 
     private void setReminderValues() {
         if(mReminder.getDate() != null) {
-            mDateCal = CalendarUtil.getNewInstanceZeroedCalendar();
-            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
-            mDate.setText(mDateFormat.formatCalendar(mDateCal));
-            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+            mDate.setText(mDateFormat.formatCalendar(mReminder.getDate()));
+            //mDatePicker.setPreselectedDate(mReminder.getDate().get(Calendar.YEAR), mReminder.getDate().get(Calendar.MONTH), mReminder.getDate().get(Calendar.DAY_OF_MONTH));
         }
 
         if(mReminder.getTime() != null) {
-            mTimeTime = mReminder.getTime();
-            mDateCal.setTimeInMillis(mReminder.getDate().getTimeInMillis());
-            mDate.setText(mDateFormat.formatCalendar(mDateCal));
-            mDatePicker.setPreselectedDate(mDateCal.get(Calendar.YEAR), mDateCal.get(Calendar.MONTH), mDateCal.get(Calendar.DAY_OF_MONTH));
+            mTime.setText(mReminder.getTime().toString());
+            //mTimePicker.setStartTime(mReminder.getTime().getHour(), mReminder.getTime().getMinute());
         }
 
         if(mReminder.getRepeatType() != null) {
             mRepeatType.setSelection(mReminder.getRepeatType().ordinal());
         }
 
-        mRepeatInterval.setText(mReminder.getRepeatInterval());
+        mRepeatInterval.setText(String.valueOf(mReminder.getRepeatInterval()));
 
         if(mReminder.getRepeatEndType() != null) {
             mRepeatEndType.setSelection(mReminder.getRepeatEndType().ordinal());
@@ -260,14 +249,12 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
             switch (mReminder.getRepeatEndType()) {
                 case UNTIL_DATE:
                     if(mReminder.getRepeatEndDate() != null) {
-                        mRepeatUntilCal = CalendarUtil.getNewInstanceZeroedCalendar();
-                        mRepeatUntilCal.setTimeInMillis(mReminder.getRepeatEndDate().getTimeInMillis());
-                        mRepeatUntilDate.setText(mDateFormat.formatCalendar(mRepeatUntilCal));
-                        mRepeatUntilDatePicker.setPreselectedDate(mRepeatUntilCal.get(Calendar.YEAR), mRepeatUntilCal.get(Calendar.MONTH), mRepeatUntilCal.get(Calendar.DAY_OF_MONTH));
+                        mRepeatUntilDate.setText(mDateFormat.formatCalendar(mReminder.getRepeatEndDate()));
+                        //mRepeatUntilDatePicker.setPreselectedDate(mReminder.getRepeatEndDate().get(Calendar.YEAR), mReminder.getRepeatEndDate().get(Calendar.MONTH), mReminder.getRepeatEndDate().get(Calendar.DAY_OF_MONTH));
                     }
                     break;
                 case FOR_X_EVENTS:
-                    mRepeatEndForXEvents.setText(mReminder.getRepeatEndNumberOfEvents());
+                    mRepeatEndForXEvents.setText(String.valueOf(mReminder.getRepeatEndNumberOfEvents()));
             }
         }
 
@@ -325,7 +312,7 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
     @Override
     public void updateData() {
 
-        //Date, Time, RepeatType and RepeatEndType already set
+        //Date, Time, RepeatType, RepeatEndType and RepeatEndDate already set
         try {
             mReminder.setRepeatInterval(Integer.parseInt(mRepeatInterval.getText().toString()));
         }catch (NumberFormatException e) {
@@ -346,7 +333,6 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
                 mReminder.setRepeatEndNumberOfEvents(0);
                 break;
             case UNTIL_DATE:
-                mReminder.setRepeatEndDate(mRepeatUntilCal);
                 mReminder.setRepeatEndNumberOfEvents(0);
                 break;
         }
