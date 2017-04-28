@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,12 +42,14 @@ import static android.app.Activity.RESULT_OK;
 public class HomeListFragment extends Fragment {
 
     public static final String TASK_TYPE_TO_DISPLAY = "TASK_TYPE_TO_DISPLAY";
+    public static final String TAG = HomeListFragment.class.getSimpleName();
 
     public static final int TASK_DETAIL_REQUEST_CODE = 491;
     public static final String TASK_DETAIL_RETURN_TASK_POSITION = "TASK_DETAIL_RETURN_TASK_POSITION";
     public static final String TASK_DETAIL_RETURN_ACTION_TYPE = "TASK_DETAIL_RETURN_ACTION_TYPE";
     public static final int TASK_DETAIL_RETURN_ACTION_DELETED = 920;
     public static final int TASK_DETAIL_RETURN_ACTION_EDITED = 921;
+    public static final int TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER = 922;
 
 
     //DATA
@@ -176,6 +179,7 @@ public class HomeListFragment extends Fragment {
                     mTasks.addAll(mDao.getDoneTasks(mTaskSortType, getResources()));
             }
         }catch (CouldNotGetDataException | InvalidClassException e) {
+            Log.d(TAG, "Error fetching data from db for recyclerView: " + e.getMessage());
             SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_getting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
         }
 
@@ -219,6 +223,12 @@ public class HomeListFragment extends Fragment {
                         mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
                         break;
                     case TASK_DETAIL_RETURN_ACTION_EDITED:
+                    case TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER:
+
+                        //TODO: check if edited task has a different reminder type.. or an entirely different date.. if so it probably wont sort in the position it was....
+                        //Need to move this code from this fragment and into the parent HomeActivity so that it refreshes the whole viewpager maybe ?
+                        // :(
+
                         //Task was edited, refresh task info and refresh recycler
                         try {
                             Task task = mDao.getTask(mTasks.get(position).getTask().getId());

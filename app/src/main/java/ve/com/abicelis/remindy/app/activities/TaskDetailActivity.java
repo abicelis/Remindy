@@ -21,10 +21,10 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
 
 import java.util.Locale;
 
@@ -66,6 +66,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
     //DATA
     private Task mTask;
+    private String mOldReminderJson;
     private int mPosition;
     private DateFormat mDateFormat;
     private boolean mTaskDataUpdated = false;
@@ -107,6 +108,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
         if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION)) {
             mTask = (Task) getIntent().getSerializableExtra(TASK_TO_DISPLAY);
+            mOldReminderJson = new Gson().toJson(mTask.getReminder());
             mPosition = getIntent().getIntExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, -1);
         } else {
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -234,6 +236,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             DividerItemDecoration itemDecoration = new DividerItemDecoration(this, mLayoutManager.getOrientation());
             itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.item_decoration_half_line));
             mRecyclerView.addItemDecoration(itemDecoration);
+            mRecyclerView.setNestedScrollingEnabled(false);
 
             mRecyclerView.setLayoutManager(mLayoutManager);
             mRecyclerView.setAdapter(mAdapter);
@@ -254,9 +257,14 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 //Save changes
                 new RemindyDAO(this).updateTask(mTask);
 
+                //See if reminder was edited, in which case refresh the whole home viewpager
+                String newReminderJson = new Gson().toJson(mTask.getReminder());
+                int taskDetailReturnActionType = (mOldReminderJson.equals(newReminderJson) ?
+                        HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER : HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
+
                 //Return task position to HomeListFragment, and also notify edition!!
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
+                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, taskDetailReturnActionType);
                 returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
                 setResult(RESULT_OK, returnIntent);
                 supportFinishAfterTransition();     //When user backs out, transition back!
