@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.app.dialogs;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ public class EditLinkAttachmentDialogFragment extends DialogFragment implements 
 
         mLink = (EditText) dialogView.findViewById(R.id.dialog_edit_link_attachment_link);
         mLink.setText(link);
+        mLink.setSelection(mLink.getText().length());
 
         mOk = (Button) dialogView.findViewById(R.id.dialog_edit_link_attachment_ok);
         mOk.setOnClickListener(this);
@@ -79,7 +81,8 @@ public class EditLinkAttachmentDialogFragment extends DialogFragment implements 
                 break;
 
             case R.id.dialog_edit_link_attachment_ok:
-                if(!mLink.getText().toString().isEmpty()) {
+                String link = mLink.getText().toString();
+                if(!link.isEmpty() && Patterns.WEB_URL.matcher(link).matches()) {
                     mListener.onFinishEditLinkAttachmentDialog(mLink.getText().toString());
 
                     //Hide keyboard
