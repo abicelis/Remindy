@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
-import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
 import ve.com.abicelis.remindy.app.adapters.HomeViewPagerAdapter;
+import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
@@ -32,6 +33,7 @@ import ve.com.abicelis.remindy.util.SnackbarUtil;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
 
     //CONST
+    public static final String TAG = HomeActivity.class.getSimpleName();
     public static final int NEW_TASK_REQUEST_CODE = 490;
     public static final String NEW_TASK_RETURN_REMINDER_TYPE = "NEW_TASK_RETURN_REMINDER_TYPE";
 
@@ -86,19 +88,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mDoneTasksListFragment = new HomeListFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.UNPROGRAMMED);
+        bundle.putSerializable(HomeListFragment.ARGUMENT_TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.UNPROGRAMMED);
         mUnprogrammedTasksListFragment.setArguments(bundle);
 
         bundle = new Bundle();
-        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.LOCATION_BASED);
+        bundle.putSerializable(HomeListFragment.ARGUMENT_TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.LOCATION_BASED);
         mLocationBasedTasksListFragment.setArguments(bundle);
 
         bundle = new Bundle();
-        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.PROGRAMMED);
+        bundle.putSerializable(HomeListFragment.ARGUMENT_TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.PROGRAMMED);
         mProgrammedTasksListFragment.setArguments(bundle);
 
         bundle = new Bundle();
-        bundle.putSerializable(HomeListFragment.TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.DONE);
+        bundle.putSerializable(HomeListFragment.ARGUMENT_TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.DONE);
         mDoneTasksListFragment.setArguments(bundle);
 
 
@@ -178,26 +180,63 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (data.hasExtra(NEW_TASK_RETURN_REMINDER_TYPE)) {
                 rt = (ReminderType) data.getSerializableExtra(NEW_TASK_RETURN_REMINDER_TYPE);
 
-                switch (rt) {
-                    case NONE:
-                        mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();
-                        break;
+                try {
+                    switch (rt) {
+                        case NONE:
+                            mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();
+                            break;
 
-                    case LOCATION_BASED:
-                        mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();          //Location based tasks will always be in tab #1
-                        break;
+                        case LOCATION_BASED:
+                            mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();          //Location based tasks will always be in tab #1
+                            break;
 
-                    case ONE_TIME:
-                    case REPEATING:
-                        if (mShowLocationBasedTasksInOwnViewPagerTab)
-                            mHomeViewPagerAdapter.getRegisteredFragment(2).refreshRecyclerView();      //These tasks are in tab 2.
-                        else
-                            mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();      //Otherwise refresh tab 1, where all programmed tasks are.
-                        break;
-                }
+                        case ONE_TIME:
+                        case REPEATING:
+                            if (mShowLocationBasedTasksInOwnViewPagerTab)
+                                mHomeViewPagerAdapter.getRegisteredFragment(2).refreshRecyclerView();      //These tasks are in tab 2.
+                            else
+                                mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();      //Otherwise refresh tab 1, where all programmed tasks are.
+                            break;
+                    }
+                }catch (NullPointerException e) {/* Do nothing, the recycler will be refreshed upon creation */}
             } else {
                 setupViewPagerAndTabLayout();   //Just refresh everything
             }
         }
+
+        if (requestCode == TaskDetailActivity.TASK_DETAIL_REQUEST_CODE && resultCode == RESULT_OK) {     //Task has been deleted or edited
+
+            //Try to get TASK_DETAIL_RETURN_TASK_POSITION and TASK_DETAIL_RETURN_ACTION_TYPE
+            if (data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_POSITION) &&
+                    data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_TYPE) &&
+                    data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX)) {
+
+                int position = data.getIntExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_POSITION, -1);
+                int viewPagerIndex = data.getIntExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX, -1);
+
+                switch (data.getIntExtra(TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_TYPE, -1)) {
+                    case TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_DELETED:
+                        try {
+                            mHomeViewPagerAdapter.getRegisteredFragment(viewPagerIndex).removeViewHolderItem(position);
+                            } catch (NullPointerException e) {/* Do nothing, the recycler will be refreshed upon creation */}
+                        break;
+                    case TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_EDITED:
+                        try {
+                            mHomeViewPagerAdapter.getRegisteredFragment(viewPagerIndex).updateViewholderItem(position);
+                        } catch (NullPointerException e) {/* Do nothing, the recycler will be refreshed upon creation */}
+                        break;
+
+                    case TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER:
+                        setupViewPagerAndTabLayout();   //Just refresh everything
+                        break;
+                }
+            } else {
+                Log.d(TAG, "Error! TASK_DETAIL_RETURN_TASK_POSITION or TASK_DETAIL_RETURN_ACTION_TYPE or TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX == null");
+                SnackbarUtil.showSnackbar(mViewpager, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, null);
+            }
+        }
     }
+
+
+
 }
