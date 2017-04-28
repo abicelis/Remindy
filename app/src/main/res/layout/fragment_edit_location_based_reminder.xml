@@ -67,7 +67,7 @@
                 map:cameraZoom="13"
                 map:mapType="normal"
                 map:liteMode="true"
-                tools:context="ve.com.abicelis.remindy.app.activities.AddReminderActivity" />
+                />
 
             <TextView
                 android:id="@+id/fragment_edit_location_based_reminder_address"

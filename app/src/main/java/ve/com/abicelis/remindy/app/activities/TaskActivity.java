@@ -355,28 +355,7 @@ public class TaskActivity extends AppCompatActivity {
 //            }
 //        }
 
-//        //This request comes from AddReminderActivity
-//        if(requestCode == AddReminderActivity.ADD_REMINDER_REQUEST_CODE) {
-//            if(resultCode == RESULT_CANCELED) {
-//                mTask.setReminderType(ReminderType.NONE);
-//                mTask.setStatus(TaskStatus.UNPROGRAMMED);
-//                mTask.setReminder(null);
-//                return;
-//            }
-//
-//            Serializable reminderObject = data.getSerializableExtra(AddReminderActivity.ADD_REMINDER_RETURN_REMINDER);
-//            Reminder reminder = (reminderObject == null ? null : (Reminder) reminderObject);
-//
-//            switch (resultCode) {
-//                case AddReminderActivity.RESULT_KEEP:
-//                    saveReminder(reminder);
-//                    break;
-//                case AddReminderActivity.RESULT_SAVE:
-//                    saveReminder(reminder);
-//                    handleTaskSave();
-//                    break;
-//            }
-//        }
+
 
 
 
