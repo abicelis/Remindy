@@ -29,6 +29,7 @@ import ve.com.abicelis.remindy.app.fragments.TaskFragment;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
+import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
@@ -230,6 +231,7 @@ public class TaskActivity extends AppCompatActivity {
         ((InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mContainer.getWindowToken(), 0);
 
         if(mTask.getTitle() == null || mTask.getTitle().isEmpty()) {
+            mViewpager.setCurrentItem(0, true); //Go to Task page
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_no_title, SnackbarUtil.SnackbarDuration.LONG, null);
             return false;
         }
@@ -240,10 +242,12 @@ public class TaskActivity extends AppCompatActivity {
 
             case ONE_TIME:
                 if( ((OneTimeReminder)mTask.getReminder()).getDate() == null) {
+                    mViewpager.setCurrentItem(1, true); //Go to Reminder page
                     SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_one_time_snackbar_error_invalid_date, SnackbarUtil.SnackbarDuration.SHORT, null);
                     return false;
                 }
                 if( ((OneTimeReminder)mTask.getReminder()).getTime() == null) {
+                    mViewpager.setCurrentItem(1, true); //Go to Reminder page
                     SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_one_time_snackbar_error_invalid_time, SnackbarUtil.SnackbarDuration.SHORT, null);
                     return false;
                 }
@@ -251,30 +255,36 @@ public class TaskActivity extends AppCompatActivity {
 
             case REPEATING:
                 if( ((RepeatingReminder)mTask.getReminder()).getDate() == null) {
+                    mViewpager.setCurrentItem(1, true); //Go to Reminder page
                     SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_repeating_snackbar_error_invalid_date, SnackbarUtil.SnackbarDuration.SHORT, null);
                     return false;
                 }
                 if( ((RepeatingReminder)mTask.getReminder()).getTime() == null) {
+                    mViewpager.setCurrentItem(1, true); //Go to Reminder page
                     SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_repeating_snackbar_error_invalid_time, SnackbarUtil.SnackbarDuration.SHORT, null);
                     return false;
                 }
                 if( ((RepeatingReminder)mTask.getReminder()).getRepeatInterval() < 1) {
+                    mViewpager.setCurrentItem(1, true); //Go to Reminder page
                     SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_repeating_snackbar_error_invalid_interval, SnackbarUtil.SnackbarDuration.SHORT, null);
                     return false;
                 }
                 switch ( ((RepeatingReminder)mTask.getReminder()).getRepeatEndType()) {
                     case FOR_X_EVENTS:
                         if( ((RepeatingReminder)mTask.getReminder()).getRepeatEndNumberOfEvents() < 1) {
+                            mViewpager.setCurrentItem(1, true); //Go to Reminder page
                             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_repeating_snackbar_error_invalid_number_events, SnackbarUtil.SnackbarDuration.SHORT, null);
                             return false;
                         }
                         break;
                     case UNTIL_DATE:
                         if( ((RepeatingReminder)mTask.getReminder()).getRepeatEndDate() == null) {
+                            mViewpager.setCurrentItem(1, true); //Go to Reminder page
                             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_repeating_snackbar_error_invalid_end_date, SnackbarUtil.SnackbarDuration.SHORT, null);
                             return false;
                         }
                         if( ((RepeatingReminder)mTask.getReminder()).getRepeatEndDate().compareTo(((RepeatingReminder)mTask.getReminder()).getDate()) <= 0) {
+                            mViewpager.setCurrentItem(1, true); //Go to Reminder page
                             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_repeating_snackbar_error_end_date_before_date, SnackbarUtil.SnackbarDuration.SHORT, null);
                             return false;
                         }
@@ -295,7 +305,11 @@ public class TaskActivity extends AppCompatActivity {
 
         try {
             RemindyDAO dao = new RemindyDAO(this);
-            dao.insertTask(mTask);
+
+            if(editingTask)
+                dao.updateTask(mTask);
+            else
+                dao.insertTask(mTask);
 
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override
@@ -311,7 +325,7 @@ public class TaskActivity extends AppCompatActivity {
             };
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_task_snackbar_save_successful, SnackbarUtil.SnackbarDuration.SHORT, callback);
 
-        } catch (CouldNotInsertDataException e) {
+        } catch (CouldNotInsertDataException | CouldNotUpdateDataException e) {
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_saving, SnackbarUtil.SnackbarDuration.SHORT, null);
         }
     }
