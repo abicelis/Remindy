@@ -102,7 +102,6 @@ public class ReminderFragment extends Fragment implements TaskDataInterface {
         if (mTask.getReminderType() != ReminderType.NONE) {
             useReminderFlag = true;
             mReminderTypeSpinner.setSelection(mTask.getReminderType().ordinal());
-            useReminderFlag = false;
         }
     }
 
@@ -142,6 +141,9 @@ public class ReminderFragment extends Fragment implements TaskDataInterface {
                 mReminder = null;
                 break;
         }
+
+        //Reset flag if used
+        useReminderFlag = false;
     }
 
 
