@@ -30,13 +30,14 @@ import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.AttachmentAdapter;
-import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
 import ve.com.abicelis.remindy.app.fragments.LocationBasedReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.DateFormat;
+import ve.com.abicelis.remindy.enums.ReminderType;
+import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
@@ -63,6 +64,16 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
     //CONST
     public static final String TASK_TO_DISPLAY = "TASK_TO_DISPLAY";
+    public static final String TASK_POSITION = "TASK_POSITION";
+
+    public static final int TASK_DETAIL_REQUEST_CODE = 491;
+    public static final String TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX = "TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX";
+    public static final String TASK_DETAIL_RETURN_TASK_POSITION = "TASK_DETAIL_RETURN_TASK_POSITION";
+    public static final String TASK_DETAIL_RETURN_TASK_TASK = "TASK_DETAIL_RETURN_TASK_TASK";
+    public static final String TASK_DETAIL_RETURN_ACTION_TYPE = "TASK_DETAIL_RETURN_ACTION_TYPE";
+    public static final int TASK_DETAIL_RETURN_ACTION_DELETED = 920;
+    public static final int TASK_DETAIL_RETURN_ACTION_EDITED = 921;
+    public static final int TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER = 922;
 
     //DATA
     private Task mTask;
@@ -80,9 +91,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private TextView mReminderSubtitle;
     private TextView mAttachmentsSubtitle;
     private TextView mReminderTitle;
-    private LinearLayout mDoneDateContainer;
-    private ImageView mDoneDateIcon;
-    private TextView mDoneDate;
+    private LinearLayout mDoneContainer;
+    private TextView mDone;
+    private LinearLayout mOverdueContainer;
+    private TextView mOverdue;
     private FloatingActionMenu mAttachmentsFabMenu;
     private FloatingActionButton mAttachmentsFabList;
     private FloatingActionButton mAttachmentsFabText;
@@ -106,10 +118,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
         mContainer = (LinearLayout) findViewById(R.id.activity_task_detail_container);
 
-        if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION)) {
+        if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(TASK_POSITION)) {
             mTask = (Task) getIntent().getSerializableExtra(TASK_TO_DISPLAY);
             mOldReminderJson = new Gson().toJson(mTask.getReminder());
-            mPosition = getIntent().getIntExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, -1);
+            mPosition = getIntent().getIntExtra(TASK_POSITION, -1);
         } else {
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override
@@ -129,9 +141,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mDescription = (TextView) findViewById(R.id.activity_task_detail_description);
         mReminderSubtitle = (TextView) findViewById(R.id.activity_task_detail_reminder_subtitle);
         mAttachmentsSubtitle = (TextView) findViewById(R.id.activity_task_detail_attachments_subtitle);
-        mDoneDateContainer = (LinearLayout) findViewById(R.id.activity_task_detail_done_date_container);
-        mDoneDateIcon = (ImageView) findViewById(R.id.activity_task_detail_done_date_icon);
-        mDoneDate = (TextView) findViewById(R.id.activity_task_detail_done_date);
+        mDoneContainer = (LinearLayout) findViewById(R.id.activity_task_detail_done_container);
+        mDone = (TextView) findViewById(R.id.activity_task_detail_done);
+        mOverdueContainer = (LinearLayout) findViewById(R.id.activity_task_detail_overdue_container);
+        mOverdue = (TextView) findViewById(R.id.activity_task_detail_overdue);
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_task_detail_recycler);
 
         mAttachmentsFabMenu = (FloatingActionMenu) findViewById(R.id.activity_task_detail_add_attachment);
@@ -158,17 +171,16 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mTitle.setText(mTask.getTitle());
         mDescription.setText(mTask.getDescription());
 
+
         if(mTask.getDoneDate() != null) {
-            mDoneDateContainer.setVisibility(View.VISIBLE);
-            mDoneDate.setText(mDateFormat.formatCalendar(mTask.getDoneDate()));
+            mDoneContainer.setVisibility(View.VISIBLE);
+            mDone.setText(mDateFormat.formatCalendar(mTask.getDoneDate()));
+        } else if(TaskUtil.checkIfOverdue(mTask.getReminder())) {
+            mOverdueContainer.setVisibility(View.VISIBLE);
+            mOverdue.setText(String.format(Locale.getDefault(), getResources().getString(R.string.activity_task_overdue_since), mDateFormat.formatCalendar(TaskUtil.getReminderEndDate(mTask.getReminder()))));
         } else {
-            if(TaskUtil.checkIfOverdue(mTask.getReminder())) {
-                mDoneDateIcon.setImageResource(R.drawable.icon_cross);
-                mDoneDateIcon.setColorFilter(ContextCompat.getColor(this, R.color.swipe_refresh_red));
-                mDoneDate.setText(String.format(Locale.getDefault(), getResources().getString(R.string.activity_task_overdue_since), mDateFormat.formatCalendar(TaskUtil.getReminderEndDate(mTask.getReminder()))));
-                mDoneDate.setTextColor(ContextCompat.getColor(this, R.color.swipe_refresh_red));
-                mDoneDateContainer.setVisibility(View.VISIBLE);
-            }
+            mDoneContainer.setVisibility(View.GONE);
+            mOverdueContainer.setVisibility(View.GONE);
         }
     }
 
@@ -260,12 +272,13 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 //See if reminder was edited, in which case refresh the whole home viewpager
                 String newReminderJson = new Gson().toJson(mTask.getReminder());
                 int taskDetailReturnActionType = (mOldReminderJson.equals(newReminderJson) ?
-                        HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER : HomeListFragment.TASK_DETAIL_RETURN_ACTION_EDITED);
+                        TASK_DETAIL_RETURN_ACTION_EDITED : TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER);
 
                 //Return task position to HomeListFragment, and also notify edition!!
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, taskDetailReturnActionType);
-                returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                returnIntent.putExtra(TASK_DETAIL_RETURN_ACTION_TYPE, taskDetailReturnActionType);
+                returnIntent.putExtra(TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                returnIntent.putExtra(TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX, getViewPagerIndexFromTask(mTask));
                 setResult(RESULT_OK, returnIntent);
                 supportFinishAfterTransition();     //When user backs out, transition back!
 
@@ -419,8 +432,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
                                     //Return task position to HomeListFragment, and also notify deletion
                                     Intent returnIntent = new Intent();
-                                    returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_ACTION_TYPE, HomeListFragment.TASK_DETAIL_RETURN_ACTION_DELETED);
-                                    returnIntent.putExtra(HomeListFragment.TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                                    returnIntent.putExtra(TASK_DETAIL_RETURN_ACTION_TYPE, TASK_DETAIL_RETURN_ACTION_DELETED);
+                                    returnIntent.putExtra(TASK_DETAIL_RETURN_TASK_POSITION, mPosition);
+                                    returnIntent.putExtra(TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX, getViewPagerIndexFromTask(mTask));
                                     setResult(RESULT_OK, returnIntent);
                                     finish();
                                 }
@@ -442,4 +456,21 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         dialog.show();
     }
 
+
+
+    private int getViewPagerIndexFromTask(Task task) {
+
+        boolean flag = SharedPreferenceUtil.getShowLocationBasedTasksInOwnTab(getApplicationContext());
+
+        if(task.getStatus().equals(TaskStatus.UNPROGRAMMED))
+            return 0;
+
+        if(task.getStatus().equals(TaskStatus.DONE))
+            return (flag ? 3 : 2);
+
+        if(task.getReminderType() == ReminderType.LOCATION_BASED)
+            return 1;
+
+        return (flag ? 2 : 1);
+    }
 }
