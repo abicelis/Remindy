@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginStart="12dp"
-                android:text="Repeating daily, every 9 days. Forever."
+                android:text="Every x days. Forever."
                 android:textSize="@dimen/text_size_medium" />
         </LinearLayout>
     </LinearLayout>
@@ -135,7 +135,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="70dp"
