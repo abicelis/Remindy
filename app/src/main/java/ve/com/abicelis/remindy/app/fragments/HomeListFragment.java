@@ -1,6 +1,5 @@
 package ve.com.abicelis.remindy.app.fragments;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,24 +32,14 @@ import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
-import static android.app.Activity.RESULT_OK;
-
 /**
  * Created by abice on 13/3/2017.
  */
 
 public class HomeListFragment extends Fragment {
 
-    public static final String TASK_TYPE_TO_DISPLAY = "TASK_TYPE_TO_DISPLAY";
+    public static final String ARGUMENT_TASK_TYPE_TO_DISPLAY = "ARGUMENT_TASK_TYPE_TO_DISPLAY";
     public static final String TAG = HomeListFragment.class.getSimpleName();
-
-    public static final int TASK_DETAIL_REQUEST_CODE = 491;
-    public static final String TASK_DETAIL_RETURN_TASK_POSITION = "TASK_DETAIL_RETURN_TASK_POSITION";
-    public static final String TASK_DETAIL_RETURN_ACTION_TYPE = "TASK_DETAIL_RETURN_ACTION_TYPE";
-    public static final int TASK_DETAIL_RETURN_ACTION_DELETED = 920;
-    public static final int TASK_DETAIL_RETURN_ACTION_EDITED = 921;
-    public static final int TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER = 922;
-
 
     //DATA
     private List<TaskViewModel> mTasks = new ArrayList<>();
@@ -72,9 +61,10 @@ public class HomeListFragment extends Fragment {
         setHasOptionsMenu(true);
 
         try {
-            mReminderTypeToDisplay = (ViewPagerTaskDisplayType)getArguments().getSerializable(TASK_TYPE_TO_DISPLAY);
+            mReminderTypeToDisplay = (ViewPagerTaskDisplayType)getArguments().getSerializable(ARGUMENT_TASK_TYPE_TO_DISPLAY);
         }catch (NullPointerException e) {
-            Toast.makeText(getActivity(), "Error! mReminderTypeToDisplay == null", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Error! mReminderTypeToDisplay == null" + e.getMessage());
+            SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, null);
         }
 
     }
@@ -194,54 +184,29 @@ public class HomeListFragment extends Fragment {
         }
     }
 
-
     private boolean getShowLocationBasedReminderInNewTabValue() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         return preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
     }
 
-
-
-    /**
-     * Comes from the various Task ViewHolders, which call TaskDetailActivity
-     * and may return with a deleted or edited task
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TASK_DETAIL_REQUEST_CODE && resultCode == RESULT_OK) {     //Task has been deleted or edited
-
-            //Try to get TASK_DETAIL_RETURN_TASK_POSITION and TASK_DETAIL_RETURN_ACTION_TYPE
-            if (data.hasExtra(TASK_DETAIL_RETURN_TASK_POSITION) && data.hasExtra(TASK_DETAIL_RETURN_ACTION_TYPE)) {
-                int position = data.getIntExtra(TASK_DETAIL_RETURN_TASK_POSITION, -1);
-
-                switch (data.getIntExtra(TASK_DETAIL_RETURN_ACTION_TYPE, -1)) {
-                    case TASK_DETAIL_RETURN_ACTION_DELETED:
-                        //Task was deleted, remove from recycler
-                        mTasks.remove(position);
-                        mAdapter.notifyItemRemoved(position);
-                        mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
-                        break;
-                    case TASK_DETAIL_RETURN_ACTION_EDITED:
-                    case TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER:
-
-                        //TODO: check if edited task has a different reminder type.. or an entirely different date.. if so it probably wont sort in the position it was....
-                        //Need to move this code from this fragment and into the parent HomeActivity so that it refreshes the whole viewpager maybe ?
-                        // :(
-
-                        //Task was edited, refresh task info and refresh recycler
-                        try {
-                            Task task = mDao.getTask(mTasks.get(position).getTask().getId());
-                            TaskViewModel taskViewModel = new TaskViewModel(task, ConversionUtil.taskReminderTypeToTaskViewmodelType(task.getReminderType()));
-                            mTasks.set(position, taskViewModel);
-                            mAdapter.notifyItemChanged(position);
-                        }catch (CouldNotGetDataException e) {
-                            SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_updating_task_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
-                        }
-                        break;
-                }
-            }
+    /* Called from HomeActivity.onActivityResult() */
+    public void updateViewholderItem(int position) {
+        //Task was edited, refresh task info and refresh recycler
+        try {
+            Task task = mDao.getTask(mTasks.get(position).getTask().getId());
+            TaskViewModel taskViewModel = new TaskViewModel(task, ConversionUtil.taskReminderTypeToTaskViewmodelType(task.getReminderType()));
+            mTasks.set(position, taskViewModel);
+            mAdapter.notifyItemChanged(position);
+        }catch (CouldNotGetDataException e) {
+            SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_updating_task_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
         }
+    }
+
+    /* Called from HomeActivity.onActivityResult() */
+    public void removeViewHolderItem(int position) {
+        mTasks.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
     }
 
 
