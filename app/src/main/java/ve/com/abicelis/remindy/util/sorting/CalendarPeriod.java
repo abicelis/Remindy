@@ -2,7 +2,7 @@ package ve.com.abicelis.remindy.util.sorting;
 
 import java.util.Calendar;
 
-import ve.com.abicelis.remindy.util.TaskUtil;
+import ve.com.abicelis.remindy.util.CalendarUtil;
 
 /**
  * Created by abice on 22/4/2017.
@@ -32,21 +32,21 @@ public class CalendarPeriod {
                 start.add(Calendar.YEAR, -1);
                 start.set(Calendar.MONTH, 0);
                 start.set(Calendar.DAY_OF_MONTH, 1);
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.YEAR, 1);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
             case LAST_MONTH:
                 start.set(Calendar.DAY_OF_MONTH, 1);
                 start.add(Calendar.MONTH, -1);
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.MONTH, 1);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
             case LAST_WEEK:
                 start.set(Calendar.DAY_OF_WEEK, start.getFirstDayOfWeek());
                 start.add(Calendar.WEEK_OF_MONTH, -1);
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.DAY_OF_MONTH, 7);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
@@ -69,34 +69,34 @@ public class CalendarPeriod {
                 break;
             case THIS_WEEK:
                 start.set(Calendar.DAY_OF_WEEK, start.getFirstDayOfWeek());
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.DAY_OF_MONTH, 7);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
             case NEXT_WEEK:
                 start.add(Calendar.WEEK_OF_YEAR, 1);
                 start.set(Calendar.DAY_OF_WEEK, start.getFirstDayOfWeek());
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.DAY_OF_MONTH, 7);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
             case THIS_MONTH:
                 start.set(Calendar.DAY_OF_MONTH, 1);
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.MONTH, 1);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
             case NEXT_MONTH:
                 start.set(Calendar.DAY_OF_MONTH, 1);
                 start.add(Calendar.MONTH, 1);
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.MONTH, 1);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
             case THIS_YEAR:
                 start.set(Calendar.MONTH, 0);
                 start.set(Calendar.DAY_OF_MONTH, 1);
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.YEAR, 1);
                 end.add(Calendar.MILLISECOND, -1);
                 break;
@@ -104,7 +104,7 @@ public class CalendarPeriod {
                 start.add(Calendar.YEAR, 1);
                 start.set(Calendar.MONTH, 0);
                 start.set(Calendar.DAY_OF_MONTH, 1);
-                TaskUtil.copyCalendar(start, end);
+                CalendarUtil.copyCalendar(start, end);
                 end.add(Calendar.YEAR, 1);
                 end.add(Calendar.MILLISECOND, -1);
                 break;

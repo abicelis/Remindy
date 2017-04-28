@@ -16,4 +16,12 @@ public class CalendarUtil {
         cal.set(Calendar.MILLISECOND, 0);
         return cal;
     }
+
+    public static void copyCalendar(Calendar copyFrom, Calendar copyTo) {
+        if(copyFrom == null || copyTo == null)
+            throw new NullPointerException("One of both parameters are null");
+
+        copyTo.setTimeZone(copyFrom.getTimeZone());
+        copyTo.setTimeInMillis(copyFrom.getTimeInMillis());
+    }
 }

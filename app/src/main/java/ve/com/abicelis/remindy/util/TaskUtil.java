@@ -26,8 +26,7 @@ public class TaskUtil {
         Calendar endDate = getReminderEndDate(reminder);
         if(endDate == null)
             return false;
-        else return overdueCP.isInPeriod(endDate);
-
+        return overdueCP.isInPeriod(endDate);
     }
 
 
@@ -59,11 +58,11 @@ public class TaskUtil {
                 break;
 
             case UNTIL_DATE:
-                copyCalendar(repeatingReminder.getRepeatEndDate(), cal);
+                CalendarUtil.copyCalendar(repeatingReminder.getRepeatEndDate(), cal);
                 break;
 
             case FOR_X_EVENTS:
-                copyCalendar(repeatingReminder.getDate(), cal);
+                CalendarUtil.copyCalendar(repeatingReminder.getDate(), cal);
                 int dateField = getDateFieldFromRepeatType(repeatingReminder.getRepeatType());
 
                 for (int i = 0; i < repeatingReminder.getRepeatEndNumberOfEvents(); i++)
@@ -78,7 +77,7 @@ public class TaskUtil {
 
         Calendar today = Calendar.getInstance();
         Calendar cal = Calendar.getInstance();
-        copyCalendar(repeatingReminder.getDate(), cal);
+        CalendarUtil.copyCalendar(repeatingReminder.getDate(), cal);
 
         //TODO: Cant use getDateFieldFromRepeatType(), Gives off a weird warning
         //final int dateField = getDateFieldFromRepeatType(repeatingReminder.getRepeatType());
@@ -114,11 +113,5 @@ public class TaskUtil {
         }
     }
 
-    public static void copyCalendar(Calendar copyFrom, Calendar copyTo) {
-        if(copyFrom == null || copyTo == null)
-            throw new NullPointerException("One of both parameters are null");
 
-        copyTo.setTimeZone(copyFrom.getTimeZone());
-        copyTo.setTimeInMillis(copyFrom.getTimeInMillis());
-    }
 }
