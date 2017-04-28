@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.NestedScrollView
+        <ve.com.abicelis.remindy.app.views.BetterNestedScrollView
             android:id="@+id/activity_task_detail_scrollview_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -141,13 +141,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     />
 
 
 
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </ve.com.abicelis.remindy.app.views.BetterNestedScrollView>
 
         
         <com.github.clans.fab.FloatingActionMenu

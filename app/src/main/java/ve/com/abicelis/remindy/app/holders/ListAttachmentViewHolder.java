@@ -66,7 +66,7 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
     private void setUpRecyclerView() {
         List<ListItemAttachment> items = mCurrent.getItems();
 
-        //if(items.size() == 0)                       //List is empty, add a blank item
+        if(items.size() == 0 || items.get(items.size()-1).getText() != null)   //If no items or last item of list isn't blank, add a blank item
             items.add(new ListItemAttachment());
 
         mLayoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
@@ -81,6 +81,7 @@ public class ListAttachmentViewHolder extends RecyclerView.ViewHolder implements
         DividerItemDecoration itemDecoration = new DividerItemDecoration(mActivity, mLayoutManager.getOrientation());
         itemDecoration.setDrawable(ContextCompat.getDrawable(mActivity, R.drawable.item_decoration_complete_line));
 
+        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.addItemDecoration(itemDecoration);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mListItemAdapter);
