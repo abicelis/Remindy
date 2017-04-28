@@ -57,7 +57,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
 
     //DATA
     private List<String> mTaskCategories;
-    private int mAddAttachmentHintState = 0;
+    private boolean mAddAttachmentHintVisible;
+    private boolean mHeadersVisible;
     private boolean mAttachmentLongClickOptionsDialogHintShown;
     private Task mTask = new Task();
     private AttachmentAdapter mAdapter;
@@ -131,6 +132,13 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
         });
         mTaskCategory = (Spinner) rootView.findViewById(R.id.fragment_task_category);
         mAttachmentsFabHint = (TextView) rootView.findViewById(R.id.fragment_task_add_attachment_hint);
+        if(mTask.getAttachments().size() == 0) {
+            mAttachmentsFabHint.setVisibility(View.VISIBLE);
+            mAddAttachmentHintVisible = true;
+        } else {
+            fadeInHeaders();
+            mHeadersVisible = true;
+        }
 
         mAttachmentsFabMenu = (FloatingActionMenu) rootView.findViewById(R.id.fragment_task_add_attachment);
         mAttachmentsFabMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
@@ -139,9 +147,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
                 //Hide keyboard
                 ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mContainer.getWindowToken(), 0);
 
-                if(mAddAttachmentHintState == 1) {     //Slide out FAB hint
-                    mAddAttachmentHintState = 2;
-
+                if(mAddAttachmentHintVisible) {     //Slide out FAB hint
                     TransitionManager.beginDelayedTransition(mContainer, new Slide(Gravity.START));
                     mAttachmentsFabHint.setVisibility(View.INVISIBLE);
                 }
@@ -159,6 +165,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
         mAttachmentsFabImage.setOnClickListener(this);
         mAttachmentsFabAudio.setOnClickListener(this);
 
+        //Hide keyboard
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mContainer.getWindowToken(), 0);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fragment_task_recycler);
         mNoItemsContainer = (RelativeLayout) rootView.findViewById(R.id.fragment_task_no_items_container);
@@ -169,18 +177,6 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
 
         return rootView;
     }
-
-    
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        //Slide in FAB hint
-//        if(mAddAttachmentHintState == 0) {
-//            mAddAttachmentHintState = 1;
-//            TransitionManager.beginDelayedTransition(mContainer, new Slide(Gravity.START));
-//            mAttachmentsFabHint.setVisibility(View.VISIBLE);
-//        }
-//
-//    }
 
     private void setUpRecyclerView() {
 
@@ -213,7 +209,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
     private void setTaskValues() {
         mTaskTitle.setText(mTask.getTitle());
         mTaskDescription.setText(mTask.getDescription());
-        mTaskCategory.setSelection(mTask.getCategory().ordinal());
+        if(mTask.getCategory() != null)
+            mTaskCategory.setSelection(mTask.getCategory().ordinal());
     }
 
 
@@ -232,45 +229,48 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
         int id = v.getId();
         mAttachmentsFabMenu.close(true);
 
-        if(mAddAttachmentHintState == 2) {
-            mAddAttachmentHintState = 3;
-
-            //Fade in headers
-            TransitionManager.beginDelayedTransition(mContainer);
-            mHeaderBasicInfo.setVisibility(View.VISIBLE);
-            mHeaderAttachments.setVisibility(View.VISIBLE);
-
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mContainerBasicInfo.getLayoutParams();
-            lp.setMargins(ConversionUtil.dpToPx(16, getResources()), 0, 0, 0);
-            mContainerBasicInfo.setLayoutParams(lp);
-
+        if(!mHeadersVisible) {
+            fadeInHeaders();
+            mHeadersVisible = true;
         }
 
         switch (id) {
-            case R.id.activity_new_task_add_list_attachment:
+            case R.id.fragment_task_add_list_attachment:
                 addAttachment(new ListAttachment());
                 break;
 
-            case R.id.activity_new_task_add_text_attachment:
+            case R.id.fragment_task_add_text_attachment:
                 addAttachment(new TextAttachment(""));
                 break;
 
-            case R.id.activity_new_task_add_link_attachment:
+            case R.id.fragment_task_add_link_attachment:
                 addAttachment(new LinkAttachment(""));
                 break;
 
-            case R.id.activity_new_task_add_image_attachment:
+            case R.id.fragment_task_add_image_attachment:
                 addAttachment(new ImageAttachment());
                 break;
 
-            case R.id.activity_new_task_add_audio_attachment:
+            case R.id.fragment_task_add_audio_attachment:
                 addAttachment(new AudioAttachment());
                 break;
         }
         //Scroll to added item
-        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+        if(mAdapter.getItemCount() > 0)
+            mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
     }
 
+
+    private void fadeInHeaders() {
+        //Fade in headers
+        TransitionManager.beginDelayedTransition(mContainer);
+        mHeaderBasicInfo.setVisibility(View.VISIBLE);
+        mHeaderAttachments.setVisibility(View.VISIBLE);
+
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mContainerBasicInfo.getLayoutParams();
+        lp.setMargins(ConversionUtil.dpToPx(16, getResources()), 0, 0, 0);
+        mContainerBasicInfo.setLayoutParams(lp);
+    }
 
 
     @Override
