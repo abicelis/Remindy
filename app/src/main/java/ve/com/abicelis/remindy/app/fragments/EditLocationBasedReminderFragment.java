@@ -50,7 +50,7 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
     private List<String> mPlaceTypes = new ArrayList<>();
     private List<Place> mPlaces;
     private LocationBasedReminder mReminder;
-    private boolean mDontSetEnteringFlag;
+    private boolean mSetEnteringFlag = true;
 
     //UI
     private Spinner mPlace;
@@ -146,14 +146,13 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
     }
 
     private void setReminderValues() {
-        mDontSetEnteringFlag = true;
+        mSetEnteringFlag = false;
         if(mReminder.getPlace() != null) {
             for (int i = 0; i < mPlaces.size(); i++ ) {
                 if(mReminder.getPlace().equals(mPlaces.get(i)))
                     mPlace.setSelection(i);
             }
         }
-        mDontSetEnteringFlag = false;
 
         mEntering.setChecked(mReminder.isEntering());
     }
@@ -166,11 +165,13 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
         mReminder.setPlaceId(selectedPlace.getId());
         mAddress.setText(selectedPlace.getAddress());
 
-        if(mDontSetEnteringFlag) {
+        if(mSetEnteringFlag) {
             mReminder.setEntering(true);
             mEntering.setChecked(true);
         }
 
+        //Reset flag if used
+        mSetEnteringFlag = true;
         updateMapView();
     }
 
