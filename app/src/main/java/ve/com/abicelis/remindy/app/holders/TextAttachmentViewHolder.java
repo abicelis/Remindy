@@ -57,7 +57,7 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
 
 
     public void setListeners() {
-        mContainer.setOnClickListener(this);
+        mText.setOnClickListener(this);
         mContainer.setOnLongClickListener(this);
     }
 
@@ -68,8 +68,8 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
 
         int id = view.getId();
         switch (id) {
-            case R.id.item_attachment_text_container:
-                handleTextEdit();
+            case R.id.item_attachment_text_content:
+                handleTextCopy();
                 break;
         }
     }
@@ -92,7 +92,7 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
 
                                 switch (which) {
                                     case 0:
-                                        ClipboardUtil.copyToClipboard(mActivity, mCurrent.getText());
+                                        handleTextCopy();
                                         break;
                                     case 1:
                                         handleTextEdit();
@@ -109,6 +109,10 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         }
         return false;
 
+    }
+
+    private void handleTextCopy() {
+        ClipboardUtil.copyToClipboard(mActivity, mCurrent.getText());
     }
 
     private void handleTextEdit(){
