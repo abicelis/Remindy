@@ -57,6 +57,7 @@ public class EditTextAttachmentDialogFragment extends DialogFragment implements 
 
         mText = (EditText) dialogView.findViewById(R.id.dialog_edit_text_attachment_text);
         mText.setText(text);
+        mText.setSelection(mText.getText().length());
 
         mOk = (Button) dialogView.findViewById(R.id.dialog_edit_text_attachment_ok);
         mOk.setOnClickListener(this);

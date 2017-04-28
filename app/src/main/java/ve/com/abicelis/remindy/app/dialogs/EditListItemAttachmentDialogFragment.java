@@ -62,6 +62,7 @@ public class EditListItemAttachmentDialogFragment extends DialogFragment impleme
 
         mText = (EditText) dialogView.findViewById(R.id.dialog_edit_list_item_attachment_text);
         mText.setText(text);
+        mText.setSelection(mText.getText().length());
 
         mOk = (Button) dialogView.findViewById(R.id.dialog_edit_list_item_attachment_ok);
         mOk.setOnClickListener(this);
