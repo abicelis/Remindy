@@ -1,5 +1,7 @@
 package ve.com.abicelis.remindy.model.attachment;
 
+import android.util.Patterns;
+
 import java.util.regex.Pattern;
 
 import ve.com.abicelis.remindy.enums.AttachmentType;
@@ -31,14 +33,12 @@ public class LinkAttachment extends Attachment {
         return link;
     }
     public void setLink(String link) throws MalformedLinkException {
-        //if(isValid(link))
+        if(isValid(link))
             this.link = link;
-        //else
-        //    throw new MalformedLinkException("Link '" + link + "' is invalid");
+        else
+            throw new MalformedLinkException("Link '" + link + "' is invalid");
     }
-//    private boolean isValid(String link) {
-//        //TODO: LINK REGEX HEREEE
-//        Pattern mDomainPattern = Pattern.compile("LINK REGEX");
-//        return (mDomainPattern.matcher((link)).matches());
-//    }
+    private boolean isValid(String link) {
+        return Patterns.WEB_URL.matcher(link).matches();
+    }
 }
