@@ -80,7 +80,11 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
 
                 if (mImageAttachment.getImageFilename() != null && !mImageAttachment.getImageFilename().isEmpty()) {
                     Bitmap imageBitmap = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
-                    mImage.setImageBitmap(imageBitmap);
+                    if(imageBitmap == null) {
+                        SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_edit_image_attachment_snackbar_error_image_deleted_from_device, SnackbarUtil.SnackbarDuration.LONG, null);
+                        mImage.setImageBitmap(ImageUtil.getBitmap(mImageAttachment.getThumbnail()));
+                    } else
+                        mImage.setImageBitmap(imageBitmap);
                 } else {
                     BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         @Override
@@ -90,7 +94,7 @@ public class ViewImageAttachmentActivity extends AppCompatActivity implements Vi
                             finish();
                         }
                     };
-                    Log.e(TAG, "Invalid image filenam value in HOLDER_POSITION_EXTRA in ViewImageAttachmentActivity.");
+                    Log.e(TAG, "Invalid image filename value in HOLDER_POSITION_EXTRA in ViewImageAttachmentActivity.");
                     SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, callback);
                     finish();
                 }

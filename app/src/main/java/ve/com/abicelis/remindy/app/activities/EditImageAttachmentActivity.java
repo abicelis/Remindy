@@ -99,6 +99,11 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
             mEditingExistingImageAttachment = savedInstanceState.getBoolean(EDITING_ATTACHMENT_EXTRA);
 
             mImageBackup = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
+            if(mImageBackup == null) {  //IF image was deleted from device
+                mImageBackup = ImageUtil.getBitmap(mImageAttachment.getThumbnail());
+                saveThumbnailAsImageFile(mImageBackup);
+            }
+
             mImage.setImageBitmap(mImageBackup);
         } else {
 
@@ -108,6 +113,11 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
 
                 if (mImageAttachment.getImageFilename() != null && !mImageAttachment.getImageFilename().isEmpty()) {
                     mImageBackup = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
+                    if(mImageBackup == null) {  //IF image was deleted from device
+                        mImageBackup = ImageUtil.getBitmap(mImageAttachment.getThumbnail());
+                        saveThumbnailAsImageFile(mImageBackup);
+                    }
+
                     mEditingExistingImageAttachment = true;
                     mImage.setImageBitmap(mImageBackup);
 
@@ -144,6 +154,25 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
         mCamera.setOnClickListener(this);
         mOk.setOnClickListener(this);
         mCancel.setOnClickListener(this);
+    }
+
+    private void saveThumbnailAsImageFile(Bitmap thumbnail) {
+        File imageFile = new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename());
+        try {
+            ImageUtil.saveBitmapAsJpeg(imageFile, thumbnail, IMAGE_COMPRESSION_PERCENTAGE);
+            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_edit_image_attachment_snackbar_error_image_deleted_from_device, SnackbarUtil.SnackbarDuration.LONG, null);
+
+        }catch (IOException e) {
+            BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+            };
+            SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, callback);
+        }
     }
 
     @Override
