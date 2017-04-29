@@ -69,7 +69,7 @@ public class OneTimeReminderDetailFragment extends Fragment {
         mTime = (TextView) rootView.findViewById(R.id.fragment_reminder_one_time_time);
 
         DateFormat df = SharedPreferenceUtil.getDateFormat(getActivity());
-        mDate.setText(df.formatCalendar(mReminder.getDate()));                  //TODO: Set date icon color to red if task is overdue
+        mDate.setText(df.formatCalendar(mReminder.getDate()));
         mTime.setText(mReminder.getTime().toString());
 
         return rootView;
