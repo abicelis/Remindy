@@ -26,11 +26,13 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.TaskViewPagerAdapter;
 import ve.com.abicelis.remindy.app.fragments.ReminderFragment;
 import ve.com.abicelis.remindy.app.fragments.TaskFragment;
+import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
@@ -335,60 +337,27 @@ public class TaskActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on EditImageAttachmentActivity
-//        if(requestCode == EditImageAttachmentActivity.EDIT_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
-//            int position = data.getIntExtra(EditImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
-//            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(EditImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
-//            if(position != -1) {
-//                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
-//                holder.updateImageAttachment(imageAttachment);
-//            }
-//        }
-//
-//        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on ViewImageAttachmentActivity
-//        if(requestCode == ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
-//            int position = data.getIntExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
-//            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
-//            if(position != -1) {
-//                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(position);
-//                holder.updateImageAttachment(imageAttachment);
-//            }
-//        }
+        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on EditImageAttachmentActivity
+        if(requestCode == EditImageAttachmentActivity.EDIT_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra(EditImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
+            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(EditImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
+            if(position != -1) {
+                TaskFragment taskFragment = (TaskFragment) mTaskViewPagerAdapter.getRegisteredFragment(0);
+                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) taskFragment.mRecyclerView.findViewHolderForAdapterPosition(position);
+                holder.updateImageAttachment(imageAttachment);
+            }
+        }
 
-
-
-
-
-
-
-
-//        if (requestCode == NEW_TASK_REQUEST_CODE && resultCode == RESULT_OK) {
-//            //Try to get NEW_TASK_RETURN_REMINDER_TYPE
-//            ReminderType rt;
-//            if (data.hasExtra(NEW_TASK_RETURN_REMINDER_TYPE)) {
-//                rt = (ReminderType) data.getSerializableExtra(NEW_TASK_RETURN_REMINDER_TYPE);
-//
-//                switch (rt) {
-//                    case NONE:
-//                        mtaskViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();
-//                        break;
-//
-//                    case LOCATION_BASED:
-//                        mtaskViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();          //Location based tasks will always be in tab #1
-//                        break;
-//
-//                    case ONE_TIME:
-//                    case REPEATING:
-//                        if (mShowLocationBasedTasksInOwnViewPagerTab)
-//                            mtaskViewPagerAdapter.getRegisteredFragment(2).refreshRecyclerView();      //These tasks are in tab 2.
-//                        else
-//                            mtaskViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();      //Otherwise refresh tab 1, where all programmed tasks are.
-//                        break;
-//                }
-//            } else {
-//                setupViewPagerAndTabLayout();   //Just refresh everything
-//            }
-//        }
+        //This request comes from ImageAttachmentViewHolder calling startActivityForResult() on ViewImageAttachmentActivity
+        if(requestCode == ViewImageAttachmentActivity.VIEW_IMAGE_ATTACHMENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            int position = data.getIntExtra(ViewImageAttachmentActivity.HOLDER_POSITION_EXTRA, -1);
+            ImageAttachment imageAttachment = (ImageAttachment) data.getSerializableExtra(ViewImageAttachmentActivity.IMAGE_ATTACHMENT_EXTRA);
+            if(position != -1) {
+                TaskFragment taskFragment = (TaskFragment) mTaskViewPagerAdapter.getRegisteredFragment(0);
+                ImageAttachmentViewHolder holder = (ImageAttachmentViewHolder) taskFragment.mRecyclerView.findViewHolderForAdapterPosition(position);
+                holder.updateImageAttachment(imageAttachment);
+            }
+        }
     }
 
 }
