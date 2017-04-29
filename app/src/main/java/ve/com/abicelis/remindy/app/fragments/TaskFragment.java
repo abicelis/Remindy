@@ -79,7 +79,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
     private FloatingActionButton mAttachmentsFabImage;
     private FloatingActionButton mAttachmentsFabAudio;
 
-    private RecyclerView mRecyclerView;
+    public RecyclerView mRecyclerView;          //Public, accessed from TaskActivity
     private LinearLayoutManager mLayoutManager;
     private RelativeLayout mNoItemsContainer;
 
@@ -194,6 +194,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), mLayoutManager.getOrientation());
         itemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.item_decoration_half_line));
 
+        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.addItemDecoration(itemDecoration);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
@@ -277,8 +278,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener, Task
     public void updateData() {
         TaskCategory category = TaskCategory.values()[mTaskCategory.getSelectedItemPosition()];
         mTask.setCategory(category);
-        mTask.setTitle(mTaskTitle.getText().toString());
-        mTask.setDescription(mTaskDescription.getText().toString());
+        mTask.setTitle(mTaskTitle.getText().toString().trim());
+        mTask.setDescription(mTaskDescription.getText().toString().trim());
     }
 
 }
