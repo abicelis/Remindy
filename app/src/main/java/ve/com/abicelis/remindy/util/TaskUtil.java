@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.Calendar;
 
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
+import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.Reminder;
@@ -22,10 +23,16 @@ public class TaskUtil {
         if(reminder == null)
             return false;
 
+        if(reminder.getType().equals(ReminderType.LOCATION_BASED))
+            return false;
+
+        if(reminder.getType().equals(ReminderType.REPEATING)) {
+            return ( getRepeatingReminderNextDate((RepeatingReminder) reminder) == null );
+        }
+
+        //For OneTime reminders
         CalendarPeriod overdueCP = new CalendarPeriod(CalendarPeriodType.OVERDUE);
         Calendar endDate = getReminderEndDate(reminder);
-        if(endDate == null)
-            return false;
         return overdueCP.isInPeriod(endDate);
     }
 
@@ -75,18 +82,21 @@ public class TaskUtil {
 
     public static Calendar getRepeatingReminderNextDate(RepeatingReminder repeatingReminder) {
 
-        Calendar today = Calendar.getInstance();
+        Calendar today = CalendarUtil.getNewInstanceZeroedCalendar();
+        Calendar endDate = getRepeatingReminderEndDate(repeatingReminder);
         Calendar cal = Calendar.getInstance();
         CalendarUtil.copyCalendar(repeatingReminder.getDate(), cal);
 
         //TODO: Cant use getDateFieldFromRepeatType(), Gives off a weird warning
         //final int dateField = getDateFieldFromRepeatType(repeatingReminder.getRepeatType());
 
-        if(checkIfOverdue(repeatingReminder))
-            return null;
+
         while(true) {
-            if(cal.compareTo(today) >= 0)
+            if (cal.compareTo(endDate) >= 0)    //If cal passed endDate, reminder is overdue, return null
+                return null;
+            if(cal.compareTo(today) >= 0) {
                 return cal;
+            }
 
             //TODO: Cant use getDateFieldFromRepeatType(), Gives off a weird warning
             //cal.add(dateField, repeatingReminder.getRepeatInterval()); break;
@@ -97,10 +107,8 @@ public class TaskUtil {
                 case YEARLY: cal.add(Calendar.YEAR, repeatingReminder.getRepeatInterval()); break;
                 default: throw new InvalidParameterException("Invalid RepeatType parameter in TaskUtil.getRepeatingReminderEndDate()");
             }
-
         }
     }
-
 
     private static int getDateFieldFromRepeatType(ReminderRepeatType repeatType) {
 
