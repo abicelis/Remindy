@@ -335,6 +335,7 @@
     <string name="activity_edit_image_attachment_snackbar_error_no_camera_installed">Cannot take image, no camera app in device</string>
     <string name="activity_edit_image_attachment_snackbar_error_no_permissions">Please grant Remindy the required permissions</string>
     <string name="activity_edit_image_attachment_snackbar_error_loading_cropped_image">Could not load cropped image</string>
+    <string name="activity_edit_image_attachment_snackbar_error_image_deleted_from_device">Image deleted from device, using low-res thumbnail</string>
 
     /* Activity View Image Attachment*/
     <string name="activity_view_image_attachment_title">Image Attachment</string>
@@ -437,7 +438,7 @@
     <string name="dialog_text_attachment_options_copy">Copy text</string>
     <string name="dialog_text_attachment_options_edit">Edit text</string>
     <string name="dialog_text_attachment_options_delete">Delete attachment</string>
-    <string name="dialog_text_attachment_text_copied_clipboard">Text copied to clipboard</string>
+    <string name="dialog_text_attachment_text_copied_clipboard">\'%1$s\' copied to clipboard</string>
 
     /* Link Attachment ViewHolder */
     <string name="dialog_link_attachment_options_copy">Copy link</string>
