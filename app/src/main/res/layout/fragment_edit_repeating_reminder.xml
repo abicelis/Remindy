@@ -165,7 +165,8 @@
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:inputType="number"
+                    android:focusable="false"
+                    android:inputType="none"
                     android:text="1" />
 
                 <TextView
@@ -201,7 +202,8 @@
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:inputType="number"
+                    android:focusable="false"
+                    android:inputType="none"
                     android:text="1" />
 
                 <TextView
