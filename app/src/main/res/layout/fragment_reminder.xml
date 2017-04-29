@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_reminder_container"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp">
-
-    <TextView
-        android:layout_width="wrap_content"
+    android:layout_width="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_reminder_container"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/fragment_reminder_reminder_type"/>
-
-    <Spinner
-        android:id="@+id/fragment_reminder_reminder_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        style="@style/Widget.AppCompat.Spinner.Underlined"
-        android:theme="@style/SpinnerStyle"/>
-
-    <FrameLayout
-        android:id="@+id/fragment_reminder_reminder_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/fragment_reminder_reminder_type"/>
+
+        <Spinner
+            android:id="@+id/fragment_reminder_reminder_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:theme="@style/SpinnerStyle"/>
+
+        <FrameLayout
+            android:id="@+id/fragment_reminder_reminder_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            />
+    </LinearLayout>
+</ScrollView>
