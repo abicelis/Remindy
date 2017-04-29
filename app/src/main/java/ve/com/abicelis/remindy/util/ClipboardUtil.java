@@ -6,6 +6,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 import ve.com.abicelis.remindy.R;
 
 /**
@@ -18,7 +20,8 @@ public class ClipboardUtil {
         ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Remindy text", textToCopy);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(activity, R.string.dialog_text_attachment_text_copied_clipboard, Toast.LENGTH_SHORT).show();
 
+        String toastMsg = String.format(Locale.getDefault(), activity.getResources().getString(R.string.dialog_text_attachment_text_copied_clipboard), textToCopy);
+        Toast.makeText(activity, toastMsg, Toast.LENGTH_SHORT).show();
     }
 }
