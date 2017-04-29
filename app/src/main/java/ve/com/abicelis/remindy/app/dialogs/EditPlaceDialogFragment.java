@@ -76,7 +76,7 @@ public class EditPlaceDialogFragment extends DialogFragment implements View.OnCl
                 break;
 
             case R.id.dialog_edit_place_ok:
-                mListener.onFinishEditPlaceDialog(mAlias.getText().toString(), mAddress.getText().toString());
+                mListener.onFinishEditPlaceDialog(mAlias.getText().toString().trim(), mAddress.getText().toString().trim());
                 dismiss();
                 break;
         }

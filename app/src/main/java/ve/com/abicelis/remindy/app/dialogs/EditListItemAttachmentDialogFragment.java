@@ -85,9 +85,9 @@ public class EditListItemAttachmentDialogFragment extends DialogFragment impleme
                 break;
 
             case R.id.dialog_edit_list_item_attachment_ok:
-                if(!mText.getText().toString().isEmpty()) {
+                if(!mText.getText().toString().trim().isEmpty()) {
 
-                    mListener.onFinishEditListItemAttachmentDialog(mText.getText().toString(), isANewItem);
+                    mListener.onFinishEditListItemAttachmentDialog(mText.getText().toString().trim(), isANewItem);
 
                     //Hide keyboard
                     ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mText.getWindowToken(), 0);

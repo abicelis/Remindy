@@ -81,7 +81,7 @@ public class EditLinkAttachmentDialogFragment extends DialogFragment implements 
                 break;
 
             case R.id.dialog_edit_link_attachment_ok:
-                String link = mLink.getText().toString();
+                String link = mLink.getText().toString().trim();
                 if(!link.isEmpty() && Patterns.WEB_URL.matcher(link).matches()) {
                     mListener.onFinishEditLinkAttachmentDialog(mLink.getText().toString());
 

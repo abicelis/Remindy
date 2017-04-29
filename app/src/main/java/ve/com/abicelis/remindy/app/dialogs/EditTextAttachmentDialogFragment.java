@@ -80,9 +80,9 @@ public class EditTextAttachmentDialogFragment extends DialogFragment implements 
                 break;
 
             case R.id.dialog_edit_text_attachment_ok:
-                if(!mText.getText().toString().isEmpty()) {
+                if(!mText.getText().toString().trim().isEmpty()) {
 
-                    mListener.onFinishEditTextAttachmentDialog(mText.getText().toString());
+                    mListener.onFinishEditTextAttachmentDialog(mText.getText().toString().trim());
 
                     //Hide keyboard
                     ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mText.getWindowToken(), 0);
