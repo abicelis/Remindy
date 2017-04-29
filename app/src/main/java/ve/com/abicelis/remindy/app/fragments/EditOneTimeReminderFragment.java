@@ -20,6 +20,7 @@ import ve.com.abicelis.remindy.app.interfaces.TaskDataInterface;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
+import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 
@@ -46,21 +47,17 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-//        //If a state was saved (such as when rotating the device), restore the state!
-//        if(savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_STATE_REMINDER_KEY)) {
-//            mReminder = (RepeatingReminder) savedInstanceState.getSerializable(INSTANCE_STATE_REMINDER_KEY);
-//        }
-
-
         //If fragment was just called, expect a reminder at REMINDER_ARGUMENT
         if(getArguments().containsKey(REMINDER_ARGUMENT))
             mReminder = (OneTimeReminder) getArguments().getSerializable(REMINDER_ARGUMENT);
+
         else
             Toast.makeText(getActivity(), getResources().getString(R.string.error_unexpected), Toast.LENGTH_SHORT).show();
 
 
         mDateFormat = SharedPreferenceUtil.getDateFormat(getActivity());
     }
+
 
     @Nullable
     @Override
@@ -97,7 +94,6 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
                                 mDate.setText(mDateFormat.formatCalendar(mReminder.getDate()));
                             }
                         })
-                        .setFirstDayOfWeek(Calendar.MONDAY)
                         .setPreselectedDate(mToday.get(Calendar.YEAR), mToday.get(Calendar.MONTH), mToday.get(Calendar.DAY_OF_MONTH))
                         .setDateRange(new MonthAdapter.CalendarDay(mToday), null)
                         .setDoneText(getResources().getString(R.string.datepicker_ok))

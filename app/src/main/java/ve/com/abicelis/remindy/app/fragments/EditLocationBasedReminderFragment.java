@@ -67,12 +67,6 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-//        //If a state was saved (such as when rotating the device), restore the state!
-//        if(savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_STATE_REMINDER_KEY)) {
-//            mReminder = (RepeatingReminder) savedInstanceState.getSerializable(INSTANCE_STATE_REMINDER_KEY);
-//        }
-
-
         //If fragment was just called, expect a reminder at REMINDER_ARGUMENT
         if(getArguments().containsKey(REMINDER_ARGUMENT))
             mReminder = (LocationBasedReminder) getArguments().getSerializable(REMINDER_ARGUMENT);
