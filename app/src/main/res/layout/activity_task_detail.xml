@@ -38,21 +38,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/activity_task_detail_category"
-                        android:layout_width="@dimen/item_task_category_icon_size"
-                        android:layout_height="@dimen/item_task_category_icon_size"
+                    <ImageButton
+                        android:id="@+id/activity_task_detail_done_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/icon_category_personal"
-                        android:transitionName="@string/transition_task_list_category"/>
+                        android:tint="@color/fab_accept_green"
+                        android:src="@drawable/icon_check"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        />
 
                     <TextView
                         android:id="@+id/activity_task_detail_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/activity_task_detail_category"
-                        android:layout_toStartOf="@id/activity_task_detail_category"
+                        android:layout_toLeftOf="@id/activity_task_detail_done_button"
+                        android:layout_toStartOf="@id/activity_task_detail_done_button"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="Example title of Task"
@@ -62,12 +64,22 @@
 
                     <TextView
                         android:id="@+id/activity_task_detail_description"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/activity_task_detail_title"
+                        android:layout_marginTop="1dp"
                         android:text="Example description of task"
                         android:textSize="@dimen/text_size_medium"
                         android:transitionName="@string/transition_task_list_description"/>
+
+                    <ImageView
+                        android:id="@+id/activity_task_detail_category"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_toRightOf="@id/activity_task_detail_description"
+                        android:layout_below="@id/activity_task_detail_title"
+                        android:src="@drawable/icon_category_personal"
+                        android:transitionName="@string/transition_task_list_category"/>
 
 
                     <LinearLayout
@@ -195,6 +207,7 @@
             fab:menu_icon="@drawable/icon_attachment"
             fab:menu_backgroundColor="@android:color/transparent"
             android:layout_margin="@dimen/fab_margin"
+            android:visibility="gone"
             >
 
             <com.github.clans.fab.FloatingActionButton

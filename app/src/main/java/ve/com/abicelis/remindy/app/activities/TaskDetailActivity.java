@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
+import com.transitionseverywhere.TransitionManager;
 
 import java.util.Locale;
 
@@ -35,6 +37,7 @@ import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskStatus;
@@ -51,6 +54,7 @@ import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
+import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
@@ -95,6 +99,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private TextView mDone;
     private LinearLayout mOverdueContainer;
     private TextView mOverdue;
+    private ImageButton mDoneButton;
     private FloatingActionMenu mAttachmentsFabMenu;
     private FloatingActionButton mAttachmentsFabList;
     private FloatingActionButton mAttachmentsFabText;
@@ -145,6 +150,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mDone = (TextView) findViewById(R.id.activity_task_detail_done);
         mOverdueContainer = (LinearLayout) findViewById(R.id.activity_task_detail_overdue_container);
         mOverdue = (TextView) findViewById(R.id.activity_task_detail_overdue);
+        mDoneButton = (ImageButton) findViewById(R.id.activity_task_detail_done_button);
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_task_detail_recycler);
 
         mAttachmentsFabMenu = (FloatingActionMenu) findViewById(R.id.activity_task_detail_add_attachment);
@@ -159,8 +165,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mAttachmentsFabLink.setOnClickListener(this);
         mAttachmentsFabImage.setOnClickListener(this);
         mAttachmentsFabAudio.setOnClickListener(this);
+        mDoneButton.setOnClickListener(this);
 
         setUpViews();
+        setUpDoneOrOverdue();
         setUpToolbar();
         setUpReminderViews();
         setUpRecyclerView();
@@ -170,17 +178,21 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         mCategory.setImageResource(mTask.getCategory().getIconRes());
         mTitle.setText(mTask.getTitle());
         mDescription.setText(mTask.getDescription());
+    }
 
+    private void setUpDoneOrOverdue() {
+        TransitionManager.beginDelayedTransition(mContainer);
+        mDoneContainer.setVisibility(View.GONE);
+        mOverdueContainer.setVisibility(View.GONE);
+        mDoneButton.setColorFilter(ContextCompat.getColor(this, R.color.gray_500));
 
-        if(mTask.getDoneDate() != null) {
-            mDoneContainer.setVisibility(View.VISIBLE);
+        if(mTask.getStatus().equals(TaskStatus.DONE)) {
             mDone.setText(mDateFormat.formatCalendar(mTask.getDoneDate()));
+            mDoneContainer.setVisibility(View.VISIBLE);
+            mDoneButton.setColorFilter(ContextCompat.getColor(this, R.color.fab_accept_green));
         } else if(TaskUtil.checkIfOverdue(mTask.getReminder())) {
-            mOverdueContainer.setVisibility(View.VISIBLE);
             mOverdue.setText(String.format(Locale.getDefault(), getResources().getString(R.string.activity_task_overdue_since), mDateFormat.formatCalendar(TaskUtil.getReminderEndDate(mTask.getReminder()))));
-        } else {
-            mDoneContainer.setVisibility(View.GONE);
-            mOverdueContainer.setVisibility(View.GONE);
+            mOverdueContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -305,6 +317,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             mAdapter.notifyDataSetChanged();
         else
             mAdapter.notifyItemInserted(mAdapter.getItemCount());
+
+        //Scroll to added item
+        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -332,10 +347,25 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
             case R.id.activity_task_detail_add_audio_attachment:
                 addAttachment(new AudioAttachment());
+
+                break;
+
+            case R.id.activity_task_detail_done_button:
+                if(mTask.getDoneDate() == null) {
+                    mTask.setDoneDate(CalendarUtil.getNewInstanceZeroedCalendar());
+                    mTask.setStatus(TaskStatus.DONE);
+                } else {
+                    mTask.setDoneDate(null);
+                    mTask.setStatus( (mTask.getReminderType() == ReminderType.NONE ? TaskStatus.UNPROGRAMMED : TaskStatus.PROGRAMMED) );
+
+                }
+
+                mTaskDataUpdated = true;
+                mOldReminderJson = "!"; //Force a TASK_DETAIL_RETURN_ACTION_EDITED_REMINDER state.
+                setUpDoneOrOverdue();
                 break;
         }
-        //Scroll to added item
-        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+
     }
 
 
