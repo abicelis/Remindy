@@ -20,6 +20,7 @@ import java.util.List;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.HomeViewPagerAdapter;
 import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
+import ve.com.abicelis.remindy.app.services.NotificationIntentService;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
@@ -69,7 +70,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         mShowLocationBasedTasksInOwnViewPagerTab = SharedPreferenceUtil.getShowLocationBasedTasksInOwnTab(getApplicationContext());
         setupViewPagerAndTabLayout();
+        startNotificationService();
     }
+
 
     @Override
     protected void onResume() {
@@ -126,6 +129,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mViewpager.setAdapter(mHomeViewPagerAdapter);
         mViewpager.setCurrentItem(1);     //Start at page 2
         mTabLayout.setupWithViewPager(mViewpager);
+    }
+
+
+    private void startNotificationService() {
+        Intent startNotificationServiceIntent = new Intent(getApplicationContext(), NotificationIntentService.class);
+        startService(startNotificationServiceIntent);
     }
 
     @Override
