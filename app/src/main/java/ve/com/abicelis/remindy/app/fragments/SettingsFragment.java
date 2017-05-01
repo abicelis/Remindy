@@ -2,20 +2,20 @@ package ve.com.abicelis.remindy.app.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceManager;
 
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
+
+import java.util.Calendar;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.AboutActivity;
 import ve.com.abicelis.remindy.app.activities.PlaceListActivity;
+import ve.com.abicelis.remindy.enums.DateFormat;
 
 
 /**
@@ -25,11 +25,10 @@ import ve.com.abicelis.remindy.app.activities.PlaceListActivity;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     //UI
-
     private Preference mManagePlaces;
     private ListPreference mDateFormat;
     private ListPreference mTimeFormat;
-    private SwitchPreference mShowLocationBasedReminderInNewTab;
+    //private SwitchPreference mShowLocationBasedReminderInNewTab;
     private Preference mBackup;
     private Preference mRestore;
     private Preference mAbout;
@@ -53,16 +52,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
         mDateFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_date_format_key));
+        mDateFormat.setEntries(getDateFormatEntries());
+
         mTimeFormat = (ListPreference) findPreference(getResources().getString(R.string.settings_time_format_key));
-        mShowLocationBasedReminderInNewTab = (SwitchPreference) findPreference(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key));
-        handleShowLocationBasedReminderInNewTabPreferenceChange(getShowLocationBasedReminderInNewTabValue());
-        mShowLocationBasedReminderInNewTab.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                handleShowLocationBasedReminderInNewTabPreferenceChange((boolean) newValue);
-                return true;
-            }
-        });
+
+//        mShowLocationBasedReminderInNewTab = (SwitchPreference) findPreference(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key));
+//        handleShowLocationBasedReminderInNewTabPreferenceChange(getShowLocationBasedReminderInNewTabValue());
+//        mShowLocationBasedReminderInNewTab.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//            @Override
+//            public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                handleShowLocationBasedReminderInNewTabPreferenceChange((boolean) newValue);
+//                return true;
+//            }
+//        });
+
         mBackup = findPreference(getResources().getString(R.string.settings_backup_key));
         mRestore = findPreference(getResources().getString(R.string.settings_restore_key));
         mAbout = findPreference(getResources().getString(R.string.settings_about_key));
@@ -97,18 +100,27 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
     }
 
+    private CharSequence[] getDateFormatEntries() {
+        CharSequence entries[] = new CharSequence[DateFormat.values().length];
 
-    private boolean getShowLocationBasedReminderInNewTabValue() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        return preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
+        for (int i = 0; i < DateFormat.values().length; i++)
+            entries[i] = DateFormat.values()[i].formatCalendar(Calendar.getInstance());
+
+        return entries;
     }
 
-    private void handleShowLocationBasedReminderInNewTabPreferenceChange(boolean newValue) {
-        if(newValue)
-            mShowLocationBasedReminderInNewTab.setSummary(getResources().getText(R.string.settings_show_location_based_reminder_in_new_tab_summary_true));
-        else
-            mShowLocationBasedReminderInNewTab.setSummary(getResources().getText(R.string.settings_show_location_based_reminder_in_new_tab_summary_false));
-    }
+
+//    private boolean getShowLocationBasedReminderInNewTabValue() {
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+//        return preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
+//    }
+//
+//    private void handleShowLocationBasedReminderInNewTabPreferenceChange(boolean newValue) {
+//        if(newValue)
+//            mShowLocationBasedReminderInNewTab.setSummary(getResources().getText(R.string.settings_show_location_based_reminder_in_new_tab_summary_true));
+//        else
+//            mShowLocationBasedReminderInNewTab.setSummary(getResources().getText(R.string.settings_show_location_based_reminder_in_new_tab_summary_false));
+//    }
 
 
 
