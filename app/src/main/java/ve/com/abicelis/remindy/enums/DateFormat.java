@@ -13,7 +13,12 @@ public enum DateFormat {
             @Override
             public String formatCalendar(Calendar calendar) {
                 SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                return formatter.format(calendar.getTime());
+                String str = formatter.format(calendar.getTime());
+
+                if(Locale.getDefault().equals(Locale.ENGLISH) || Locale.getDefault().equals(Locale.US) || Locale.getDefault().equals(Locale.UK) || Locale.getDefault().equals(Locale.CANADA))
+                    str = str.replaceFirst(",", DateFormat.getDayNumberSuffix(calendar.get(Calendar.DAY_OF_MONTH)) + "," );
+
+                return str;
             }
         },
         MONTH_DAY_YEAR{
@@ -33,4 +38,21 @@ public enum DateFormat {
     ;
 
     public abstract String formatCalendar(Calendar calendar);
+
+    private static String getDayNumberSuffix(int day) {
+        if (day >= 11 && day <= 13) {
+            return "th";
+        }
+        switch (day % 10) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
+    }
+
 }
