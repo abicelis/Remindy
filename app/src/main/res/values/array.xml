@@ -5,19 +5,19 @@
         <item>MONTH_DAY_YEAR</item>
         <item>DAY_MONTH_YEAR</item>
     </string-array>
-    <string-array name="dateFormat">
-        <item>Feb 30, 2017</item>
-        <item>02/30/2017</item>
-        <item>30/02/2017</item>
-    </string-array>
+    <!--<string-array name="dateFormat">-->
+        <!--<item>MMM dd, yyyy</item>-->
+        <!--<item>mm/dd/yyyy</item>-->
+        <!--<item>dd/mm/yyyy</item>-->
+    <!--</string-array>-->
 
     <string-array name="timeFormatEntries">
         <item>1</item>
         <item>2</item>
     </string-array>
     <string-array name="timeFormat">
-        <item>24H</item>
-        <item>12H</item>
+        <item>24h</item>
+        <item>12h</item>
     </string-array>
 
 </resources>
