@@ -42,7 +42,10 @@ import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.Time;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
+import ve.com.abicelis.remindy.util.TaskUtil;
 import ve.com.abicelis.remindy.util.sorting.TaskSortingUtil;
+import ve.com.abicelis.remindy.viewmodel.TaskTriggerViewModel;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 
 /**
@@ -51,9 +54,11 @@ import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
 public class RemindyDAO {
 
     private RemindyDbHelper mDatabaseHelper;
+    private Context mContext;
 
     public RemindyDAO(Context context) {
         mDatabaseHelper = new RemindyDbHelper(context);
+        mContext = context;
     }
 
 
@@ -84,7 +89,6 @@ public class RemindyDAO {
 
                 tasks.add(current);
             }
-
         } finally {
             cursor.close();
         }
@@ -186,7 +190,6 @@ public class RemindyDAO {
         return result;
     }
 
-
     /**
      * Returns a List of Tasks (with Reminder and Attachments) which have TaskStatus.DONE
      * @param sortType TaskSortType enum value with which to sort results. By date or location
@@ -229,7 +232,7 @@ public class RemindyDAO {
      * Returns a List of Tasks which have Location-Based reminders of a particular Place.
      * @param placeId The ID of the place with which to look for Tasks
      */
-    public List<Task> getLocationBasedTasksAssociatedWithPlace(int placeId) throws CouldNotGetDataException{
+    public List<Task> getLocationBasedTasksAssociatedWithPlace(int placeId) throws CouldNotGetDataException {
         List<Task> tasks = new ArrayList<>();
 
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
@@ -247,6 +250,90 @@ public class RemindyDAO {
         }
 
         return tasks;
+    }
+
+
+    /**
+     * Returns the next PROGRAMMED task(With ONE-TIME or REPEATING reminder) to occur
+     * @return A single TaskTriggerViewModel or null of there are no tasks
+     */
+    public TaskTriggerViewModel getNextTaskToTrigger() throws CouldNotGetDataException {
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Task nextTaskToTrigger = null;
+        Calendar triggerDate = null;
+        Time triggerTime = null;
+
+        Cursor cursor = db.query(RemindyContract.TaskTable.TABLE_NAME,
+                null, RemindyContract.TaskTable.COLUMN_NAME_STATUS.getName() + "=?",
+                new String[]{TaskStatus.PROGRAMMED.name()}, null, null, null);
+
+        try {
+            while (cursor.moveToNext()) {
+                Task current = getTaskFromCursor(cursor);
+
+                try {
+                    current.setReminder(getReminderOfTask(current.getId(), current.getReminderType()));
+                }catch (CouldNotGetDataException | SQLiteConstraintException e ) {
+                    throw new CouldNotGetDataException("Error fetching reminder for task ID" + current.getId(), e);
+                }
+
+                //TODO: this filter could be made on db query.
+                if( current.getReminderType().equals(ReminderType.ONE_TIME) ||  current.getReminderType().equals(ReminderType.REPEATING) ) {
+
+                    if(TaskUtil.checkIfOverdue(current.getReminder()))  //Skip overdue reminders
+                        continue;
+
+                    if(nextTaskToTrigger == null) {
+                        nextTaskToTrigger = current;
+                        triggerDate = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getDate() : ((RepeatingReminder)current.getReminder() ).getDate() );
+                        triggerTime = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getTime() : ((RepeatingReminder)current.getReminder() ).getTime() );
+                        continue;
+                    }
+
+                    if(current.getReminderType().equals(ReminderType.ONE_TIME)) {
+                        OneTimeReminder otr = (OneTimeReminder)current.getReminder();
+                        if(otr.getDate().compareTo(triggerDate) < 0 ) {
+                            nextTaskToTrigger = current;
+                            triggerDate = otr.getDate();
+                            triggerTime = otr.getTime();
+                            continue;
+                        }
+                        if(otr.getDate().compareTo(triggerDate) == 0 && otr.getTime().compareTo(triggerTime) < 0) {
+                            nextTaskToTrigger = current;
+                            triggerDate = otr.getDate();
+                            triggerTime = otr.getTime();
+                            continue;
+                        }
+                    }
+
+                    if(current.getReminderType().equals(ReminderType.REPEATING)) {
+                        RepeatingReminder rr = (RepeatingReminder)current.getReminder();
+                        Calendar currentDate = TaskUtil.getRepeatingReminderNextDate(rr);
+
+                        if(currentDate == null) continue;   //Overdue
+
+                        if(currentDate.compareTo(triggerDate) < 0 ) {
+                            nextTaskToTrigger = current;
+                            triggerDate = currentDate;
+                            triggerTime = rr.getTime();
+                            continue;
+                        }
+                        if(currentDate.compareTo(triggerDate) == 0 && rr.getTime().compareTo(triggerTime) < 0) {
+                            nextTaskToTrigger = current;
+                            triggerDate = currentDate;
+                            triggerTime = rr.getTime();
+                            continue;
+                        }
+                    }
+
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+
+        if(nextTaskToTrigger == null) return null;
+        return new TaskTriggerViewModel(nextTaskToTrigger, triggerDate, triggerTime);
     }
 
 
@@ -925,6 +1012,7 @@ public class RemindyDAO {
         date.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.OneTimeReminderTable.COLUMN_NAME_DATE.getName())));
 
         Time time = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.OneTimeReminderTable.COLUMN_NAME_TIME.getName())));
+        time.setDisplayTimeFormat(SharedPreferenceUtil.getTimeFormat(mContext));
 
         return new OneTimeReminder(id, taskId, date, time);
     }
@@ -938,6 +1026,8 @@ public class RemindyDAO {
         date.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_DATE.getName())));
 
         Time time = new Time(cursor.getInt(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_TIME.getName())));
+        time.setDisplayTimeFormat(SharedPreferenceUtil.getTimeFormat(mContext));
+
         ReminderRepeatType repeatType = ReminderRepeatType.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_TYPE.getName())));
 
         int repeatInterval = cursor.getInt(cursor.getColumnIndex(RemindyContract.RepeatingReminderTable.COLUMN_NAME_REPEAT_INTERVAL.getName()));
