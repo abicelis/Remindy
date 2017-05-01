@@ -70,7 +70,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         startNotificationService();
     }
 
-
     private void setupViewPagerAndTabLayout() {
 
         mUnprogrammedTasksListFragment = new HomeListFragment();
@@ -130,7 +129,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.menu_home_settings:
                 Intent goToSettingsActivity = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(goToSettingsActivity);
+                startActivityForResult(goToSettingsActivity, SettingsActivity.SETTINGS_ACTIVITY_REQUEST_CODE);
                 return true;
 
             case R.id.menu_home_about:
@@ -209,6 +208,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "Error! TASK_DETAIL_RETURN_TASK_POSITION or TASK_DETAIL_RETURN_ACTION_TYPE or TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX == null");
                 SnackbarUtil.showSnackbar(mViewpager, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, null);
             }
+        }
+
+
+        if(requestCode == SettingsActivity.SETTINGS_ACTIVITY_REQUEST_CODE) {
+            if(resultCode == RESULT_OK)
+                setupViewPagerAndTabLayout();
         }
     }
 

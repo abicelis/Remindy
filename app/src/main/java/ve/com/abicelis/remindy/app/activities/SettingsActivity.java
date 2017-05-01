@@ -13,6 +13,9 @@ import android.view.MenuItem;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.fragments.SettingsFragment;
+import ve.com.abicelis.remindy.enums.DateFormat;
+import ve.com.abicelis.remindy.enums.TimeFormat;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 
 /**
  * Created by abice on 30/3/2017.
@@ -20,12 +23,23 @@ import ve.com.abicelis.remindy.app.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    //CONSTS
+    public static final int SETTINGS_ACTIVITY_REQUEST_CODE = 109;
+
+    //DATA
+    private TimeFormat mOldTimeFormat;
+    private DateFormat mOldDateFormat;
+
+    //UI
     private Toolbar mToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        mOldTimeFormat = SharedPreferenceUtil.getTimeFormat(this);
+        mOldDateFormat = SharedPreferenceUtil.getDateFormat(this);
 
         setUpToolbar();
 
@@ -64,4 +78,12 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(!mOldTimeFormat.equals(SharedPreferenceUtil.getTimeFormat(this)) || !mOldDateFormat.equals(SharedPreferenceUtil.getDateFormat(this)))
+            setResult(RESULT_OK);   //If date or time formats were changed
+        else
+            setResult(RESULT_CANCELED); //If date or time formats were not changed
+        finish();
+    }
 }
