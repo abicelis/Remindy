@@ -124,25 +124,13 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/item_task_programmed_repeating_repeat_icon"
             android:layout_toEndOf="@id/item_task_programmed_repeating_repeat_icon"
+            android:layout_toLeftOf="@+id/item_task_programmed_repeating_time_icon"
+            android:layout_toStartOf="@+id/item_task_programmed_repeating_time_icon"
             android:lines="1"
+            android:ellipsize="end"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/text_size_small"
-            android:text="Weekly, Forever"
-            />
-
-        <ImageView
-            android:id="@+id/item_task_programmed_repeating_time_icon"
-            android:layout_width="@dimen/item_task_other_icon_size"
-            android:layout_height="@dimen/item_task_other_icon_size"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/item_task_programmed_repeating_repeat"
-            android:layout_toEndOf="@id/item_task_programmed_repeating_repeat"
-            android:layout_marginLeft="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginEnd="4dp"
-            android:src="@drawable/icon_time"
-            android:tint="@color/gray_700"
+            android:text="Weekly, forever"
             />
 
         <TextView
@@ -150,13 +138,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/item_task_programmed_repeating_time_icon"
-            android:layout_toEndOf="@id/item_task_programmed_repeating_time_icon"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:lines="1"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/text_size_small"
             android:text="11:00 am"
             />
+
+        <ImageView
+            android:id="@+id/item_task_programmed_repeating_time_icon"
+            android:layout_width="@dimen/item_task_other_icon_size"
+            android:layout_height="@dimen/item_task_other_icon_size"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/item_task_programmed_repeating_time"
+            android:layout_toStartOf="@id/item_task_programmed_repeating_time"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/icon_time"
+            android:tint="@color/gray_700"
+            />
+
+
 
 
     </RelativeLayout>
