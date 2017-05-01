@@ -7,6 +7,8 @@ import android.util.Log;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.enums.DateFormat;
+import ve.com.abicelis.remindy.enums.TimeFormat;
+import ve.com.abicelis.remindy.model.Time;
 
 /**
  * Created by abice on 1/4/2017.
@@ -32,5 +34,21 @@ public class SharedPreferenceUtil {
         editor.apply();
     }
 
+    public static TimeFormat getTimeFormat(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String tfPref = preferences.getString(context.getResources().getString(R.string.settings_time_format_key), null);
+        if(tfPref == null) {
+            Log.d("SharedPreferenceUtil", "getTimeFormat() found null, setting FORMAT_24H");
+            TimeFormat tf = TimeFormat.FORMAT_24H;
+            setTimeFormat(tf, context);
+            return tf;
+        }
+        else return TimeFormat.valueOf(tfPref);
+    }
 
+    public static void setTimeFormat(TimeFormat tf, Context context) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString(context.getResources().getString(R.string.settings_time_format_key), tf.name());
+        editor.apply();
+    }
 }
