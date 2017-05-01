@@ -44,7 +44,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TabLayout mTabLayout;
     private FloatingActionButton mFab;
     private HomeListFragment mUnprogrammedTasksListFragment;
-    private HomeListFragment mLocationBasedTasksListFragment;
     private HomeListFragment mProgrammedTasksListFragment;
     private HomeListFragment mDoneTasksListFragment;
 
@@ -52,7 +51,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private List<String> titleList = new ArrayList<>();
     private List<Fragment> fragmentList = new ArrayList<>();
     private TaskSortType mTaskSortType = TaskSortType.DATE;
-    private boolean mShowLocationBasedTasksInOwnViewPagerTab = false;
 
 
     @Override
@@ -68,35 +66,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFab = (FloatingActionButton) findViewById(R.id.activity_home_fab);
         mFab.setOnClickListener(this);
 
-        mShowLocationBasedTasksInOwnViewPagerTab = SharedPreferenceUtil.getShowLocationBasedTasksInOwnTab(getApplicationContext());
         setupViewPagerAndTabLayout();
         startNotificationService();
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(SharedPreferenceUtil.getShowLocationBasedTasksInOwnTab(getApplicationContext()) != mShowLocationBasedTasksInOwnViewPagerTab) {
-            mShowLocationBasedTasksInOwnViewPagerTab = !mShowLocationBasedTasksInOwnViewPagerTab;
-            setupViewPagerAndTabLayout();
-        }
-    }
-
     private void setupViewPagerAndTabLayout() {
 
         mUnprogrammedTasksListFragment = new HomeListFragment();
-        mLocationBasedTasksListFragment = new HomeListFragment();
         mProgrammedTasksListFragment = new HomeListFragment();
         mDoneTasksListFragment = new HomeListFragment();
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(HomeListFragment.ARGUMENT_TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.UNPROGRAMMED);
         mUnprogrammedTasksListFragment.setArguments(bundle);
-
-        bundle = new Bundle();
-        bundle.putSerializable(HomeListFragment.ARGUMENT_TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.LOCATION_BASED);
-        mLocationBasedTasksListFragment.setArguments(bundle);
 
         bundle = new Bundle();
         bundle.putSerializable(HomeListFragment.ARGUMENT_TASK_TYPE_TO_DISPLAY, ViewPagerTaskDisplayType.PROGRAMMED);
@@ -112,14 +95,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fragmentList.clear();
 
         titleList.add(getResources().getString(ViewPagerTaskDisplayType.UNPROGRAMMED.getFriendlyNameRes()));
-        if(mShowLocationBasedTasksInOwnViewPagerTab)
-            titleList.add(getResources().getString(ViewPagerTaskDisplayType.LOCATION_BASED.getFriendlyNameRes()));
         titleList.add(getResources().getString(ViewPagerTaskDisplayType.PROGRAMMED.getFriendlyNameRes()));
         titleList.add(getResources().getString(ViewPagerTaskDisplayType.DONE.getFriendlyNameRes()));
 
         fragmentList.add(mUnprogrammedTasksListFragment);
-        if(mShowLocationBasedTasksInOwnViewPagerTab)
-            fragmentList.add(mLocationBasedTasksListFragment);
         fragmentList.add(mProgrammedTasksListFragment);
         fragmentList.add(mDoneTasksListFragment);
 
@@ -144,8 +123,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.menu_home_sort:
                 mTaskSortType = (mTaskSortType == TaskSortType.DATE ? TaskSortType.PLACE : TaskSortType.DATE);
-                mProgrammedTasksListFragment.setSortTypeAndRefresh(mTaskSortType);
-                mDoneTasksListFragment.setSortTypeAndRefresh(mTaskSortType);
+                mHomeViewPagerAdapter.getRegisteredFragment(1).setSortTypeAndRefresh(mTaskSortType);
+                mHomeViewPagerAdapter.getRegisteredFragment(2).setSortTypeAndRefresh(mTaskSortType);
                 SnackbarUtil.showSnackbar(mViewpager, SnackbarUtil.SnackbarType.NOTICE, mTaskSortType.getFriendlyMessageRes(), SnackbarUtil.SnackbarDuration.SHORT, null);
                 return true;
 
@@ -190,23 +169,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 rt = (ReminderType) data.getSerializableExtra(NEW_TASK_RETURN_REMINDER_TYPE);
 
                 try {
-                    switch (rt) {
-                        case NONE:
-                            mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();
-                            break;
-
-                        case LOCATION_BASED:
-                            mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();          //Location based tasks will always be in tab #1
-                            break;
-
-                        case ONE_TIME:
-                        case REPEATING:
-                            if (mShowLocationBasedTasksInOwnViewPagerTab)
-                                mHomeViewPagerAdapter.getRegisteredFragment(2).refreshRecyclerView();      //These tasks are in tab 2.
-                            else
-                                mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();      //Otherwise refresh tab 1, where all programmed tasks are.
-                            break;
-                    }
+                    if(rt.equals(ReminderType.NONE))
+                        mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();   //Unprogrammed tasks will always be in tab #1
+                    else
+                        mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();   //Programmed tasks will always be in tab #1
                 }catch (NullPointerException e) {/* Do nothing, the recycler will be refreshed upon creation */}
             } else {
                 setupViewPagerAndTabLayout();   //Just refresh everything

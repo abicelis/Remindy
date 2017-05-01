@@ -32,9 +32,5 @@ public class SharedPreferenceUtil {
         editor.apply();
     }
 
-    public static boolean getShowLocationBasedTasksInOwnTab(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getBoolean(context.getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
-    }
 
 }

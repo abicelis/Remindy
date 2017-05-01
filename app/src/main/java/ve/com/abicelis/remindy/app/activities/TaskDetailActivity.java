@@ -489,18 +489,12 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
 
     private int getViewPagerIndexFromTask(Task task) {
-
-        boolean flag = SharedPreferenceUtil.getShowLocationBasedTasksInOwnTab(getApplicationContext());
-
         if(task.getStatus().equals(TaskStatus.UNPROGRAMMED))
             return 0;
 
         if(task.getStatus().equals(TaskStatus.DONE))
-            return (flag ? 3 : 2);
+            return 2;
 
-        if(task.getReminderType() == ReminderType.LOCATION_BASED)
-            return 1;
-
-        return (flag ? 2 : 1);
+        return 1;   //Programmed tasks in tab 1
     }
 }

@@ -92,14 +92,10 @@ public class HomeListFragment extends Fragment {
         menu.clear();
         switch (mReminderTypeToDisplay) {
             case UNPROGRAMMED:
-            case LOCATION_BASED:
                 inflater.inflate(R.menu.menu_home_no_sort, menu);
                 break;
             case PROGRAMMED:
-                if(getShowLocationBasedReminderInNewTabValue())
-                    inflater.inflate(R.menu.menu_home_no_sort, menu);   //Hide sort button
-                else
-                    inflater.inflate(R.menu.menu_home_sort, menu);
+                inflater.inflate(R.menu.menu_home_sort, menu);
                 break;
             case DONE:
                 inflater.inflate(R.menu.menu_home_sort, menu);
@@ -135,8 +131,7 @@ public class HomeListFragment extends Fragment {
 
     public void setSortTypeAndRefresh(TaskSortType taskSortType) {
         mTaskSortType = taskSortType;
-        if(isAdded())       //Check if Fragment is added to activity, to avoid IllegalStateExceptions
-            refreshRecyclerView();
+        refreshRecyclerView();
     }
 
     public void refreshRecyclerView() {
@@ -154,15 +149,8 @@ public class HomeListFragment extends Fragment {
                     mTasks.addAll(mDao.getUnprogrammedTasks());
                     break;
 
-                case LOCATION_BASED:
-                    mTasks.addAll(mDao.getLocationBasedTasks(getResources()));
-                    break;
-
                 case PROGRAMMED:
-                    if(getShowLocationBasedReminderInNewTabValue())
-                        mTasks.addAll(mDao.getProgrammedTasks(TaskSortType.DATE, false, getResources()));      //Force sorting by date, no location-based tasks in this tab!
-                    else
-                        mTasks.addAll(mDao.getProgrammedTasks(mTaskSortType, true, getResources()));
+                    mTasks.addAll(mDao.getProgrammedTasks(mTaskSortType, true, getResources()));
                     break;
 
                 case DONE:
@@ -182,11 +170,6 @@ public class HomeListFragment extends Fragment {
             mRecyclerView.setItemViewCacheSize(View.VISIBLE);
             mNoItemsContainer.setVisibility(View.GONE);
         }
-    }
-
-    private boolean getShowLocationBasedReminderInNewTabValue() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        return preferences.getBoolean(getResources().getString(R.string.settings_show_location_based_reminder_in_new_tab_key), false);
     }
 
     /* Called from HomeActivity.onActivityResult() */

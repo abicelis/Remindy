@@ -15,7 +15,6 @@ import ve.com.abicelis.remindy.R;
 
 public enum ViewPagerTaskDisplayType implements Serializable {
     UNPROGRAMMED(R.string.activity_home_tab_unprogrammed),
-    LOCATION_BASED(R.string.activity_home_tab_location_based),
     PROGRAMMED(R.string.activity_home_tab_programmed),
     DONE(R.string.activity_home_tab_done);
 
