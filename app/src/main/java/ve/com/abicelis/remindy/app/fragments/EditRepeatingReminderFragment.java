@@ -226,7 +226,7 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
                             public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
                                 if(mReminder.getTime() == null) {
                                     mReminder.setTime(new Time());
-                                    //TODO: grab timeFormat from preferences and mTimeTime.setDisplayTimeFormat();
+                                    mReminder.getTime().setDisplayTimeFormat(SharedPreferenceUtil.getTimeFormat(getActivity()));
                                 }
                                 mReminder.getTime().setHour(hourOfDay);
                                 mReminder.getTime().setMinute(minute);
@@ -249,7 +249,7 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
                             public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
                                 if(mReminder.getTime() == null) {
                                     mReminder.setTime(new Time());
-                                    //TODO: grab timeFormat from preferences and mTimeTime.setDisplayTimeFormat();
+                                    mReminder.getTime().setDisplayTimeFormat(SharedPreferenceUtil.getTimeFormat(getActivity()));
                                 }
                                 mReminder.getTime().setHour(hourOfDay);
                                 mReminder.getTime().setMinute(minute);
@@ -310,7 +310,7 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
         mDatePicker.setPreselectedDate(mReminder.getDate().get(Calendar.YEAR), mReminder.getDate().get(Calendar.MONTH), mReminder.getDate().get(Calendar.DAY_OF_MONTH));
 
         if(mReminder.getTime() == null)
-            mReminder.setTime(new Time(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE)));
+            mReminder.setTime(new Time(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), SharedPreferenceUtil.getTimeFormat(getActivity()) ));
         mTime.setText(mReminder.getTime().toString());
         mTimePicker.setStartTime(mReminder.getTime().getHour(), mReminder.getTime().getMinute());
 

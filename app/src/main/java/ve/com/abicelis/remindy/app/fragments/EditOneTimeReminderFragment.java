@@ -111,7 +111,7 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
                             public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
                                 if(mReminder.getTime() == null) {
                                     mReminder.setTime(new Time());
-                                    //TODO: grab timeFormat from preferences and mTimeTime.setDisplayTimeFormat();
+                                    mReminder.getTime().setDisplayTimeFormat(SharedPreferenceUtil.getTimeFormat(getActivity()));
                                 }
                                 mReminder.getTime().setHour(hourOfDay);
                                 mReminder.getTime().setMinute(minute);
