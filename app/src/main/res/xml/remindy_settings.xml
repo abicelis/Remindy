@@ -9,7 +9,6 @@
         android:key="@string/settings_date_format_key"
         android:title="@string/settings_date_format_title"
         android:summary="%s"
-        android:entries="@array/dateFormat"
         android:entryValues="@array/dateFormatEntries"
         android:defaultValue="1"/>
     <ListPreference
@@ -19,10 +18,10 @@
         android:entries="@array/timeFormat"
         android:entryValues="@array/timeFormatEntries"
         android:defaultValue="1"/>
-    <SwitchPreference
-        android:key="@string/settings_show_location_based_reminder_in_new_tab_key"
-        android:title="@string/settings_show_location_based_reminder_in_new_tab_title"
-        android:defaultValue="false"/>
+    <!--<SwitchPreference-->
+        <!--android:key="@string/settings_show_location_based_reminder_in_new_tab_key"-->
+        <!--android:title="@string/settings_show_location_based_reminder_in_new_tab_title"-->
+        <!--android:defaultValue="false"/>-->
     <Preference
         android:key="@string/settings_backup_key"
         android:title="@string/settings_backup_title"
