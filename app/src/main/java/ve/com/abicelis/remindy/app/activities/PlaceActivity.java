@@ -66,6 +66,7 @@ import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.util.ConversionUtil;
+import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -511,6 +512,7 @@ public class PlaceActivity extends AppCompatActivity implements
         if(mPlaceToEdit != null) {
             try {
                 mDao.updatePlace(mPlace);
+                GeofenceUtil.updateGeofences(getApplicationContext(), mGoogleApiClient);    //Update geofences when updating places!
                 SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_place_snackbar_edit_succesful, SnackbarUtil.SnackbarDuration.SHORT, callback);
             } catch (CouldNotUpdateDataException e ) {
                 SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_saving, SnackbarUtil.SnackbarDuration.LONG, null);
