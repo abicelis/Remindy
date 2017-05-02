@@ -105,7 +105,11 @@ public class Place implements Serializable {
 
         if(obj instanceof Place) {
             Place that = (Place) obj;
-            return (this.getLatitude() == that.getLatitude() && this.getLongitude() == that.getLongitude() && this.getAlias() == that.getAlias());
+            return (this.getId() == that.getId() &&
+                    this.getAlias().equals(that.getAlias()) &&
+                    this.getLatitude() == that.getLatitude() &&
+                    this.getLongitude() == that.getLongitude() &&
+                    this.getRadius() == that.getRadius());
         }
         return false;
     }
