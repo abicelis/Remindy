@@ -74,8 +74,9 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
         mDao = new RemindyDAO(getActivity());
         mPlaces = mDao.getPlaces();
 
-        //Set mReminder to the first place
-        mReminder.setPlace(mPlaces.get(0));
+        //Set mReminder to the first place if empty
+        if(mReminder.getPlace() == null)
+            mReminder.setPlace(mPlaces.get(0));
 
         for (Place p : mPlaces)
             mPlaceTypes.add(p.getAlias());
