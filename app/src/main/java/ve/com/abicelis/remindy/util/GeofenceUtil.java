@@ -59,7 +59,7 @@ public class GeofenceUtil {
         checkGoogleApiClient(googleApiClient);
 
         if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            LocationServices.GeofencingApi.removeGeofences(googleApiClient, mGeofencePendingIntent).setResultCallback(new ResultCallback<Status>() {
+            LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeofencePendingIntent(context)).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status status) {
                     if(status.isSuccess())
@@ -74,7 +74,7 @@ public class GeofenceUtil {
         checkGoogleApiClient(googleApiClient);
 
         if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            LocationServices.GeofencingApi.removeGeofences(googleApiClient, mGeofencePendingIntent)
+            LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeofencePendingIntent(context))
                     .setResultCallback(new ResultCallback<Status>() {
                         @Override
                         public void onResult(@NonNull Status status) {
