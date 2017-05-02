@@ -36,8 +36,7 @@ import ve.com.abicelis.remindy.util.SnackbarUtil;
  * Created by abice on 13/3/2017.
  */
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     //CONST
     public static final String TAG = HomeActivity.class.getSimpleName();
@@ -57,7 +56,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private List<String> titleList = new ArrayList<>();
     private List<Fragment> fragmentList = new ArrayList<>();
     private TaskSortType mTaskSortType = TaskSortType.DATE;
-    private GoogleApiClient mGoogleApiClient;
 
 
 
@@ -73,13 +71,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mTabLayout = (TabLayout) findViewById(R.id.activity_home_tab_layout);
         mFab = (FloatingActionButton) findViewById(R.id.activity_home_fab);
         mFab.setOnClickListener(this);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
 
         setupViewPagerAndTabLayout();
         startNotificationService();
@@ -117,7 +108,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fragmentList.add(mDoneTasksListFragment);
 
 
-        //Setup adapter, viewpager and tablayout
+        //Setup adapter, viewpager and tabLayout
         mHomeViewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
         mViewpager.setAdapter(mHomeViewPagerAdapter);
         mViewpager.setCurrentItem(1);     //Start at page 2
@@ -188,7 +179,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();   //Unprogrammed tasks will always be in tab #1
                             break;
                         case LOCATION_BASED:
-                            GeofenceUtil.updateGeofences(getApplicationContext(), mGoogleApiClient);
                         case ONE_TIME:
                         case REPEATING:
                             mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();   //Programmed tasks will always be in tab #1
@@ -238,16 +228,4 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-
-
-    /* Google API callbacks */
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {}
-
-    @Override
-    public void onConnectionSuspended(int i) {}
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 }
