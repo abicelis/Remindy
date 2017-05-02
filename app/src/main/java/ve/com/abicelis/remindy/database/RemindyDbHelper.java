@@ -273,10 +273,10 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_ENTERING.getName() + COMMA_SEP +
                 RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getName() +
                 ") VALUES " +
-                "(0, 19, 0, 'TRUE', 'FALSE')," +
-                "(1, 20, 0, 'FALSE', 'TRUE')," +
-                "(2, 21, 0, 'TRUE', 'TRUE')," +
-                "(3, 22, 1, 'TRUE', 'TRUE');";
+                "(0, 19, 0, 'true', 'false')," +
+                "(1, 20, 0, 'false', 'true')," +
+                "(2, 21, 0, 'true', 'true')," +
+                "(3, 22, 1, 'true', 'true');";
         sqLiteDatabase.execSQL(statement);
 
     }
