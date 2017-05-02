@@ -229,7 +229,7 @@ public class RemindyDAO {
     }
 
     /**
-     * Returns a List of Tasks which have Location-Based reminders of a particular Place.
+     * Returns a List of Tasks (Status:PROGRAMMED) which have Location-Based reminders of a particular Place.
      * @param placeId The ID of the place with which to look for Tasks
      */
     public List<Task> getLocationBasedTasksAssociatedWithPlace(int placeId) throws CouldNotGetDataException {
@@ -243,7 +243,9 @@ public class RemindyDAO {
         try {
             while (cursor.moveToNext()) {
                 int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName()));
-                tasks.add(getTask(taskId));
+                Task task = getTask(taskId);
+                if(task.getStatus().equals(TaskStatus.PROGRAMMED))
+                    tasks.add(task);
             }
         } finally {
             cursor.close();
@@ -380,6 +382,40 @@ public class RemindyDAO {
 
         return places;
     }
+
+    /**
+     * Returns a List of Places associated with PROGRAMMED tasks with location-based reminders
+     */
+    public List<Place> getActivePlaces() {
+        List<Place> places = new ArrayList<>();
+        int taskCount;
+        Place place;
+
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query(RemindyContract.PlaceTable.TABLE_NAME, null, null, null, null, null, null);
+
+        try {
+            while (cursor.moveToNext()) {
+                place = getPlaceFromCursor(cursor);
+
+                try {
+                    taskCount = getLocationBasedTasksAssociatedWithPlace(place.getId()).size();
+                } catch (CouldNotGetDataException e) {
+                    taskCount = 0;
+                }
+
+                if(taskCount > 0)
+                    places.add(place);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return places;
+    }
+
+
+
 
 
     /**
