@@ -1,10 +1,12 @@
 package ve.com.abicelis.remindy.model.reminder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 
+import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.model.Place;
 
@@ -58,6 +60,15 @@ public class LocationBasedReminder extends Reminder implements Serializable {
 
     public boolean getTriggerExiting() {return triggerExiting;}
     public void setTriggerExiting(boolean triggerExiting) {this.triggerExiting = triggerExiting;}
+
+    public String getEnteringExitingString(Context context) {
+        if(triggerEntering && triggerExiting)
+             return context.getResources().getString(R.string.fragment_detail_location_based_reminder_entering_or_exiting);
+        else if(triggerEntering)
+            return context.getResources().getString(R.string.fragment_detail_location_based_reminder_entering);
+        else
+            return context.getResources().getString(R.string.fragment_detail_location_based_reminder_exiting);
+    }
 
     @Override
     public String toString() {

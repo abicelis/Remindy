@@ -328,7 +328,11 @@
 
 
 
-
+    /* Fragment detail reminder location based */
+    <string name="fragment_detail_location_based_reminder_radius">%1$dm radius, %2$s</string>
+    <string name="fragment_detail_location_based_reminder_entering_or_exiting">Entering or Exiting</string>
+    <string name="fragment_detail_location_based_reminder_entering">Entering</string>
+    <string name="fragment_detail_location_based_reminder_exiting">Exiting</string>
 
 
     /* Activity Edit Image Attachment*/
