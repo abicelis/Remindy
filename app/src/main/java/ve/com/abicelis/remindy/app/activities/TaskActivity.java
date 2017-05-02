@@ -30,9 +30,9 @@ import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
-import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
+import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
@@ -63,8 +63,8 @@ public class TaskActivity extends AppCompatActivity {
     private boolean editingTask;
     private List<String> mTitleList = new ArrayList<>();
     private List<Fragment> mFragmentList = new ArrayList<>();
-    
-    
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -295,6 +295,11 @@ public class TaskActivity extends AppCompatActivity {
                 break;
 
             case LOCATION_BASED:
+                if( !((LocationBasedReminder)mTask.getReminder()).getTriggerEntering() && !((LocationBasedReminder)mTask.getReminder()).getTriggerExiting() ) {
+                    mViewpager.setCurrentItem(1, true); //Go to Reminder page
+                    SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_location_based_snackbar_error_set_entering_exiting, SnackbarUtil.SnackbarDuration.SHORT, null);
+                    return false;
+                }
                 break;
         }
 
@@ -308,10 +313,9 @@ public class TaskActivity extends AppCompatActivity {
         try {
             RemindyDAO dao = new RemindyDAO(this);
 
-            if(editingTask)
-                dao.updateTask(mTask);
-            else
+            if(!editingTask)
                 dao.insertTask(mTask);
+            //If editing, Caller activity TaskDetailActivity will save the task.
 
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override
@@ -327,7 +331,7 @@ public class TaskActivity extends AppCompatActivity {
             };
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.SUCCESS, R.string.activity_task_snackbar_save_successful, SnackbarUtil.SnackbarDuration.SHORT, callback);
 
-        } catch (CouldNotInsertDataException | CouldNotUpdateDataException e) {
+        } catch (CouldNotInsertDataException e) {
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_saving, SnackbarUtil.SnackbarDuration.SHORT, null);
         }
     }
