@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -25,6 +26,9 @@ import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.transitionseverywhere.TransitionManager;
 
@@ -37,7 +41,6 @@ import ve.com.abicelis.remindy.app.fragments.OneTimeReminderDetailFragment;
 import ve.com.abicelis.remindy.app.fragments.RepeatingReminderDetailFragment;
 import ve.com.abicelis.remindy.app.holders.ImageAttachmentViewHolder;
 import ve.com.abicelis.remindy.database.RemindyDAO;
-import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskStatus;
@@ -56,6 +59,7 @@ import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
+import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 import ve.com.abicelis.remindy.util.TaskUtil;
@@ -64,7 +68,8 @@ import ve.com.abicelis.remindy.util.TaskUtil;
  * Created by abice on 30/3/2017.
  */
 
-public class TaskDetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class TaskDetailActivity extends AppCompatActivity implements View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     //CONST
     public static final String TASK_TO_DISPLAY = "TASK_TO_DISPLAY";
@@ -85,6 +90,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private int mPosition;
     private DateFormat mDateFormat;
     private boolean mTaskDataUpdated = false;
+    private boolean mUpdateGeofences = false;
+    private GoogleApiClient mGoogleApiClient;
+
 
     //UI
     private Toolbar mToolbar;
@@ -127,6 +135,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             mTask = (Task) getIntent().getSerializableExtra(TASK_TO_DISPLAY);
             mOldReminderJson = new Gson().toJson(mTask.getReminder());
             mPosition = getIntent().getIntExtra(TASK_POSITION, -1);
+            mUpdateGeofences = mTask.getReminderType().equals(ReminderType.LOCATION_BASED);
         } else {
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override
@@ -137,6 +146,13 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             };
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_no_task, SnackbarUtil.SnackbarDuration.LONG, callback);
         }
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
 
         //Get date format preference
         mDateFormat = SharedPreferenceUtil.getDateFormat(getApplicationContext());
@@ -280,6 +296,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
                 //Save changes
                 new RemindyDAO(this).updateTask(mTask);
+
+                //Update geofences
+                if(mUpdateGeofences || mTask.getReminderType().equals(ReminderType.LOCATION_BASED))
+                    GeofenceUtil.updateGeofences(getApplicationContext(), mGoogleApiClient);
 
                 //See if reminder was edited, in which case refresh the whole home viewpager
                 String newReminderJson = new Gson().toJson(mTask.getReminder());
@@ -497,4 +517,17 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
         return 1;   //Programmed tasks in tab 1
     }
+
+
+
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {}
+
+    @Override
+    public void onConnectionSuspended(int i) {}
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 }
