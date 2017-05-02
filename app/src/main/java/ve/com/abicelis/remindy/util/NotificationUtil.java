@@ -20,7 +20,7 @@ public class NotificationUtil {
         NotificationCompat.Builder mBuilder;
         mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.icon_remindy)
-                .setVibrate(new long[] { 50, 100, 50, 100 })
+                .setVibrate(new long[] { 50, 50, 200, 50 })
                 .setLights(ContextCompat.getColor(context, R.color.primary), 3000, 3000)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setContentTitle(contentTitle)
