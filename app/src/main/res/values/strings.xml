@@ -548,6 +548,8 @@
     <string name="geofence_too_many_pending_intents">Too many PendingIntents</string>
     <string name="geofence_transition_invalid_type">Invalid transition type</string>
     <string name="unknown_geofence_error">Unknown Geofence error</string>
+    <string name="geofence_snackbar_warning_no_permissons">App needs the location to function properly</string>
+
 
     <string name="geofence_enter">You are at</string>
     <string name="geofence_exit">You just left</string>

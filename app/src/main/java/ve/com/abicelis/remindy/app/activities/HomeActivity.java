@@ -1,12 +1,15 @@
 package ve.com.abicelis.remindy.app.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,10 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,6 @@ import ve.com.abicelis.remindy.app.services.NotificationIntentService;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
-import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
@@ -42,6 +40,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public static final String TAG = HomeActivity.class.getSimpleName();
     public static final int NEW_TASK_REQUEST_CODE = 490;
     public static final String NEW_TASK_RETURN_REMINDER_TYPE = "NEW_TASK_RETURN_REMINDER_TYPE";
+    private static final int PERMISSION_REQUEST_ACCESS_FINE_LOCATION_NOTIFICATION_GEOFENCE_SERVICE = 149;
+
 
     //UI
     private ViewPager mViewpager;
@@ -117,11 +117,37 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void startNotificationService() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            doStartNotificationService();
+        else
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_ACCESS_FINE_LOCATION_NOTIFICATION_GEOFENCE_SERVICE);
+    }
+
+    @Override
+    @SuppressWarnings({"MissingPermission"})
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_ACCESS_FINE_LOCATION_NOTIFICATION_GEOFENCE_SERVICE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    doStartNotificationService();
+                else {
+                    SnackbarUtil.showSnackbar(mViewpager, SnackbarUtil.SnackbarType.ERROR, R.string.geofence_snackbar_warning_no_permissons, SnackbarUtil.SnackbarDuration.LONG, null);
+                }
+                break;
+        }
+
+    }
+
+    private void doStartNotificationService() {
         Intent startNotificationServiceIntent = new Intent(getApplicationContext(), NotificationIntentService.class);
         startService(startNotificationServiceIntent);
     }
 
-    @Override
+
+        @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
