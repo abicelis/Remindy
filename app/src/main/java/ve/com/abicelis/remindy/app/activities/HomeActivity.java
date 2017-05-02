@@ -3,6 +3,7 @@ package ve.com.abicelis.remindy.app.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -14,6 +15,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +29,15 @@ import ve.com.abicelis.remindy.app.services.NotificationIntentService;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
-import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
+import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 13/3/2017.
  */
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     //CONST
     public static final String TAG = HomeActivity.class.getSimpleName();
@@ -51,6 +57,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private List<String> titleList = new ArrayList<>();
     private List<Fragment> fragmentList = new ArrayList<>();
     private TaskSortType mTaskSortType = TaskSortType.DATE;
+    private GoogleApiClient mGoogleApiClient;
+
 
 
     @Override
@@ -65,6 +73,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mTabLayout = (TabLayout) findViewById(R.id.activity_home_tab_layout);
         mFab = (FloatingActionButton) findViewById(R.id.activity_home_fab);
         mFab.setOnClickListener(this);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
 
         setupViewPagerAndTabLayout();
         startNotificationService();
@@ -168,10 +183,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 rt = (ReminderType) data.getSerializableExtra(NEW_TASK_RETURN_REMINDER_TYPE);
 
                 try {
-                    if(rt.equals(ReminderType.NONE))
-                        mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();   //Unprogrammed tasks will always be in tab #1
-                    else
-                        mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();   //Programmed tasks will always be in tab #1
+                    switch (rt) {
+                        case NONE:
+                            mHomeViewPagerAdapter.getRegisteredFragment(0).refreshRecyclerView();   //Unprogrammed tasks will always be in tab #1
+                            break;
+                        case LOCATION_BASED:
+                            GeofenceUtil.updateGeofences(getApplicationContext(), mGoogleApiClient);
+                        case ONE_TIME:
+                        case REPEATING:
+                            mHomeViewPagerAdapter.getRegisteredFragment(1).refreshRecyclerView();   //Programmed tasks will always be in tab #1
+                    }
                 }catch (NullPointerException e) {/* Do nothing, the recycler will be refreshed upon creation */}
             } else {
                 setupViewPagerAndTabLayout();   //Just refresh everything
@@ -219,4 +240,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+
+    /* Google API callbacks */
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {}
+
+    @Override
+    public void onConnectionSuspended(int i) {}
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 }
