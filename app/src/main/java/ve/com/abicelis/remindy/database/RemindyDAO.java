@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.location.Geofence;
+
 import java.io.InvalidClassException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -229,27 +231,54 @@ public class RemindyDAO {
     }
 
     /**
-     * Returns a List of Tasks (Status:PROGRAMMED) which have Location-Based reminders of a particular Place.
+     * Returns a List of Tasks (Status:PROGRAMMED) which have Location-Based reminders of a particular Place, set to trigger either entering or exiting or both.
      * @param placeId The ID of the place with which to look for Tasks
      */
-    public List<Task> getLocationBasedTasksAssociatedWithPlace(int placeId) throws CouldNotGetDataException {
+    public List<Task> getLocationBasedTasksAssociatedWithPlace(int placeId, int geofenceTransition) throws CouldNotGetDataException {
         List<Task> tasks = new ArrayList<>();
-
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        Cursor cursor = db.query(RemindyContract.LocationBasedReminderTable.TABLE_NAME, null, RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + "=?",
-                new String[] {String.valueOf(placeId)}, null, null, null);
+        Cursor cursor = null;
+
+        switch (geofenceTransition) {
+            case -1: //Any
+                cursor = db.query(RemindyContract.LocationBasedReminderTable.TABLE_NAME, null,
+                        RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + "=?",
+                        new String[] {String.valueOf(placeId)}, null, null, null);
+                break;
+
+            case Geofence.GEOFENCE_TRANSITION_ENTER:
+                cursor = db.query(RemindyContract.LocationBasedReminderTable.TABLE_NAME, null,
+                        RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + "=? AND " +
+                        RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_ENTERING.getName() + "=?",
+                        new String[] {String.valueOf(placeId), "true"}, null, null, null);
+                break;
 
 
-        try {
-            while (cursor.moveToNext()) {
-                int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName()));
-                Task task = getTask(taskId);
-                if(task.getStatus().equals(TaskStatus.PROGRAMMED))
-                    tasks.add(task);
-            }
-        } finally {
-            cursor.close();
+            case Geofence.GEOFENCE_TRANSITION_EXIT:
+                cursor = db.query(RemindyContract.LocationBasedReminderTable.TABLE_NAME, null,
+                        RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + "=? AND " +
+                                RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getName() + "=?",
+                        new String[] {String.valueOf(placeId), "true"}, null, null, null);
+                break;
+
+
+            case Geofence.GEOFENCE_TRANSITION_DWELL:
+                return tasks;   //TODO: For now, do not care about this transition
         }
+
+        if(cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName()));
+                    Task task = getTask(taskId);
+                    if(task.getStatus().equals(TaskStatus.PROGRAMMED))
+                        tasks.add(task);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+
 
         return tasks;
     }
@@ -399,7 +428,7 @@ public class RemindyDAO {
                 place = getPlaceFromCursor(cursor);
 
                 try {
-                    taskCount = getLocationBasedTasksAssociatedWithPlace(place.getId()).size();
+                    taskCount = getLocationBasedTasksAssociatedWithPlace(place.getId(), -1).size();
                 } catch (CouldNotGetDataException e) {
                     taskCount = 0;
                 }
@@ -543,7 +572,7 @@ public class RemindyDAO {
 
         List<Task> tasks;
         try {
-            tasks = getLocationBasedTasksAssociatedWithPlace(placeId);
+            tasks = getLocationBasedTasksAssociatedWithPlace(placeId, -1);
         }catch (CouldNotGetDataException e) {
             throw new CouldNotDeleteDataException("Error getting Task list associated with Place. PlaceID=" + placeId, e);
         }

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,8 +45,6 @@ public class LocationReminderGeofenceIntentService extends IntentService {
             return;
         }
 
-        //TODO: Tweak this code, must take into account the fact that each task with a location-based reminder is meant to trigger either
-        //entering or exiting the Geofence, not in every case. TL;DR: Take into account LocationReminder.isEntering boolean!
 
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
@@ -57,13 +56,20 @@ public class LocationReminderGeofenceIntentService extends IntentService {
                 ) {
 
             for(Geofence geofence : geofencingEvent.getTriggeringGeofences()) {
+                List<Task> tasks = new ArrayList<>();
+                try {
+                    tasks = new RemindyDAO(this).getLocationBasedTasksAssociatedWithPlace(Integer.valueOf(geofence.getRequestId()), geofenceTransition);
+                }catch (CouldNotGetDataException e) {/* Do nothing */}
 
-                String notificationTitle = getGeofenceNotificationTitle(geofenceTransition, geofence);
-                String notificationText = getGeofenceNotificationText(geofence);
+                if(tasks.size() > 0) {
+                    String notificationTitle = getGeofenceNotificationTitle(geofenceTransition, geofence);
+                    String notificationText = getGeofenceNotificationText(tasks);
 
-                // Send notification and log the transition details.
-                NotificationUtil.displayNotification(this, Integer.valueOf(geofence.getRequestId()), notificationTitle, notificationText);
-                Log.i(TAG, notificationTitle + notificationText);
+                    // Send notification and log the transition details.
+                    NotificationUtil.displayNotification(this, Integer.valueOf(geofence.getRequestId()), notificationTitle, notificationText);
+                    Log.i(TAG, notificationTitle + notificationText);
+                }
+
             }
 
         } else {
@@ -95,17 +101,12 @@ public class LocationReminderGeofenceIntentService extends IntentService {
                 places.get(Integer.valueOf(triggeringGeofence.getRequestId())).getAlias());
 
     }
-    private String getGeofenceNotificationText(Geofence triggeringGeofence) {
+    private String getGeofenceNotificationText(List<Task> tasks) {
         String tasksStr = "";
-        List<Task> tasks;
 
-        try {
-            tasks = new RemindyDAO(this).getLocationBasedTasksAssociatedWithPlace(Integer.valueOf(triggeringGeofence.getRequestId()));
-            for (Task task: tasks)
-                tasksStr += task.getTitle() + "\n\r";
-        }catch (CouldNotGetDataException e) {
-            return "";
-        }
+        for (Task task: tasks)
+            tasksStr += task.getTitle() + "\n\r";
+
 
         return String.format(Locale.getDefault(),
                 getResources().getString(R.string.geofence_notification_text),

@@ -542,7 +542,7 @@ public class PlaceActivity extends AppCompatActivity implements
         //Check if Place is associated with at least one location-based reminder
         List<Task> locationBasedTasks = new ArrayList<>();
         try {
-            locationBasedTasks = mDao.getLocationBasedTasksAssociatedWithPlace(mPlace.getId());
+            locationBasedTasks = mDao.getLocationBasedTasksAssociatedWithPlace(mPlace.getId(), -1);
         }catch (CouldNotGetDataException e) {
             SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_place_snackbar_error_deleting, SnackbarUtil.SnackbarDuration.LONG, null);
         }
