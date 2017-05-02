@@ -537,4 +537,14 @@
     <string name="subdirectory_attachments_image" translatable="false">attachments/image</string>
 
 
+    /* Geofences */
+    <string name="geofence_not_available">Geofence not available</string>
+    <string name="geofence_too_many_geofences">Too many Geofences</string>
+    <string name="geofence_too_many_pending_intents">Too many PendingIntents</string>
+    <string name="unknown_geofence_error">Unknown Geofence error</string>
+
+    <string name="geofence_enter">just entered</string>
+    <string name="geofence_exit">just exited</string>
+    <string name="geofence_dwell">are dwelling</string>
+
 </resources>
