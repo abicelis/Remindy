@@ -24,6 +24,7 @@ import java.util.List;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.model.Place;
+import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.NotificationUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskTriggerViewModel;
@@ -36,34 +37,32 @@ public class NotificationIntentService extends IntentService implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     //CONSTS
-    private static final int SLEEP_MILLIS = 60000;
-    private static final int REQ_CODE_GPS_FINE_PERMISSION = 2;                 // Permission request codes need to be < 256
+    private static final int TRIGGER_NOTIFICATION_BEFORE_TIME = 5;      //Minutes before a reminder to trigger a notification
+    private static final int SLEEP_MILLIS = 10 * 60 * 1000;
     private static final long NEVER_EXPIRE = -1;
-    private static final int ID_NORMAL = 001;
-    private static final int ID_GPS = 002;
+    private static final int NOTIFICATION_ID_NORMAL = 999;
 
 
     //DATA
-    private boolean flag;
     private RemindyDAO mDao;
-    private TaskTriggerViewModel nextTaskToTrigger;
     private GoogleApiClient mGoogleApiClient;
-    private List<Geofence> mGeofenceList = new ArrayList<>();
     private PendingIntent mGeofencePendingIntent;
+
 
 
     public NotificationIntentService() {
         super("NotificationIntentService");
     }
 
-
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
+        //TODO: build something so that when the user modifies a place or a task with a location-reminder, the geofences get updated
+        //HMMM refactor esto a un util? o algo un Controller? y llamar ese update que me refiero arriba desde el propio app!!!!
+
+
         mDao = new RemindyDAO(getApplicationContext());
 
-        buildGeofenceList();
-        mGeofencePendingIntent = getGeofencePendingIntent();
 
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
@@ -77,104 +76,55 @@ public class NotificationIntentService extends IntentService implements
 
 
         while (true) {
+            TaskTriggerViewModel nextTaskToTrigger;
+            try {
+                nextTaskToTrigger = mDao.getNextTaskToTrigger();
+            } catch (CouldNotGetDataException e ) {
+                nextTaskToTrigger = null;
+            }
 
-            if(flag) {
-                try {
-                    nextTaskToTrigger = mDao.getNextTaskToTrigger();
-                } catch (CouldNotGetDataException e ) {
-                    nextTaskToTrigger = null;
-                }
+            if(nextTaskToTrigger != null) {
+                String contentTitle = "Task '" + nextTaskToTrigger.getTask().getTitle() + "'";
+                String contentText = "Will trigger " +
+                        SharedPreferenceUtil.getDateFormat(getApplicationContext()).formatCalendar(nextTaskToTrigger.getTriggerDate()) +
+                        " at " +
+                        nextTaskToTrigger.getTriggerTime().toString();
 
-                if(nextTaskToTrigger != null) {
-                    String contentTitle = "Task '" + nextTaskToTrigger.getTask().getTitle() + "'";
-                    String contentText = "Will trigger " +
-                            SharedPreferenceUtil.getDateFormat(getApplicationContext()).formatCalendar(nextTaskToTrigger.getTriggerDate()) +
-                            " at " +
-                            nextTaskToTrigger.getTriggerTime().toString();
-
-                    NotificationUtil.displayNotification(this, ID_NORMAL, contentTitle, contentText);
-
-
-                }
+                NotificationUtil.displayNotification(this, NOTIFICATION_ID_NORMAL, contentTitle, contentText);
             }
 
             try {
                 Thread.sleep(SLEEP_MILLIS);
             } catch (InterruptedException e) {
-                        /* Do nothing */
+                    /* Do nothing */
             }
-
         }
     }
 
-    private void buildGeofenceList() {
-        for (Place place :mDao.getPlaces()){
-            mGeofenceList.add(new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
-                    .setRequestId(String.valueOf(place.getId()))
-                    .setCircularRegion(
-                            place.getLatitude(),
-                            place.getLongitude(),
-                            500
-                    )
-                    .setExpirationDuration(NEVER_EXPIRE)
-                    .setLoiteringDelay(30 * 1000)
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
-                    .build());
-
-        }
+    @Override
+    public void onDestroy() {
+        GeofenceUtil.removeGeofences(getApplicationContext(), mGoogleApiClient);
+        mGoogleApiClient.disconnect();
+        super.onDestroy();
     }
 
 
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER | GeofencingRequest.INITIAL_TRIGGER_DWELL);
-        builder.addGeofences(mGeofenceList);
-        return builder.build();
-    }
 
-    private PendingIntent getGeofencePendingIntent() {
-        // Reuse the PendingIntent if we already have it.
-        if (mGeofencePendingIntent != null) {
-            return mGeofencePendingIntent;
-        }
 
-        Intent intent = new Intent(this, LocationReminderGeofenceIntentService.class);
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
-        // calling addGeofences() and removeGeofences().
-        mGeofencePendingIntent =  PendingIntent.getService(this, 0, intent, PendingIntent.
-                FLAG_UPDATE_CURRENT);
-
-        return mGeofencePendingIntent;
-    }
+    /* GoogleApiClient callbacks */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        //flag = true;
-        if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            LocationServices.GeofencingApi.addGeofences(
-                    mGoogleApiClient,
-                    getGeofencingRequest(),
-                    getGeofencePendingIntent()
-            ).setResultCallback(new ResultCallback<Status>() {
-                @Override
-                public void onResult(@NonNull Status status) {
-                    if(status.isSuccess()) {
-                        //Awesome... yay....
-                    }
-                }
-            });
-        }
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
+        GeofenceUtil.addGeofences(getApplicationContext(), mGoogleApiClient);
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionSuspended(int i) {}
 
-    }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
+
+
+
+
+
 }
