@@ -541,10 +541,15 @@
     <string name="geofence_not_available">Geofence not available</string>
     <string name="geofence_too_many_geofences">Too many Geofences</string>
     <string name="geofence_too_many_pending_intents">Too many PendingIntents</string>
+    <string name="geofence_transition_invalid_type">Invalid transition type</string>
     <string name="unknown_geofence_error">Unknown Geofence error</string>
 
-    <string name="geofence_enter">just entered</string>
-    <string name="geofence_exit">just exited</string>
-    <string name="geofence_dwell">are dwelling</string>
+    <string name="geofence_enter">You are at</string>
+    <string name="geofence_exit">You just left</string>
+    <string name="geofence_dwell">You\'ve been a while at</string>
+
+
+    <string name="geofence_notification_title">%1$s %2$s</string>
+    <string name="geofence_notification_text">Remember tasks: %1$s</string>
 
 </resources>

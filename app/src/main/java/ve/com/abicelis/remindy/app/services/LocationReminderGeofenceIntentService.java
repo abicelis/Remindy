@@ -9,10 +9,13 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
+import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.model.Place;
+import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.util.NotificationUtil;
 
 
@@ -22,11 +25,10 @@ import ve.com.abicelis.remindy.util.NotificationUtil;
 
 public class LocationReminderGeofenceIntentService extends IntentService {
 
-    //DATA
-    List<Place> mPlaces;
-
     //CONST
     private static final String TAG = LocationReminderGeofenceIntentService.class.getSimpleName();
+    //private static final int NOTIFICATION_ID_GPS = 002;
+
 
     public LocationReminderGeofenceIntentService() {
         super("LocationReminderGeofenceIntentService");
@@ -42,56 +44,72 @@ public class LocationReminderGeofenceIntentService extends IntentService {
             return;
         }
 
+        //TODO: Tweak this code, must take into account the fact that each task with a location-based reminder is meant to trigger either
+        //entering or exiting the Geofence, not in every case. TL;DR: Take into account LocationReminder.isEntering boolean!
+
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-                geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT ||
-                geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER
+                || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT
+                || geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL
+                ) {
 
-            mPlaces = new RemindyDAO(this).getPlaces();
+            for(Geofence geofence : geofencingEvent.getTriggeringGeofences()) {
 
-            // Get the geofences that were triggered. A single event can trigger
-            // multiple geofences.
-            List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+                String notificationTitle = getGeofenceNotificationTitle(geofenceTransition, geofence);
+                String notificationText = getGeofenceNotificationText(geofence);
 
-            // Get the transition details as a String.
-            String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                    geofenceTransition,
-                    triggeringGeofences
-            );
+                // Send notification and log the transition details.
+                NotificationUtil.displayNotification(this, Integer.valueOf(geofence.getRequestId()), notificationTitle, notificationText);
+                Log.i(TAG, notificationTitle + notificationText);
+            }
 
-            // Send notification and log the transition details.
-            NotificationUtil.displayNotification(this, 2, "GPS", geofenceTransitionDetails);
-            Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.
-            //Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
+            Log.e(TAG, getResources().getString(R.string.geofence_transition_invalid_type) +"= " + geofenceTransition);
         }
 
     }
 
-    private String getGeofenceTransitionDetails(int geofenceTransition, List<Geofence> triggeringGeofences) {
-        String str = "You ";
-
+    private String getGeofenceNotificationTitle(int geofenceTransition, Geofence triggeringGeofence) {
+        String transition = "";
         switch (geofenceTransition) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                str += getResources().getString(R.string.geofence_enter);
+                transition = getResources().getString(R.string.geofence_enter);
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
-                str += getResources().getString(R.string.geofence_exit);
+                transition = getResources().getString(R.string.geofence_exit);
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                str += getResources().getString(R.string.geofence_dwell);
+                transition = getResources().getString(R.string.geofence_dwell);
                 break;
         }
 
-        for (Geofence geofence : triggeringGeofences) {
-            str += mPlaces.get(Integer.valueOf(geofence.getRequestId())).getAlias();
+        List<Place> places = new RemindyDAO(this).getPlaces();
+
+        return String.format(Locale.getDefault(),
+                getResources().getString(R.string.geofence_notification_title),
+                transition,
+                places.get(Integer.valueOf(triggeringGeofence.getRequestId())).getAlias());
+
+    }
+    private String getGeofenceNotificationText(Geofence triggeringGeofence) {
+        String tasksStr = "";
+        List<Task> tasks;
+
+        try {
+            tasks = new RemindyDAO(this).getLocationBasedTasksAssociatedWithPlace(Integer.valueOf(triggeringGeofence.getRequestId()));
+            for (Task task: tasks)
+                tasksStr += task.getTitle() + "\n\r";
+        }catch (CouldNotGetDataException e) {
+            return "";
         }
 
-        return str;
+        return String.format(Locale.getDefault(),
+                getResources().getString(R.string.geofence_notification_text),
+                tasksStr);
     }
 
 }
