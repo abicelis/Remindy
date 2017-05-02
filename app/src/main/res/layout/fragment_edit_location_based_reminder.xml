@@ -76,28 +76,25 @@
                 android:text=""/>
 
 
-            <RadioGroup
-                android:id="@+id/fragment_edit_location_based_reminder_radio_group"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <RadioButton
+                <CheckBox
                     android:id="@+id/fragment_edit_location_based_reminder_entering"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:buttonTint="@color/primary"
                     android:text="@string/fragment_edit_location_based_reminder_entering"
                     />
 
-                <RadioButton
+                <CheckBox
                     android:id="@+id/fragment_edit_location_based_reminder_exiting"
                     android:layout_marginLeft="12dp"
                     android:layout_marginStart="12dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:buttonTint="@color/primary"
                     android:text="@string/fragment_edit_location_based_reminder_exiting"/>
-            </RadioGroup>
+            </LinearLayout>
 
 
         </LinearLayout>

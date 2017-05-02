@@ -1,7 +1,6 @@
 package ve.com.abicelis.remindy.app.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,9 +55,8 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
     private Spinner mPlace;
     private MapView mMapView;
     private TextView mAddress;
-    private RadioGroup mRadioGroup;
-    private RadioButton mEntering;
-    private RadioButton mExiting;
+    private CheckBox mEntering;
+    private CheckBox mExiting;
 
     private GoogleMap mMap;
 
@@ -91,27 +89,25 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
         mPlace = (Spinner) rootView.findViewById(R.id.fragment_edit_location_based_reminder_place);
         mMapView = (MapView) rootView.findViewById(R.id.fragment_edit_location_based_reminder_map);
         mAddress = (TextView) rootView.findViewById(R.id.fragment_edit_location_based_reminder_address);
-        mRadioGroup = (RadioGroup) rootView.findViewById(R.id.fragment_edit_location_based_reminder_radio_group);
-        mEntering = (RadioButton) rootView.findViewById(R.id.fragment_edit_location_based_reminder_entering);
-        mExiting = (RadioButton) rootView.findViewById(R.id.fragment_edit_location_based_reminder_exiting);
+        mEntering = (CheckBox) rootView.findViewById(R.id.fragment_edit_location_based_reminder_entering);
+        mExiting = (CheckBox) rootView.findViewById(R.id.fragment_edit_location_based_reminder_exiting);
 
         mMapView.setClickable(false);
-        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        mEntering.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                switch (checkedId) {
-                    case R.id.fragment_edit_location_based_reminder_entering:
-                        mReminder.setEntering(true);
-                        break;
-                    case R.id.fragment_edit_location_based_reminder_exiting:
-                        mReminder.setEntering(false);
-                        break;
-                }
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mReminder.setTriggerEntering(isChecked);
             }
         });
+        mExiting.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mReminder.setTriggerExiting(isChecked);
+            }
+        });
+
         setupSpinners();
         setReminderValues();
-
 
 
         // Initialise the MapView
@@ -120,7 +116,6 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
         mMapView.getMapAsync(this);
 
         return rootView;
-
     }
 
 
@@ -143,12 +138,15 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
         mSetEnteringFlag = false;
         if(mReminder.getPlace() != null) {
             for (int i = 0; i < mPlaces.size(); i++ ) {
-                if(mReminder.getPlace().equals(mPlaces.get(i)))
+                if(mReminder.getPlace().equals(mPlaces.get(i))) {
                     mPlace.setSelection(i);
+                    break;
+                }
             }
         }
 
-        mEntering.setChecked(mReminder.isEntering());
+        mEntering.setChecked(mReminder.getTriggerEntering());
+        mExiting.setChecked(mReminder.getTriggerExiting());
     }
 
 
@@ -160,8 +158,10 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
         mAddress.setText(selectedPlace.getAddress());
 
         if(mSetEnteringFlag) {
-            mReminder.setEntering(true);
-            mEntering.setChecked(true);
+            mReminder.setTriggerEntering(false);
+            mReminder.setTriggerExiting(false);
+            mEntering.setChecked(false);
+            mExiting.setChecked(false);
         }
 
         //Reset flag if used
@@ -202,7 +202,7 @@ public class EditLocationBasedReminderFragment extends Fragment implements TaskD
 
     @Override
     public void updateData() {
-        //Place, PlaceId and isEntering already set
+        //Place, PlaceId and getTriggerEntering already set
     }
 
 }
