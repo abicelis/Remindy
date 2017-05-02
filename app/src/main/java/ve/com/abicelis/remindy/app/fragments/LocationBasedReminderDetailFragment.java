@@ -25,6 +25,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Locale;
+
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.util.ConversionUtil;
@@ -47,6 +49,7 @@ public class LocationBasedReminderDetailFragment extends Fragment implements OnM
     private GoogleMap mMap;
     private LinearLayout mContainer;
     private TextView mAddress;
+    private TextView mRadius;
 
 
     @Override
@@ -78,10 +81,15 @@ public class LocationBasedReminderDetailFragment extends Fragment implements OnM
         mContainer = (LinearLayout) rootView.findViewById(R.id.fragment_reminder_location_based_container);
         mAddress = (TextView) rootView.findViewById(R.id.fragment_reminder_location_based_address);
         mAddress.setText(mReminder.getPlace().getAddress());
+        mRadius = (TextView) rootView.findViewById(R.id.fragment_reminder_location_based_radius);
+        mRadius.setText(String.format(Locale.getDefault(),
+                getResources().getString(R.string.fragment_detail_location_based_reminder_radius),
+                mReminder.getPlace().getRadius(),
+                mReminder.getEnteringExitingString(getActivity())) );
+
 
         // Get the SupportMapFragment and request notification
         // when the map is ready to be used.
-
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_reminder_location_based_map);
         mapFragment.getMapAsync(this);
         return rootView;

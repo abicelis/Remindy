@@ -30,7 +30,31 @@
             android:ellipsize="end"
             android:text="Example address address address address address address address address address address address address address address address address address address"
             android:textSize="@dimen/text_size_medium" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/item_task_icon_size"
+            android:layout_height="@dimen/item_task_icon_size"
+            android:src="@drawable/icon_place_radius"
+            android:tint="@color/gray_600" />
+
+        <TextView
+            android:id="@+id/fragment_reminder_location_based_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="500m, Entering and Exiting"
+            android:textSize="@dimen/text_size_medium" />
     </LinearLayout>
 
 
