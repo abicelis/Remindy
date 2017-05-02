@@ -53,7 +53,8 @@ final class RemindyContract {
 
         static final TableColumn COLUMN_NAME_TASK_FK = new TableColumn(DataType.INTEGER, "fk_task");
         static final TableColumn COLUMN_NAME_PLACE_FK = new TableColumn(DataType.INTEGER, "fk_place");
-        static final TableColumn COLUMN_NAME_IS_ENTERING = new TableColumn(DataType.TEXT, "is_entering");
+        static final TableColumn COLUMN_NAME_TRIGGER_ENTERING = new TableColumn(DataType.TEXT, "trigger_entering");
+        static final TableColumn COLUMN_NAME_TRIGGER_EXITING = new TableColumn(DataType.TEXT, "trigger_exiting");
     }
 
     static abstract class TaskTable implements BaseColumns {

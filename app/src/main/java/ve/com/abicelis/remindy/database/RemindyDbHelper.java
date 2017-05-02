@@ -270,12 +270,13 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 RemindyContract.LocationBasedReminderTable._ID + COMMA_SEP +
                 RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName() + COMMA_SEP +
                 RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + COMMA_SEP +
-                RemindyContract.LocationBasedReminderTable.COLUMN_NAME_IS_ENTERING.getName() +
+                RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_ENTERING.getName() + COMMA_SEP +
+                RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getName() +
                 ") VALUES " +
-                "(0, 19, 0, 'TRUE')," +
-                "(1, 20, 1, 'TRUE')," +
-                "(2, 21, 1, 'TRUE')," +
-                "(3, 22, 3, 'FALSE');";
+                "(0, 19, 0, 'TRUE', 'FALSE')," +
+                "(1, 20, 0, 'FALSE', 'TRUE')," +
+                "(2, 21, 0, 'TRUE', 'TRUE')," +
+                "(3, 22, 1, 'TRUE', 'TRUE');";
         sqLiteDatabase.execSQL(statement);
 
     }
@@ -323,7 +324,8 @@ public class RemindyDbHelper extends SQLiteOpenHelper {
                 " REFERENCES " + RemindyContract.TaskTable.TABLE_NAME + "(" + RemindyContract.TaskTable._ID + ") " + COMMA_SEP +
                 RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + " " + RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getDataType() +
                 " REFERENCES " + RemindyContract.PlaceTable.TABLE_NAME + "(" + RemindyContract.PlaceTable._ID + ") " + COMMA_SEP +
-                RemindyContract.LocationBasedReminderTable.COLUMN_NAME_IS_ENTERING.getName() + " " + RemindyContract.LocationBasedReminderTable.COLUMN_NAME_IS_ENTERING.getDataType() +
+                RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_ENTERING.getName() + " " + RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_ENTERING.getDataType() + COMMA_SEP +
+                RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getName() + " " + RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getDataType() +
                 " ); " ;
         sqLiteDatabase.execSQL(statement);
 

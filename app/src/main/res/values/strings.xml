@@ -187,6 +187,7 @@
     <string name="activity_task_repeating_snackbar_error_invalid_number_events">Please add a valid number of events</string>
     <string name="activity_task_repeating_snackbar_error_invalid_end_date">Please add a valid end date</string>
     <string name="activity_task_repeating_snackbar_error_end_date_before_date">End date must be after reminder date</string>
+    <string name="activity_task_location_based_snackbar_error_set_entering_exiting">Please set either Entering, Exiting or both</string>
 
     <string name="activity_task_fragment_task_tab_title">Task</string>
     <string name="activity_task_fragment_reminder_tab_title">Reminder</string>

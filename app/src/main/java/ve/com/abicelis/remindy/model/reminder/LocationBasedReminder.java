@@ -16,23 +16,25 @@ public class LocationBasedReminder extends Reminder implements Serializable {
 
     private int placeId;
     private Place place;
-    private boolean isEntering;
+    private boolean triggerEntering;
+    private boolean triggerExiting;
 
     public LocationBasedReminder() {} //Parameter-less argument for Reminder creation
 
-    public LocationBasedReminder(int placeId, @NonNull Place place, boolean entering) {
-        init(placeId, place, entering);
+    public LocationBasedReminder(int placeId, @NonNull Place place, boolean triggerEntering, boolean triggerExiting) {
+        init(placeId, place, triggerEntering, triggerExiting);
     }
 
-    public LocationBasedReminder(int id, int taskId, int placeId, @Nullable Place place, boolean entering) {
+    public LocationBasedReminder(int id, int taskId, int placeId, @Nullable Place place, boolean triggerEntering, boolean triggerExiting) {
         super(id, taskId);
-        init(placeId, place, entering);
+        init(placeId, place, triggerEntering, triggerExiting);
     }
 
-    private void init(int placeId, @Nullable Place place, boolean isEntering) {
+    private void init(int placeId, @Nullable Place place, boolean triggerEntering, boolean triggerExiting) {
         this.placeId = placeId;
         this.place = place;
-        this.isEntering = isEntering;
+        this.triggerEntering = triggerEntering;
+        this.triggerExiting = triggerExiting;
     }
 
 
@@ -51,9 +53,11 @@ public class LocationBasedReminder extends Reminder implements Serializable {
     public Place getPlace() {return place;}
     public void setPlace(Place place) {this.place = place;}
 
-    public boolean isEntering() {return isEntering;}
-    public void setEntering(boolean entering) {isEntering = entering;}
+    public boolean getTriggerEntering() {return triggerEntering;}
+    public void setTriggerEntering(boolean triggerEntering) {this.triggerEntering = triggerEntering;}
 
+    public boolean getTriggerExiting() {return triggerExiting;}
+    public void setTriggerExiting(boolean triggerExiting) {this.triggerExiting = triggerExiting;}
 
     @Override
     public String toString() {
@@ -62,7 +66,8 @@ public class LocationBasedReminder extends Reminder implements Serializable {
                                     res += " TaskID=" + getTaskId() + "\r\n";
                                     res += " PlaceID=" + placeId + "\r\n";
         if(place != null)           res +=  " Place=" + place.toString() + "\r\n";
-                                    res +=  " isEntering=" + isEntering;
+                                    res +=  " triggerEntering=" + triggerEntering + "\r\n";
+                                    res +=  " triggerExiting=" + triggerExiting;
         return res;
     }
 }

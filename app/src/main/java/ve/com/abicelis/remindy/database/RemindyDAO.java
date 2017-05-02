@@ -950,7 +950,8 @@ public class RemindyDAO {
         ContentValues values = new ContentValues();
         values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName(), locationBasedReminder.getTaskId());
         values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName(), locationBasedReminder.getPlaceId());
-        values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_IS_ENTERING.getName(), String.valueOf(locationBasedReminder.isEntering()));
+        values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_ENTERING.getName(), String.valueOf(locationBasedReminder.getTriggerEntering()));
+        values.put(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getName(), String.valueOf(locationBasedReminder.getTriggerExiting()));
         return values;
     }
 
@@ -1087,9 +1088,10 @@ public class RemindyDAO {
         int id = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable._ID));
         int taskId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TASK_FK.getName()));
         int placeId = cursor.getInt(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName()));
-        boolean isEntering = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_IS_ENTERING.getName())));
+        boolean triggerEntering = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_ENTERING.getName())));
+        boolean triggerExiting = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getName())));
 
-        return new LocationBasedReminder(id, taskId, placeId, null, isEntering);
+        return new LocationBasedReminder(id, taskId, placeId, null, triggerEntering, triggerExiting);
     }
 
 
