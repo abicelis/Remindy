@@ -102,7 +102,6 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private TextView mDescription;
     private TextView mReminderSubtitle;
     private TextView mAttachmentsSubtitle;
-    private TextView mReminderTitle;
     private LinearLayout mDoneContainer;
     private TextView mDone;
     private LinearLayout mOverdueContainer;
