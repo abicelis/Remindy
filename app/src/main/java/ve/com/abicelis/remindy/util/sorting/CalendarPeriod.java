@@ -15,7 +15,7 @@ public class CalendarPeriod {
     public CalendarPeriod(CalendarPeriodType periodType) {
 
         start = Calendar.getInstance();
-        start.add(Calendar.DAY_OF_MONTH, 0);
+        //start.add(Calendar.DAY_OF_MONTH, 0);
         start.set(Calendar.HOUR_OF_DAY, 0);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
@@ -58,7 +58,8 @@ public class CalendarPeriod {
                 start.set(Calendar.YEAR, 1);    //TODO: Set to way in the past, figure out how to set Calendar.MINDATE
                 start.set(Calendar.MONTH, 0);
                 start.set(Calendar.DAY_OF_MONTH, 1);
-                end.add(Calendar.DAY_OF_MONTH, -1); //End of Yesterday
+                end = Calendar.getInstance();
+                end.add(Calendar.MILLISECOND, -1); //One Millisecond ago
                 break;
             case TODAY:
                 //Dates are already set
