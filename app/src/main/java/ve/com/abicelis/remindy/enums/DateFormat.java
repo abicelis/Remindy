@@ -12,7 +12,7 @@ public enum DateFormat {
         PRETTY_DATE {
             @Override
             public String formatCalendar(Calendar calendar) {
-                SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
                 String str = formatter.format(calendar.getTime());
 
                 if(Locale.getDefault().equals(Locale.ENGLISH) || Locale.getDefault().equals(Locale.US) || Locale.getDefault().equals(Locale.UK) || Locale.getDefault().equals(Locale.CANADA))
