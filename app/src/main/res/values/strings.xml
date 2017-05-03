@@ -35,7 +35,7 @@
     <string name="activity_task_snackbar_error_updating_task">Could not update task</string>
     <string name="activity_task_snackbar_task_deleted_successfully">Task deleted successfully</string>
     <string name="fragment_location_based_reminder_detail_snackbar_error_no_reminder">No reminder specified. Closing</string>
-    <string name="activity_task_overdue_since">Overdue since %1$s</string>
+    <string name="activity_task_overdue_since">Overdue since %1$s at %2$s</string>
 
 
     <string name="activity_task_dialog_delete_title">Delete task?</string>
@@ -562,6 +562,6 @@
     <string name="notification_service_geofence_title">%1$s %2$s</string>
     <string name="notification_service_geofence_text">Remember tasks: %1$s</string>
 
-    <string name="notification_service_normal_title">"Task '%1$s' is due in %2$d minutes or less</string>
+    <string name="notification_service_normal_title">"Task '%1$s' is due.</string>
     <string name="notification_service_normal_text">In %1$d minutes or less</string>
 </resources>

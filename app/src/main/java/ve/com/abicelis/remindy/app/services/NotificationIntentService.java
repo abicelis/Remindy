@@ -1,29 +1,22 @@
 package ve.com.abicelis.remindy.app.services;
 
-import android.Manifest;
 import android.app.IntentService;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Locale;
 
+import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
-import ve.com.abicelis.remindy.model.Place;
+import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.NotificationUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
@@ -36,18 +29,19 @@ import ve.com.abicelis.remindy.viewmodel.TaskTriggerViewModel;
 public class NotificationIntentService extends IntentService implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+
     //CONSTS
-    private static final int TRIGGER_NOTIFICATION_BEFORE_TIME = 5;      //Minutes before a reminder to trigger a notification
     private static final int SLEEP_MILLIS = 10 * 60 * 1000;
-    private static final long NEVER_EXPIRE = -1;
+    private static final int SLEEP_MILLIS_IDLE = 1 * 60 * 1000;
     private static final int NOTIFICATION_ID_NORMAL = 999;
 
 
     //DATA
     private RemindyDAO mDao;
     private GoogleApiClient mGoogleApiClient;
-    private PendingIntent mGeofencePendingIntent;
-
+    private TaskTriggerViewModel mNextTaskToTrigger;
+    private long mSleepTime;
+    private Integer mLastTaskTriggered = null;
 
 
     public NotificationIntentService() {
@@ -56,13 +50,7 @@ public class NotificationIntentService extends IntentService implements
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-
-        //TODO: build something so that when the user modifies a place or a task with a location-reminder, the geofences get updated
-        //HMMM refactor esto a un util? o algo un Controller? y llamar ese update que me refiero arriba desde el propio app!!!!
-
-
         mDao = new RemindyDAO(getApplicationContext());
-
 
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
@@ -75,31 +63,83 @@ public class NotificationIntentService extends IntentService implements
         }
 
 
+
+
         while (true) {
-            TaskTriggerViewModel nextTaskToTrigger;
+
+            //Refresh task to trigger, avoiding last triggered task if exists
+            loadNextTaskToTrigger(mLastTaskTriggered);
+
+            if(mNextTaskToTrigger != null) {
+                Calendar now = Calendar.getInstance();
+                int triggerMinutesBeforeNotification = SharedPreferenceUtil.getTriggerMinutesBeforeNotification(getApplicationContext());
+
+                long differenceInMinutes = CalendarUtil.getDifferenceMinutesBetween(mNextTaskToTrigger.getTriggerDateWithTime(), now);
+
+                if(differenceInMinutes < triggerMinutesBeforeNotification ) {
+                    handleNotification(triggerMinutesBeforeNotification);
+                    mLastTaskTriggered = mNextTaskToTrigger.getTask().getId();
+                } else {
+                    mSleepTime = SLEEP_MILLIS_IDLE;
+                }
+
+            } else {
+                //Idle sleep
+                mSleepTime = SLEEP_MILLIS_IDLE;
+            }
+
+
+
             try {
-                nextTaskToTrigger = mDao.getNextTaskToTrigger();
-            } catch (CouldNotGetDataException e ) {
-                nextTaskToTrigger = null;
-            }
+                Thread.sleep(mSleepTime);
+            } catch (InterruptedException e) { /* Do nothing */ }
 
-            if(nextTaskToTrigger != null) {
-                String contentTitle = "Task '" + nextTaskToTrigger.getTask().getTitle() + "'";
-                String contentText = "Will trigger " +
-                        SharedPreferenceUtil.getDateFormat(getApplicationContext()).formatCalendar(nextTaskToTrigger.getTriggerDate()) +
-                        " at " +
-                        nextTaskToTrigger.getTriggerTime().toString();
 
-                NotificationUtil.displayNotification(this, NOTIFICATION_ID_NORMAL, contentTitle, contentText);
-            }
 
-            try {
-                Thread.sleep(SLEEP_MILLIS);
-            } catch (InterruptedException e) {
-                    /* Do nothing */
-            }
+
+
+
+
+//            try {
+//                mNextTaskToTrigger = mDao.getNextTaskToTrigger(null);
+//            } catch (CouldNotGetDataException e ) {
+//                mNextTaskToTrigger = null;
+//            }
+//
+//            if(mNextTaskToTrigger != null) {
+//                String contentTitle = "Task '" + mNextTaskToTrigger.getTask().getTitle() + "'";
+//                String contentText = "Will trigger " +
+//                        SharedPreferenceUtil.getDateFormat(getApplicationContext()).formatCalendar(mNextTaskToTrigger.getTriggerDate()) +
+//                        " at " +
+//                        mNextTaskToTrigger.getTriggerTime().toString();
+//
+//                NotificationUtil.displayNotification(this, NOTIFICATION_ID_NORMAL, contentTitle, contentText);
+//            }
+//
+//            try {
+//                Thread.sleep(SLEEP_MILLIS);
+//            } catch (InterruptedException e) { /* Do nothing */ }
         }
     }
+
+
+
+    private void loadNextTaskToTrigger(Integer exceptForThisTaskId ) {
+        try {
+            mNextTaskToTrigger = mDao.getNextTaskToTrigger(exceptForThisTaskId);
+        } catch (CouldNotGetDataException e ) {
+            mNextTaskToTrigger = null;
+        }
+    }
+
+    private void handleNotification(int triggerMinutesBeforeNotification) {
+        String contentTitle = String.format(Locale.getDefault(), getResources().getString(R.string.notification_service_normal_title), mNextTaskToTrigger.getTask().getTitle());
+        String contentText = String.format(Locale.getDefault(), getResources().getString(R.string.notification_service_normal_text), triggerMinutesBeforeNotification);
+        NotificationUtil.displayNotification(this, NOTIFICATION_ID_NORMAL, contentTitle, contentText);
+    }
+
+
+
 
     @Override
     public void onDestroy() {
@@ -107,7 +147,6 @@ public class NotificationIntentService extends IntentService implements
         mGoogleApiClient.disconnect();
         super.onDestroy();
     }
-
 
 
 
@@ -122,9 +161,5 @@ public class NotificationIntentService extends IntentService implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
-
-
-
-
 
 }
