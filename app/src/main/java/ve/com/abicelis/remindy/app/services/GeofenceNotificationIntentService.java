@@ -24,15 +24,15 @@ import ve.com.abicelis.remindy.util.NotificationUtil;
  * Created by abice on 30/4/2017.
  */
 
-public class LocationReminderGeofenceIntentService extends IntentService {
+public class GeofenceNotificationIntentService extends IntentService {
 
     //CONST
-    private static final String TAG = LocationReminderGeofenceIntentService.class.getSimpleName();
+    private static final String TAG = GeofenceNotificationIntentService.class.getSimpleName();
     //private static final int NOTIFICATION_ID_GPS = 002;
 
 
-    public LocationReminderGeofenceIntentService() {
-        super("LocationReminderGeofenceIntentService");
+    public GeofenceNotificationIntentService() {
+        super("GeofenceNotificationIntentService");
     }
 
     @Override
@@ -83,20 +83,20 @@ public class LocationReminderGeofenceIntentService extends IntentService {
         String transition = "";
         switch (geofenceTransition) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                transition = getResources().getString(R.string.geofence_enter);
+                transition = getResources().getString(R.string.notification_service_geofence_enter);
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
-                transition = getResources().getString(R.string.geofence_exit);
+                transition = getResources().getString(R.string.notification_service_geofence_exit);
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                transition = getResources().getString(R.string.geofence_dwell);
+                transition = getResources().getString(R.string.notification_service_geofence_dwell);
                 break;
         }
 
         List<Place> places = new RemindyDAO(this).getPlaces();
 
         return String.format(Locale.getDefault(),
-                getResources().getString(R.string.geofence_notification_title),
+                getResources().getString(R.string.notification_service_geofence_title),
                 transition,
                 places.get(Integer.valueOf(triggeringGeofence.getRequestId())).getAlias());
 
@@ -109,7 +109,7 @@ public class LocationReminderGeofenceIntentService extends IntentService {
 
 
         return String.format(Locale.getDefault(),
-                getResources().getString(R.string.geofence_notification_text),
+                getResources().getString(R.string.notification_service_geofence_text),
                 tasksStr);
     }
 

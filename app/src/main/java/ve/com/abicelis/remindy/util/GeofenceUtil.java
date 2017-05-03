@@ -19,7 +19,7 @@ import com.google.android.gms.location.LocationServices;
 import java.util.ArrayList;
 import java.util.List;
 
-import ve.com.abicelis.remindy.app.services.LocationReminderGeofenceIntentService;
+import ve.com.abicelis.remindy.app.services.GeofenceNotificationIntentService;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.model.Place;
 
@@ -132,7 +132,7 @@ public class GeofenceUtil {
             return mGeofencePendingIntent;
         }
 
-        Intent intent = new Intent(context, LocationReminderGeofenceIntentService.class);
+        Intent intent = new Intent(context, GeofenceNotificationIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
         mGeofencePendingIntent =  PendingIntent.getService(context, 0, intent, PendingIntent.

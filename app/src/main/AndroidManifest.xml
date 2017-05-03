@@ -42,7 +42,7 @@
 
 
         <!--Geofencing Service-->
-        <service android:name=".app.services.LocationReminderGeofenceIntentService"/>
+        <service android:name=".app.services.GeofenceNotificationIntentService"/>
 
         <activity
             android:name=".app.activities.HomeActivity"
