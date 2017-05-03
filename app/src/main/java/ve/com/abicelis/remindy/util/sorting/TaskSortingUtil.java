@@ -114,14 +114,10 @@ public class TaskSortingUtil {
                         tasksLocationBased.add(current);
                         break;
                     case ONE_TIME:
-                        insertProgrammedTaskIntoBucket(current, ((OneTimeReminder)current.getReminder()).getDate());
+                        insertProgrammedTaskIntoBucket(current, TaskUtil.getReminderEndCalendar(current.getReminder()));
                         break;
                     case REPEATING:
-                        //TODO: Here, the same RepeatingReminder's "next" date must be used, not just getDate().
-                        //Also need to take into account the fact that a RepeatingReminder can be overdue.
-                        //And a repeating reminder can be set in the future, in which case do use detDate()
-                        //insertProgrammedTaskIntoBucket(current, TaskUtil.getRepeatingReminderEndDate( (RepeatingReminder)current.getReminder()) );
-                        insertProgrammedTaskIntoBucket(current, TaskUtil.getRepeatingReminderNextDate(((RepeatingReminder)current.getReminder())) );
+                        insertProgrammedTaskIntoBucket(current, TaskUtil.getRepeatingReminderNextCalendar(((RepeatingReminder)current.getReminder())) );
                         break;
                     default:
                         throw new InvalidParameterException("Unhandled ReminderType passed into TaskSortingUtil.generateProgrammedTaskHeaderList()");
