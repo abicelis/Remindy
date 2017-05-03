@@ -51,4 +51,25 @@ public class SharedPreferenceUtil {
         editor.putString(context.getResources().getString(R.string.settings_time_format_key), tf.name());
         editor.apply();
     }
+
+
+
+    public static int getTriggerMinutesBeforeNotification(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int tmPref = preferences.getInt(context.getResources().getString(R.string.settings_trigger_minutes_before_notification_key), -1);
+        if(tmPref == -1) {
+            Log.d("SharedPreferenceUtil", "getTriggerMinutesBeforeNotification() found null, setting 5 minutes");
+            int defaultMinutes = 5;
+            setTriggerMinutesBeforeNotification(defaultMinutes, context);
+            return defaultMinutes;
+        }
+        else return tmPref;
+    }
+
+    public static void setTriggerMinutesBeforeNotification(int triggerMinutesBeforeNotification, Context context) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putInt(context.getResources().getString(R.string.settings_trigger_minutes_before_notification_key), triggerMinutesBeforeNotification);
+        editor.apply();
+    }
+
 }

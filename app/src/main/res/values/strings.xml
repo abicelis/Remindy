@@ -119,6 +119,8 @@
     <string name="settings_time_format_key">remindy_settings_time_format</string>
     <string name="settings_time_format_title">Time Format</string>
 
+    <string name="settings_trigger_minutes_before_notification_key">remindy_settings_trigger_minutes_before_notification</string>
+    <string name="settings_trigger_minutes_before_notification_title">Trigger Minutes before notification</string>
 
     <string name="settings_backup_key">remindy_settings_backup</string>
     <string name="settings_backup_title">Backup data</string>
@@ -551,12 +553,15 @@
     <string name="geofence_snackbar_warning_no_permissons">App needs the location to function properly</string>
 
 
-    <string name="geofence_enter">You are at</string>
-    <string name="geofence_exit">You just left</string>
-    <string name="geofence_dwell">You\'ve been a while at</string>
+    /* Notification Service */
+    <string name="notification_service_geofence_enter">You are at</string>
+    <string name="notification_service_geofence_exit">You just left</string>
+    <string name="notification_service_geofence_dwell">You\'ve been a while at</string>
 
 
-    <string name="geofence_notification_title">%1$s %2$s</string>
-    <string name="geofence_notification_text">Remember tasks: %1$s</string>
+    <string name="notification_service_geofence_title">%1$s %2$s</string>
+    <string name="notification_service_geofence_text">Remember tasks: %1$s</string>
 
+    <string name="notification_service_normal_title">"Task '%1$s' is due in %2$d minutes or less</string>
+    <string name="notification_service_normal_text">In %1$d minutes or less</string>
 </resources>
