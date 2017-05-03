@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.location.Geofence;
 
@@ -286,9 +287,10 @@ public class RemindyDAO {
 
     /**
      * Returns the next PROGRAMMED task(With ONE-TIME or REPEATING reminder) to occur
+     * @param exceptForThisTaskId an optional task id to not include in the search
      * @return A single TaskTriggerViewModel or null of there are no tasks
      */
-    public TaskTriggerViewModel getNextTaskToTrigger() throws CouldNotGetDataException {
+    public TaskTriggerViewModel getNextTaskToTrigger(@Nullable Integer exceptForThisTaskId) throws CouldNotGetDataException {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
         Task nextTaskToTrigger = null;
         Calendar triggerDate = null;
@@ -301,6 +303,9 @@ public class RemindyDAO {
         try {
             while (cursor.moveToNext()) {
                 Task current = getTaskFromCursor(cursor);
+
+                if(exceptForThisTaskId != null && current.getId() == exceptForThisTaskId)   //Skip exceptForThisTaskId
+                    continue;
 
                 try {
                     current.setReminder(getReminderOfTask(current.getId(), current.getReminderType()));
