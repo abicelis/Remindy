@@ -32,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.transitionseverywhere.TransitionManager;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
@@ -47,6 +48,7 @@ import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.model.attachment.Attachment;
 import ve.com.abicelis.remindy.model.attachment.AudioAttachment;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
@@ -206,7 +208,13 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             mDoneContainer.setVisibility(View.VISIBLE);
             mDoneButton.setColorFilter(ContextCompat.getColor(this, R.color.fab_accept_green));
         } else if(TaskUtil.checkIfOverdue(mTask.getReminder())) {
-            mOverdue.setText(String.format(Locale.getDefault(), getResources().getString(R.string.activity_task_overdue_since), mDateFormat.formatCalendar(TaskUtil.getReminderEndDate(mTask.getReminder()))));
+            Calendar endCal = TaskUtil.getReminderEndCalendar(mTask.getReminder());
+            mOverdue.setText(String.format(
+                    Locale.getDefault(),
+                    getResources().getString(R.string.activity_task_overdue_since),
+                    mDateFormat.formatCalendar(endCal),
+                    new Time( endCal.get(Calendar.HOUR_OF_DAY), endCal.get(Calendar.MINUTE), SharedPreferenceUtil.getTimeFormat(this)).toString()
+            ));
             mOverdueContainer.setVisibility(View.VISIBLE);
         }
     }
@@ -455,6 +463,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             mTask = (Task) data.getSerializableExtra(TaskActivity.TASK_TO_EDIT);
 
             setUpViews();
+            setUpDoneOrOverdue();
             setUpToolbar();
             setUpReminderViews();
             setUpRecyclerView();
