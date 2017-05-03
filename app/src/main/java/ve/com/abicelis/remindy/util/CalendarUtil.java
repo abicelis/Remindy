@@ -24,4 +24,9 @@ public class CalendarUtil {
         copyTo.setTimeZone(copyFrom.getTimeZone());
         copyTo.setTimeInMillis(copyFrom.getTimeInMillis());
     }
+
+    public static long getDifferenceMinutesBetween(Calendar a, Calendar b) {
+        long differenceMinutes = ( a.getTimeInMillis() - b.getTimeInMillis() ) / 60000; //60 * 1000    toMinutes * toSeconds
+        return differenceMinutes;
+    }
 }
