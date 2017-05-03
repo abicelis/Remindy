@@ -8,6 +8,7 @@ import android.util.Log;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.TimeFormat;
+import ve.com.abicelis.remindy.enums.TriggerMinutesBeforeNotificationType;
 import ve.com.abicelis.remindy.model.Time;
 
 /**
@@ -54,21 +55,21 @@ public class SharedPreferenceUtil {
 
 
 
-    public static int getTriggerMinutesBeforeNotification(Context context) {
+    public static TriggerMinutesBeforeNotificationType getTriggerMinutesBeforeNotification(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int tmPref = preferences.getInt(context.getResources().getString(R.string.settings_trigger_minutes_before_notification_key), -1);
-        if(tmPref == -1) {
+        String tmPref = preferences.getString(context.getResources().getString(R.string.settings_trigger_minutes_before_notification_key), null);
+        if(tmPref == null) {
             Log.d("SharedPreferenceUtil", "getTriggerMinutesBeforeNotification() found null, setting 5 minutes");
-            int defaultMinutes = 5;
-            setTriggerMinutesBeforeNotification(defaultMinutes, context);
-            return defaultMinutes;
+            TriggerMinutesBeforeNotificationType tm = TriggerMinutesBeforeNotificationType.MINUTES_5;
+            setTriggerMinutesBeforeNotification(tm, context);
+            return tm;
         }
-        else return tmPref;
+        else return TriggerMinutesBeforeNotificationType.valueOf(tmPref);
     }
 
-    public static void setTriggerMinutesBeforeNotification(int triggerMinutesBeforeNotification, Context context) {
+    public static void setTriggerMinutesBeforeNotification(TriggerMinutesBeforeNotificationType triggerMinutesBeforeNotification, Context context) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putInt(context.getResources().getString(R.string.settings_trigger_minutes_before_notification_key), triggerMinutesBeforeNotification);
+        editor.putString(context.getResources().getString(R.string.settings_trigger_minutes_before_notification_key), triggerMinutesBeforeNotification.name());
         editor.apply();
     }
 

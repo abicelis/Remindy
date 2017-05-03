@@ -29,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
     //DATA
     private TimeFormat mOldTimeFormat;
     private DateFormat mOldDateFormat;
+    public boolean mForceHomeRefresh;
 
     //UI
     private Toolbar mToolbar;
@@ -80,10 +81,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(!mOldTimeFormat.equals(SharedPreferenceUtil.getTimeFormat(this)) || !mOldDateFormat.equals(SharedPreferenceUtil.getDateFormat(this)))
-            setResult(RESULT_OK);   //If date or time formats were changed
+        if(!mOldTimeFormat.equals(SharedPreferenceUtil.getTimeFormat(this)) || !mOldDateFormat.equals(SharedPreferenceUtil.getDateFormat(this)) || mForceHomeRefresh)
+            setResult(RESULT_OK);   //If date or time formats were changed or mForceHomeRefresh==true
         else
-            setResult(RESULT_CANCELED); //If date or time formats were not changed
+            setResult(RESULT_CANCELED); //If no change
         finish();
     }
 }

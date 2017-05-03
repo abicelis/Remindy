@@ -72,7 +72,7 @@ public class NotificationIntentService extends IntentService implements
 
             if(mNextTaskToTrigger != null) {
                 Calendar now = Calendar.getInstance();
-                int triggerMinutesBeforeNotification = SharedPreferenceUtil.getTriggerMinutesBeforeNotification(getApplicationContext());
+                int triggerMinutesBeforeNotification = SharedPreferenceUtil.getTriggerMinutesBeforeNotification(getApplicationContext()).getMinutes();
 
                 long differenceInMinutes = CalendarUtil.getDifferenceMinutesBetween(mNextTaskToTrigger.getTriggerDateWithTime(), now);
 

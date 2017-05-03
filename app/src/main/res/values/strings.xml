@@ -120,7 +120,9 @@
     <string name="settings_time_format_title">Time Format</string>
 
     <string name="settings_trigger_minutes_before_notification_key">remindy_settings_trigger_minutes_before_notification</string>
-    <string name="settings_trigger_minutes_before_notification_title">Trigger Minutes before notification</string>
+    <string name="settings_trigger_minutes_before_notification_title">Show notifications..</string>
+    <string name="settings_trigger_minutes_before_notification_summary_single">%1$d minute before time</string>
+    <string name="settings_trigger_minutes_before_notification_summary">%1$d minutes before time</string>
 
     <string name="settings_backup_key">remindy_settings_backup</string>
     <string name="settings_backup_title">Backup data</string>
@@ -538,6 +540,14 @@
     /*  Generic messages  */
     <string name="error_unexpected">Unexpected error occurred. Please report this error</string>
     <string name="error_updating_attachment_data">Unexpected error while updating the attachment</string>
+    <string name="backup_restore_no_permissions">No permission given, aborting process</string>
+    <string name="backup_successful">Data successfully backed up in SD Card</string>
+    <string name="backup_not_successful">Couldn\'t back up data</string>
+    <string name="backup_failed">Error backing up data</string>
+    <string name="restore_successful">Data successfully restored from SD Card</string>
+    <string name="restore_not_successful">Backup data not found in SD Card</string>
+    <string name="restore_failed">Error restoring data</string>
+
 
     /*  File subdirectories  */
     <string name="subdirectory_attachments_audio" translatable="false">attachments/audio</string>

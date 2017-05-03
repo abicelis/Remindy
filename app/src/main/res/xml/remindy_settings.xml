@@ -18,6 +18,12 @@
         android:entries="@array/timeFormat"
         android:entryValues="@array/timeFormatEntries"
         android:defaultValue="1"/>
+    <ListPreference
+        android:key="@string/settings_trigger_minutes_before_notification_key"
+        android:title="@string/settings_trigger_minutes_before_notification_title"
+        android:summary="%s"
+        android:entryValues="@array/triggerMinutesBeforeNotificationEntries"
+        android:defaultValue="5"/>
     <!--<SwitchPreference-->
         <!--android:key="@string/settings_show_location_based_reminder_in_new_tab_key"-->
         <!--android:title="@string/settings_show_location_based_reminder_in_new_tab_title"-->
