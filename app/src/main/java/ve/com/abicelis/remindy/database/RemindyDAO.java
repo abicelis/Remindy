@@ -344,7 +344,7 @@ public class RemindyDAO {
 
                     if(current.getReminderType().equals(ReminderType.REPEATING)) {
                         RepeatingReminder rr = (RepeatingReminder)current.getReminder();
-                        Calendar currentDate = TaskUtil.getRepeatingReminderNextDate(rr);
+                        Calendar currentDate = TaskUtil.getRepeatingReminderNextCalendar(rr);
 
                         if(currentDate == null) continue;   //Overdue
 

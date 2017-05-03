@@ -82,7 +82,7 @@ public class RepeatingReminderDetailFragment extends Fragment {
 
         if(!TaskUtil.checkIfOverdue(mReminder)) {
             mNextContainer.setVisibility(View.VISIBLE);
-            mNext.setText(df.formatCalendar(TaskUtil.getRepeatingReminderNextDate(mReminder)));
+            mNext.setText(df.formatCalendar(TaskUtil.getRepeatingReminderNextCalendar(mReminder)));
         }
 
         return rootView;
