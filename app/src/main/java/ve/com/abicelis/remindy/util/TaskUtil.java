@@ -5,7 +5,6 @@ import java.util.Calendar;
 
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
 import ve.com.abicelis.remindy.enums.ReminderType;
-import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.Reminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
@@ -27,35 +26,35 @@ public class TaskUtil {
             return false;
 
         if(reminder.getType().equals(ReminderType.REPEATING)) {
-            return ( getRepeatingReminderNextDate((RepeatingReminder) reminder) == null );
+            return ( getRepeatingReminderNextCalendar((RepeatingReminder) reminder) == null );
         }
 
         //For OneTime reminders
         CalendarPeriod overdueCP = new CalendarPeriod(CalendarPeriodType.OVERDUE);
-        Calendar endDate = getReminderEndDate(reminder);
+        Calendar endDate = getReminderEndCalendar(reminder);
         return overdueCP.isInPeriod(endDate);
     }
 
 
-    public static Calendar getReminderEndDate(Reminder reminder) {
+    public static Calendar getReminderEndCalendar(Reminder reminder) {
         switch (reminder.getType()) {
             case NONE:
             case LOCATION_BASED:
                 return null;
 
             case ONE_TIME:
-                return ((OneTimeReminder)reminder).getDate();
+                return CalendarUtil.getCalendarFromDateAndTime( ((OneTimeReminder)reminder).getDate(), ((OneTimeReminder)reminder).getTime() );
 
             case REPEATING:
-                return getRepeatingReminderEndDate(((RepeatingReminder)reminder));
+                return getRepeatingReminderEndCalendar(((RepeatingReminder)reminder));
 
             default:
-                throw new InvalidParameterException("Invalid ReminderType param on TaskUtil.getReminderEndDate()");
+                throw new InvalidParameterException("Invalid ReminderType param on TaskUtil.getReminderEndCalendar()");
         }
     }
 
 
-    public static Calendar getRepeatingReminderEndDate(RepeatingReminder repeatingReminder) {
+    public static Calendar getRepeatingReminderEndCalendar(RepeatingReminder repeatingReminder) {
         Calendar cal = Calendar.getInstance();
 
         switch (repeatingReminder.getRepeatEndType()) {
@@ -65,11 +64,11 @@ public class TaskUtil {
                 break;
 
             case UNTIL_DATE:
-                CalendarUtil.copyCalendar(repeatingReminder.getRepeatEndDate(), cal);
+                cal = CalendarUtil.getCalendarFromDateAndTime( repeatingReminder.getRepeatEndDate(), repeatingReminder.getTime());
                 break;
 
             case FOR_X_EVENTS:
-                CalendarUtil.copyCalendar(repeatingReminder.getDate(), cal);
+                cal = CalendarUtil.getCalendarFromDateAndTime( repeatingReminder.getDate(), repeatingReminder.getTime());
                 int dateField = getDateFieldFromRepeatType(repeatingReminder.getRepeatType());
 
                 for (int i = 0; i < repeatingReminder.getRepeatEndNumberOfEvents(); i++)
@@ -80,12 +79,11 @@ public class TaskUtil {
     }
 
 
-    public static Calendar getRepeatingReminderNextDate(RepeatingReminder repeatingReminder) {
+    public static Calendar getRepeatingReminderNextCalendar(RepeatingReminder repeatingReminder) {
 
-        Calendar today = CalendarUtil.getNewInstanceZeroedCalendar();
-        Calendar endDate = getRepeatingReminderEndDate(repeatingReminder);
-        Calendar cal = Calendar.getInstance();
-        CalendarUtil.copyCalendar(repeatingReminder.getDate(), cal);
+        Calendar today = Calendar.getInstance();
+        Calendar endDate = getRepeatingReminderEndCalendar(repeatingReminder);
+        Calendar cal = CalendarUtil.getCalendarFromDateAndTime( repeatingReminder.getDate(), repeatingReminder.getTime());
 
         //TODO: Cant use getDateFieldFromRepeatType(), Gives off a weird warning
         //final int dateField = getDateFieldFromRepeatType(repeatingReminder.getRepeatType());
@@ -105,7 +103,7 @@ public class TaskUtil {
                 case WEEKLY: cal.add(Calendar.WEEK_OF_YEAR, repeatingReminder.getRepeatInterval()); break;
                 case MONTHLY: cal.add(Calendar.MONTH, repeatingReminder.getRepeatInterval()); break;
                 case YEARLY: cal.add(Calendar.YEAR, repeatingReminder.getRepeatInterval()); break;
-                default: throw new InvalidParameterException("Invalid RepeatType parameter in TaskUtil.getRepeatingReminderEndDate()");
+                default: throw new InvalidParameterException("Invalid RepeatType parameter in TaskUtil.getRepeatingReminderEndCalendar()");
             }
         }
     }
@@ -117,7 +115,7 @@ public class TaskUtil {
             case WEEKLY: return Calendar.WEEK_OF_YEAR;
             case MONTHLY: return Calendar.MONTH;
             case YEARLY: return Calendar.YEAR;
-            default: throw new InvalidParameterException("Invalid RepeatType parameter in TaskUtil.getRepeatingReminderEndDate()");
+            default: throw new InvalidParameterException("Invalid RepeatType parameter in TaskUtil.getRepeatingReminderEndCalendar()");
         }
     }
 
