@@ -10,20 +10,19 @@
         android:title="@string/settings_date_format_title"
         android:summary="%s"
         android:entryValues="@array/dateFormatEntries"
-        android:defaultValue="1"/>
+        android:defaultValue="PRETTY_DATE"/>
     <ListPreference
         android:key="@string/settings_time_format_key"
         android:title="@string/settings_time_format_title"
         android:summary="%s"
-        android:entries="@array/timeFormat"
-        android:entryValues="@array/timeFormatEntries"
-        android:defaultValue="1"/>
+        android:entries="@array/timeFormatEntries"
+        android:entryValues="@array/timeFormatEntryValues"
+        android:defaultValue="FORMAT_24H"/>
     <ListPreference
         android:key="@string/settings_trigger_minutes_before_notification_key"
         android:title="@string/settings_trigger_minutes_before_notification_title"
         android:summary="%s"
-        android:entryValues="@array/triggerMinutesBeforeNotificationEntries"
-        android:defaultValue="5"/>
+        android:defaultValue="MINUTES_5"/>
     <!--<SwitchPreference-->
         <!--android:key="@string/settings_show_location_based_reminder_in_new_tab_key"-->
         <!--android:title="@string/settings_show_location_based_reminder_in_new_tab_title"-->
