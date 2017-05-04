@@ -29,7 +29,6 @@ public class GeofenceNotificationIntentService extends IntentService {
 
     //CONST
     private static final String TAG = GeofenceNotificationIntentService.class.getSimpleName();
-    //private static final int NOTIFICATION_ID_GPS = 002;
 
 
     public GeofenceNotificationIntentService() {
@@ -50,9 +49,13 @@ public class GeofenceNotificationIntentService extends IntentService {
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
+        // Log the transition type
+        handleLogTransition(geofenceTransition);
+
+
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER
-                || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT
+                //|| geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER   //Skipping this transition because of alert spam issues
                 || geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL
                 ) {
 
@@ -73,11 +76,25 @@ public class GeofenceNotificationIntentService extends IntentService {
 
             }
 
-        } else {
-            // Log the error.
-            Log.e(TAG, getResources().getString(R.string.geofence_transition_invalid_type) +"= " + geofenceTransition);
         }
 
+    }
+
+    private void handleLogTransition(int geofenceTransition) {
+
+        String transitionStr = "";
+        switch (geofenceTransition) {
+            case Geofence.GEOFENCE_TRANSITION_ENTER:
+                transitionStr = "GEOFENCE_TRANSITION_ENTER";
+                break;
+            case Geofence.GEOFENCE_TRANSITION_EXIT:
+                transitionStr = "GEOFENCE_TRANSITION_EXIT";
+                break;
+            case Geofence.GEOFENCE_TRANSITION_DWELL:
+                transitionStr = "GEOFENCE_TRANSITION_DWELL";
+                break;
+        }
+        Log.d(TAG, transitionStr + " detected! ");
     }
 
     private String getGeofenceNotificationTitle(int geofenceTransition, Geofence triggeringGeofence) {
@@ -90,7 +107,9 @@ public class GeofenceNotificationIntentService extends IntentService {
                 transition = getResources().getString(R.string.notification_service_geofence_exit);
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                transition = getResources().getString(R.string.notification_service_geofence_dwell);
+                //transition = getResources().getString(R.string.notification_service_geofence_dwell);
+                transition = getResources().getString(R.string.notification_service_geofence_enter);
+
                 break;
         }
         int placeId = Integer.valueOf(triggeringGeofence.getRequestId());
