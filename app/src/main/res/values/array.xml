@@ -12,19 +12,14 @@
     <!--</string-array>-->
 
     <string-array name="timeFormatEntries">
-        <item>FORMAT_24H</item>
-        <item>FORMAT_12H</item>
-    </string-array>
-    <string-array name="timeFormat">
         <item>24h</item>
         <item>12h</item>
     </string-array>
-
-    <string-array name="triggerMinutesBeforeNotificationEntries">
-        <item>1</item>
-        <item>5</item>
-        <item>10</item>
-        <item>20</item>
+    <string-array name="timeFormatEntryValues">
+        <item>FORMAT_24H</item>
+        <item>FORMAT_12H</item>
     </string-array>
+
+
 
 </resources>
