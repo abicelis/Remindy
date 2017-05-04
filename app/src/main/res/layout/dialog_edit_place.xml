@@ -29,7 +29,8 @@
             android:id="@+id/dialog_edit_place_alias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="2"
+            android:maxLength="20"
+            android:inputType="textCapSentences"
             android:imeOptions="actionNext"
             />
 
@@ -42,8 +43,8 @@
             android:id="@+id/dialog_edit_place_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:maxLines="3"
+            android:maxLength="70"
+            android:inputType="textCapSentences"
             android:imeOptions="actionDone"
             />
 

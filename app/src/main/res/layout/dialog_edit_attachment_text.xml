@@ -24,7 +24,8 @@
             android:id="@+id/dialog_edit_text_attachment_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="3"
+            android:maxLength="500"
+            android:maxLines="10"
             android:imeOptions="actionDone"
             />
 

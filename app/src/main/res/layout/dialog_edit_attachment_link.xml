@@ -24,10 +24,10 @@
             android:id="@+id/dialog_edit_link_attachment_link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="3"
             android:imeOptions="actionNext"
+            android:maxLength="100"
             android:inputType="textUri"
-            android:text="http://"
+            android:hint="http://example.com"
             />
 
         <RelativeLayout
