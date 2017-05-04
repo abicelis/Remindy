@@ -207,7 +207,6 @@
             fab:menu_icon="@drawable/icon_attachment"
             fab:menu_backgroundColor="@android:color/transparent"
             android:layout_margin="@dimen/fab_margin"
-            android:visibility="gone"
             >
 
             <com.github.clans.fab.FloatingActionButton
