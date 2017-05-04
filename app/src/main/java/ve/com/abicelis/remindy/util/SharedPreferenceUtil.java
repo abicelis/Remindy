@@ -20,13 +20,20 @@ public class SharedPreferenceUtil {
     public static DateFormat getDateFormat(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String dfPref = preferences.getString(context.getResources().getString(R.string.settings_date_format_key), null);
-        if(dfPref == null) {
+        DateFormat pref;
+        try {
+            pref = DateFormat.valueOf(dfPref);
+        } catch (IllegalArgumentException e) {
+            pref = null;
+        }
+
+        if(pref == null) {
             Log.d("SharedPreferenceUtil", "getDateFormat() found null, setting PRETTY_DATE");
             DateFormat df = DateFormat.PRETTY_DATE;
             setDateFormat(df, context);
             return df;
         }
-        else return DateFormat.valueOf(dfPref);
+        else return pref;
     }
 
     public static void setDateFormat(DateFormat df, Context context) {
@@ -35,16 +42,27 @@ public class SharedPreferenceUtil {
         editor.apply();
     }
 
+
+
+
+
     public static TimeFormat getTimeFormat(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String tfPref = preferences.getString(context.getResources().getString(R.string.settings_time_format_key), null);
-        if(tfPref == null) {
+        TimeFormat pref;
+        try {
+            pref = TimeFormat.valueOf(tfPref);
+        } catch (IllegalArgumentException e) {
+            pref = null;
+        }
+
+        if(pref == null) {
             Log.d("SharedPreferenceUtil", "getTimeFormat() found null, setting FORMAT_24H");
             TimeFormat tf = TimeFormat.FORMAT_24H;
             setTimeFormat(tf, context);
             return tf;
         }
-        else return TimeFormat.valueOf(tfPref);
+        else return pref;
     }
 
     public static void setTimeFormat(TimeFormat tf, Context context) {
@@ -55,16 +73,24 @@ public class SharedPreferenceUtil {
 
 
 
+
     public static TriggerMinutesBeforeNotificationType getTriggerMinutesBeforeNotification(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String tmPref = preferences.getString(context.getResources().getString(R.string.settings_trigger_minutes_before_notification_key), null);
-        if(tmPref == null) {
+        TriggerMinutesBeforeNotificationType pref;
+        try {
+            pref = TriggerMinutesBeforeNotificationType.valueOf(tmPref);
+        } catch (IllegalArgumentException e) {
+            pref = null;
+        }
+
+        if(pref == null) {
             Log.d("SharedPreferenceUtil", "getTriggerMinutesBeforeNotification() found null, setting 5 minutes");
             TriggerMinutesBeforeNotificationType tm = TriggerMinutesBeforeNotificationType.MINUTES_5;
             setTriggerMinutesBeforeNotification(tm, context);
             return tm;
         }
-        else return TriggerMinutesBeforeNotificationType.valueOf(tmPref);
+        else return pref;
     }
 
     public static void setTriggerMinutesBeforeNotification(TriggerMinutesBeforeNotificationType triggerMinutesBeforeNotification, Context context) {
