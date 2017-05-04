@@ -38,20 +38,24 @@ public class GeofenceUtil {
     /* GeoFence management methods */
     public static void addGeofences(final Context context, GoogleApiClient googleApiClient) {
         checkGoogleApiClient(googleApiClient);
+        List<Place> places = new RemindyDAO(context).getActivePlaces();
 
-        if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            LocationServices.GeofencingApi.addGeofences(
-                    googleApiClient,
-                    getGeofencingRequest(context),
-                    getGeofencePendingIntent(context)
-            ).setResultCallback(new ResultCallback<Status>() {
-                @Override
-                public void onResult(@NonNull Status status) {
-                    if(status.isSuccess())
-                        Toast.makeText(context, "Geofences added/updated!", Toast.LENGTH_SHORT).show();
-                }
-            });
+        if(places.size() > 0) {
+            if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                LocationServices.GeofencingApi.addGeofences(
+                        googleApiClient,
+                        getGeofencingRequest(context, places),
+                        getGeofencePendingIntent(context)
+                ).setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        if(status.isSuccess())
+                            Toast.makeText(context, "Geofences added/updated!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
+
     }
 
 
@@ -97,17 +101,17 @@ public class GeofenceUtil {
         }
     }
 
-    private static GeofencingRequest getGeofencingRequest(Context context) {
+    private static GeofencingRequest getGeofencingRequest(Context context, List<Place> places) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER | GeofencingRequest.INITIAL_TRIGGER_DWELL);
-        builder.addGeofences(getGeofenceList(context));
+        builder.addGeofences(getGeofenceList(context, places));
         return builder.build();
     }
 
-    private static List<Geofence> getGeofenceList(Context context) {
+    private static List<Geofence> getGeofenceList(Context context, List<Place> places) {
         List<Geofence> geofenceList = new ArrayList<>();
 
-        for (Place place : new RemindyDAO(context).getActivePlaces()){
+        for (Place place : places){
             geofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
                     // geofence.
