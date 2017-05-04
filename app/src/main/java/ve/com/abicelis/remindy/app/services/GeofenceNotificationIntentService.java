@@ -15,6 +15,7 @@ import java.util.Locale;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
+import ve.com.abicelis.remindy.exception.PlaceNotFoundException;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.util.NotificationUtil;
@@ -92,13 +93,18 @@ public class GeofenceNotificationIntentService extends IntentService {
                 transition = getResources().getString(R.string.notification_service_geofence_dwell);
                 break;
         }
+        int placeId = Integer.valueOf(triggeringGeofence.getRequestId());
 
-        List<Place> places = new RemindyDAO(this).getPlaces();
+        try {
+            Place place = new RemindyDAO(this).getPlace(placeId);
+            return String.format(Locale.getDefault(),
+                    getResources().getString(R.string.notification_service_geofence_title),
+                    transition,
+                    place.getAlias());
+        } catch (PlaceNotFoundException e) {
+            return "";
+        }
 
-        return String.format(Locale.getDefault(),
-                getResources().getString(R.string.notification_service_geofence_title),
-                transition,
-                places.get(Integer.valueOf(triggeringGeofence.getRequestId())).getAlias());
 
     }
     private String getGeofenceNotificationText(List<Task> tasks) {
