@@ -1,5 +1,8 @@
 package ve.com.abicelis.remindy.app.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -17,7 +20,9 @@ import android.widget.Spinner;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.activities.PlaceActivity;
 import ve.com.abicelis.remindy.app.interfaces.TaskDataInterface;
+import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.model.Task;
@@ -38,6 +43,9 @@ public class ReminderFragment extends Fragment implements TaskDataInterface {
     //CONST
     private static final String TAG = ReminderFragment.class.getSimpleName();
     public static final String TASK_ARGUMENT = "TASK_ARGUMENT";
+
+    //Used when there are no Places in DB and user is trying to add a Location-based reminder to a new task, so user is sent to PlaceActivity
+    public static final int REQUEST_CODE_CREATING_PLACE_FOR_NEW_TASK = 128;
 
     //DATA
     private boolean useReminderFlag;
@@ -127,11 +135,10 @@ public class ReminderFragment extends Fragment implements TaskDataInterface {
                 break;
 
             case LOCATION_BASED:
-                mReminder = (useReminderFlag ? mTask.getReminder() : new LocationBasedReminder());
-                mFragment = new EditLocationBasedReminderFragment();
-                bundle.putSerializable(EditLocationBasedReminderFragment.REMINDER_ARGUMENT, mReminder);
-                mFragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_reminder_reminder_placeholder, mFragment).commit();
+                if(atLeastOnePlaceExists()) {
+                    handleLocationBasedTaskReminderSelected();
+                } else
+                    handleNoPlacesExist();
                 break;
 
             case NONE:
@@ -146,6 +153,58 @@ public class ReminderFragment extends Fragment implements TaskDataInterface {
         useReminderFlag = false;
     }
 
+
+    private boolean atLeastOnePlaceExists() {
+        return (new RemindyDAO(getActivity()).getPlaces().size() > 0);
+    }
+
+    private void handleLocationBasedTaskReminderSelected() {
+        Bundle bundle = new Bundle();
+        mReminder = (useReminderFlag ? mTask.getReminder() : new LocationBasedReminder());
+        mFragment = new EditLocationBasedReminderFragment();
+        bundle.putSerializable(EditLocationBasedReminderFragment.REMINDER_ARGUMENT, mReminder);
+        mFragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_reminder_reminder_placeholder, mFragment).commit();
+    }
+
+    public void handleNoPlacesExist() {
+        //No Places exist, alert user and allow him/her to create a place.
+
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.fragment_reminder_no_places_dialog_title))
+                .setMessage(getResources().getString(R.string.fragment_reminder_no_places_dialog_message))
+                .setPositiveButton(getResources().getString(R.string.fragment_reminder_no_places_dialog_positive),  new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent createAPlaceIntent = new Intent(getActivity(), PlaceActivity.class);
+                        startActivityForResult(createAPlaceIntent, REQUEST_CODE_CREATING_PLACE_FOR_NEW_TASK);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.fragment_reminder_no_places_dialog_negative), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mReminderTypeSpinner.setSelection(0);
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODE_CREATING_PLACE_FOR_NEW_TASK) {
+            if(atLeastOnePlaceExists()) {
+                handleLocationBasedTaskReminderSelected();
+            } else
+                //User failed to add a Place, set reminder to none.
+                mReminderTypeSpinner.setSelection(0);
+        }
+
+    }
 
     @Override
     public void updateData() {

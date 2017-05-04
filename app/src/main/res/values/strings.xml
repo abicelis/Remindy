@@ -228,6 +228,10 @@
 
     /* Reminder Fragment */
     <string name="fragment_reminder_reminder_type">Reminder type</string>
+    <string name="fragment_reminder_no_places_dialog_title">There are no Places</string>
+    <string name="fragment_reminder_no_places_dialog_message">You need to create at least one Place to add a Location-based Reminder</string>
+    <string name="fragment_reminder_no_places_dialog_positive">Create Place</string>
+    <string name="fragment_reminder_no_places_dialog_negative">Cancel</string>
 
 
 

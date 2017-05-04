@@ -65,6 +65,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceClick(Preference preference) {
                 Intent goToPlaceListActivity = new Intent(packageContext, PlaceListActivity.class);
                 startActivity(goToPlaceListActivity);
+
+                //TODO: Yes, this is a dirty hack, someday to be fixed
+                ((SettingsActivity)getActivity()).mForceHomeRefresh = true;
                 return true;
             }
         });
