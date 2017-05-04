@@ -5,6 +5,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -64,6 +65,7 @@ public class EditPlaceDialogFragment extends DialogFragment implements View.OnCl
         mCancel = (Button) dialogView.findViewById(R.id.dialog_edit_place_cancel);
         mCancel.setOnClickListener(this);
 
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         return dialogView;
     }
 
