@@ -247,6 +247,7 @@ public class RemindyDAO {
                         new String[] {String.valueOf(placeId)}, null, null, null);
                 break;
 
+            case Geofence.GEOFENCE_TRANSITION_DWELL:
             case Geofence.GEOFENCE_TRANSITION_ENTER:
                 cursor = db.query(RemindyContract.LocationBasedReminderTable.TABLE_NAME, null,
                         RemindyContract.LocationBasedReminderTable.COLUMN_NAME_PLACE_FK.getName() + "=? AND " +
@@ -261,10 +262,6 @@ public class RemindyDAO {
                                 RemindyContract.LocationBasedReminderTable.COLUMN_NAME_TRIGGER_EXITING.getName() + "=?",
                         new String[] {String.valueOf(placeId), "true"}, null, null, null);
                 break;
-
-
-            case Geofence.GEOFENCE_TRANSITION_DWELL:
-                return tasks;   //TODO: For now, do not care about this transition
         }
 
         if(cursor != null) {
