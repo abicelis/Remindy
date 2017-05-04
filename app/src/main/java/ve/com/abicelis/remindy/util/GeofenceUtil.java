@@ -31,6 +31,7 @@ public class GeofenceUtil {
 
     //CONSTS
     private static final long NEVER_EXPIRE = -1;
+    private static final int LOITERING_DWELL_DELAY = 30 * 1000;
 
     //DATA
     private static PendingIntent mGeofencePendingIntent;
@@ -44,7 +45,7 @@ public class GeofenceUtil {
             if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 LocationServices.GeofencingApi.addGeofences(
                         googleApiClient,
-                        getGeofencingRequest(context, places),
+                        getGeofencingRequest(places),
                         getGeofencePendingIntent(context)
                 ).setResultCallback(new ResultCallback<Status>() {
                     @Override
@@ -101,14 +102,15 @@ public class GeofenceUtil {
         }
     }
 
-    private static GeofencingRequest getGeofencingRequest(Context context, List<Place> places) {
+    private static GeofencingRequest getGeofencingRequest(List<Place> places) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER | GeofencingRequest.INITIAL_TRIGGER_DWELL);
-        builder.addGeofences(getGeofenceList(context, places));
+        //builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
+        builder.addGeofences(getGeofenceList(places));
         return builder.build();
     }
 
-    private static List<Geofence> getGeofenceList(Context context, List<Place> places) {
+    private static List<Geofence> getGeofenceList(List<Place> places) {
         List<Geofence> geofenceList = new ArrayList<>();
 
         for (Place place : places){
@@ -119,11 +121,12 @@ public class GeofenceUtil {
                     .setCircularRegion(
                             place.getLatitude(),
                             place.getLongitude(),
-                            500
+                            place.getRadius()
                     )
                     .setExpirationDuration(NEVER_EXPIRE)
-                    .setLoiteringDelay(30 * 1000)
+                    .setLoiteringDelay(LOITERING_DWELL_DELAY)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
+                    //.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
                     .build());
         }
 
