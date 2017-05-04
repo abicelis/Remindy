@@ -167,7 +167,7 @@ public class HomeListFragment extends Fragment {
             mNoItemsContainer.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         } else {
-            mRecyclerView.setItemViewCacheSize(View.VISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
             mNoItemsContainer.setVisibility(View.GONE);
         }
     }
