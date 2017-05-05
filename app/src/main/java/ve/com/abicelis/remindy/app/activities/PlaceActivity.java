@@ -296,7 +296,7 @@ public class PlaceActivity extends AppCompatActivity implements
             mAliasAddressContainer.setVisibility(View.VISIBLE);
             mAliasAddressAlreadySet = true;
 
-            mRadius.setProgress((int) (mPlace.getRadius()/100)-1 );
+            mRadius.setProgress(mPlace.getRadius()/100 -1 );
             mRadiusDisplay.setText(String.valueOf(mPlace.getRadius()) + " m");
 
         }

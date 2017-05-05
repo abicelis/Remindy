@@ -17,7 +17,7 @@ public class AddressResultReceiver extends ResultReceiver {
     }
 
     public interface AddressReceiverListener {
-        public void onReceiveAddressResult(int resultCode, Bundle resultData);
+        void onReceiveAddressResult(int resultCode, Bundle resultData);
     }
 
     public void setReceiverListener(AddressReceiverListener receiver) {

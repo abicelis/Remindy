@@ -240,21 +240,21 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
             case ONE_TIME:
                 mReminderSubtitle.setText(getResources().getString(mTask.getReminderType().getFriendlyNameRes()));
                 fragment = new OneTimeReminderDetailFragment();
-                bundle.putSerializable(OneTimeReminderDetailFragment.REMINDER_TO_DISPLAY, (OneTimeReminder) mTask.getReminder());
+                bundle.putSerializable(OneTimeReminderDetailFragment.REMINDER_TO_DISPLAY, mTask.getReminder());
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.activity_task_detail_reminder_placeholder, fragment).commit();
                 break;
 
             case REPEATING:
                 fragment = new RepeatingReminderDetailFragment();
-                bundle.putSerializable(RepeatingReminderDetailFragment.REMINDER_TO_DISPLAY, (RepeatingReminder) mTask.getReminder());
+                bundle.putSerializable(RepeatingReminderDetailFragment.REMINDER_TO_DISPLAY, mTask.getReminder());
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.activity_task_detail_reminder_placeholder, fragment).commit();
                 break;
 
             case LOCATION_BASED:
                 fragment = new LocationBasedReminderDetailFragment();
-                bundle.putSerializable(LocationBasedReminderDetailFragment.REMINDER_TO_DISPLAY, (LocationBasedReminder) mTask.getReminder());
+                bundle.putSerializable(LocationBasedReminderDetailFragment.REMINDER_TO_DISPLAY, mTask.getReminder());
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.activity_task_detail_reminder_placeholder, fragment).commit();
                 break;

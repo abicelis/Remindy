@@ -9,5 +9,5 @@ public enum AttachmentType {
     LINK,
     TEXT,
     AUDIO,
-    LIST;
+    LIST
 }

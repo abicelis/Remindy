@@ -11,5 +11,5 @@ public enum TaskViewModelType implements Serializable {
     UNPROGRAMMED_REMINDER,
     ONE_TIME_REMINDER,
     REPEATING_REMINDER,
-    LOCATION_BASED_REMINDER;
+    LOCATION_BASED_REMINDER
 }
