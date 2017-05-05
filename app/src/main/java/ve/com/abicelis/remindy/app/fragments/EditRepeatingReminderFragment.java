@@ -3,10 +3,8 @@ package ve.com.abicelis.remindy.app.fragments;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,20 +28,18 @@ import com.transitionseverywhere.TransitionManager;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.InvalidParameterException;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.interfaces.TaskDataInterface;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderRepeatEndType;
 import ve.com.abicelis.remindy.enums.ReminderRepeatType;
+import ve.com.abicelis.remindy.enums.TimeFormat;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.CalendarUtil;
-import ve.com.abicelis.remindy.util.InputFilterMinMax;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 
 /**
@@ -235,29 +231,8 @@ public class EditRepeatingReminderFragment extends Fragment implements TaskDataI
                         })
                         .setDoneText(getResources().getString(R.string.datepicker_ok))
                         .setCancelText(getResources().getString(R.string.datepicker_cancel));
-                mTimePicker.show(getFragmentManager(), "mTime");
-            }
-        });
-
-
-        mTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTimePicker = new RadialTimePickerDialogFragment()
-                        .setOnTimeSetListener(new RadialTimePickerDialogFragment.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
-                                if(mReminder.getTime() == null) {
-                                    mReminder.setTime(new Time());
-                                    mReminder.getTime().setDisplayTimeFormat(SharedPreferenceUtil.getTimeFormat(getActivity()));
-                                }
-                                mReminder.getTime().setHour(hourOfDay);
-                                mReminder.getTime().setMinute(minute);
-                                mTime.setText(mReminder.getTime().toString());
-                            }
-                        })
-                        .setDoneText(getResources().getString(R.string.datepicker_ok))
-                        .setCancelText(getResources().getString(R.string.datepicker_cancel));
+                if(SharedPreferenceUtil.getTimeFormat(getActivity()).equals(TimeFormat.FORMAT_12H)) mTimePicker.setForced12hFormat();
+                else mTimePicker.setForced24hFormat();
                 mTimePicker.show(getFragmentManager(), "mTime");
             }
         });

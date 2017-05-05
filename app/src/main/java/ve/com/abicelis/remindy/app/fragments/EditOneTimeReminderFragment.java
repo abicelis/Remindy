@@ -18,9 +18,9 @@ import java.util.Calendar;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.interfaces.TaskDataInterface;
 import ve.com.abicelis.remindy.enums.DateFormat;
+import ve.com.abicelis.remindy.enums.TimeFormat;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
-import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 
@@ -121,7 +121,9 @@ public class EditOneTimeReminderFragment extends Fragment implements TaskDataInt
                         .setStartTime(12, 0)
                         .setDoneText(getResources().getString(R.string.datepicker_ok))
                         .setCancelText(getResources().getString(R.string.datepicker_cancel));
-                rtpd.show(getFragmentManager(), "mTime");
+                if(SharedPreferenceUtil.getTimeFormat(getActivity()).equals(TimeFormat.FORMAT_12H)) rtpd.setForced12hFormat();
+                else rtpd.setForced24hFormat();
+                        rtpd.show(getFragmentManager(), "mTime");
             }
         });
     }
