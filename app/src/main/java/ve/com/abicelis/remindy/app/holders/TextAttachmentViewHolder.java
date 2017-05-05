@@ -69,7 +69,10 @@ public class TextAttachmentViewHolder extends RecyclerView.ViewHolder implements
         int id = view.getId();
         switch (id) {
             case R.id.item_attachment_text_content:
-                handleTextCopy();
+                if(mText.getText().equals(""))
+                    handleTextEdit();
+                else
+                    handleTextCopy();
                 break;
         }
     }

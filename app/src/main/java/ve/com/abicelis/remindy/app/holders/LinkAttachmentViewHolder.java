@@ -22,7 +22,7 @@ import ve.com.abicelis.remindy.util.ClipboardUtil;
  * Created by abice on 13/3/2017.
  */
 
-public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, EditLinkAttachmentDialogFragment.EditLinkAttachmentDialogDismissListener {
+public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, EditLinkAttachmentDialogFragment.EditLinkAttachmentDialogDismissListener {
 
     private AttachmentAdapter mAdapter;
     private Activity mActivity;
@@ -59,10 +59,21 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
 
 
     public void setListeners() {
+        mLink.setOnClickListener(this);
         mContainer.setOnLongClickListener(this);
     }
 
-
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.item_attachment_link_content:
+                if(mLink.getText().equals(""))
+                    handleLinkEdit();
+                //If not empty, default behavior in xml will open link in browser.
+                break;
+        }
+    }
 
     @Override
     public boolean onLongClick(View view) {
@@ -123,4 +134,6 @@ public class LinkAttachmentViewHolder extends RecyclerView.ViewHolder implements
             mAdapter.triggerAttachmentDataUpdatedListener();
 
     }
+
+
 }
