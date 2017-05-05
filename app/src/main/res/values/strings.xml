@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">Remindy</string>
+    <string name="app_name" translatable="false">Remindy</string>
 
     /* About Activity */
     <string name="activity_about_toolbar_title">About</string>
-    <string name="activity_about_app_name">Remindy</string>
+    <string name="activity_about_app_name" translatable="false">Remindy</string>
     <string name="activity_about_version">Version %1$s</string>
-    <string name="activity_about_author">Alejandro Bicelis %1$d</string>
+    <string name="activity_about_author" translatable="false">Alejandro Bicelis %1$d</string>
     <string name="activity_about_market_link">Rate app</string>
     <string name="activity_about_github_link">View GitHub Project</string>
-    <string name="activity_about_website_link">www.alejandrobicelis.com.ve</string>
+    <string name="activity_about_website_link" translatable="false">www.alejandrobicelis.com.ve</string>
 
 
 
@@ -104,76 +104,41 @@
     <string name="settings_category_settings_title">Settings</string>
     <string name="settings_category_about_title">About</string>
 
-    <string name="settings_manage_places_key">remindy_settings_manage_places</string>
+    <string name="settings_manage_places_key" translatable="false">remindy_settings_manage_places</string>
     <string name="settings_manage_places_title">Manage Places</string>
     <string name="settings_manage_places_summary">Add or remove Places for Location-based Reminders</string>
 
-    <string name="settings_show_location_based_reminder_in_new_tab_key">remindy_settings_show_location_based_reminder_in_new_tab</string>
-    <string name="settings_show_location_based_reminder_in_new_tab_title">Show Location-based tasks</string>
-    <string name="settings_show_location_based_reminder_in_new_tab_summary_false">In \'PROGRAMMED\' tab</string>
-    <string name="settings_show_location_based_reminder_in_new_tab_summary_true">In their own tab</string>
-
-    <string name="settings_date_format_key">remindy_settings_date_format</string>
+    <string name="settings_date_format_key" translatable="false">remindy_settings_date_format</string>
     <string name="settings_date_format_title">Date Format</string>
 
-    <string name="settings_time_format_key">remindy_settings_time_format</string>
+    <string name="settings_time_format_key" translatable="false">remindy_settings_time_format</string>
     <string name="settings_time_format_title">Time Format</string>
 
-    <string name="settings_trigger_minutes_before_notification_key">remindy_settings_trigger_minutes_before_notification</string>
+    <string name="settings_trigger_minutes_before_notification_key" translatable="false">remindy_settings_trigger_minutes_before_notification</string>
     <string name="settings_trigger_minutes_before_notification_title">Show notifications..</string>
     <string name="settings_trigger_minutes_before_notification_summary_single">%1$d minute before time</string>
     <string name="settings_trigger_minutes_before_notification_summary">%1$d minutes before time</string>
 
-    <string name="settings_backup_key">remindy_settings_backup</string>
+    <string name="settings_backup_key" translatable="false">remindy_settings_backup</string>
     <string name="settings_backup_title">Backup data</string>
     <string name="settings_backup_summary">Backup app data to SD card</string>
 
-    <string name="settings_restore_key">remindy_settings_restore</string>
+    <string name="settings_restore_key" translatable="false">remindy_settings_restore</string>
     <string name="settings_restore_title">Restore data</string>
     <string name="settings_restore_summary">Restore app data from SD card</string>
 
-    <string name="settings_about_key">remindy_settings_about</string>
+    <string name="settings_about_key" translatable="false">remindy_settings_about</string>
     <string name="settings_about_title">About</string>
     <string name="settings_about_summary">Check app version, developer info&#8230;</string>
 
-    <string name="remindy_settings_rate_key">remindy_settings_rate</string>
+    <string name="remindy_settings_rate_key" translatable="false">remindy_settings_rate</string>
     <string name="remindy_settings_rate_title">Rate Remindy</string>
     <string name="remindy_settings_rate_summary">Like this app? A 5-star rating is gladly appreciated</string>
 
-    <string name="remindy_settings_contact_key">remindy_settings_contact</string>
+    <string name="remindy_settings_contact_key" translatable="false">remindy_settings_contact</string>
     <string name="remindy_settings_contact_title">Contact developer</string>
     <string name="remindy_settings_contact_summary">Having trouble using this app? Questions? Email me at alejandro@alejandrobicelis.com.ve</string>
 
-
-
-    /* Create/Edit Reminder Activities */
-    <!--//TODO: DELETE THIS-->
-    <string name="activity_reminder_toolbar_title">Simple Reminder</string>
-    <string name="activity_reminder_title">Title</string>
-    <string name="activity_reminder_title_hint">Enter a Title</string>
-    <string name="activity_reminder_description">Description</string>
-    <string name="activity_reminder_description_hint">Enter a Description</string>
-    <string name="activity_reminder_category">Category</string>
-    <string name="activity_reminder_simple_date_title">Date</string>
-    <string name="activity_reminder_simple_date_hint">Enter a date</string>
-    <string name="activity_reminder_simple_time_title">Time</string>
-    <string name="activity_reminder_simple_time_hint">Enter a time</string>
-
-    <string name="activity_reminder_simple_repeat_title">Repeat</string>
-    <string name="activity_reminder_simple_repeat_interval_every">Every</string>
-    <string name="activity_reminder_simple_repeat_interval_days">Day(s)</string>
-    <string name="activity_reminder_simple_repeat_interval_weeks">Week(s)</string>
-    <string name="activity_reminder_simple_repeat_interval_months">Month(s)</string>
-    <string name="activity_reminder_simple_repeat_interval_years">Year(s)</string>
-
-    <string name="activity_reminder_simple_repeat_end_until_date">Until</string>
-    <string name="activity_reminder_simple_repeat_end_for_x_events_1">For</string>
-    <string name="activity_reminder_simple_repeat_end_for_x_events_2">event(s)</string>
-
-    <string name="activity_reminder_simple_exit_dialog_title">Go back?</string>
-    <string name="activity_reminder_simple_exit_dialog_message">Go back and delete Reminder?</string>
-    <string name="activity_reminder_simple_exit_dialog_positive">Yes</string>
-    <string name="activity_reminder_simple_exit_dialog_negative">Cancel</string>
 
 
     /* Task Activity */
@@ -237,77 +202,6 @@
 
 
 
-
-
-
-    /* New Task Activity */
-    <!--TODO: kill this-->
-    <string name="activity_new_task_toolbar_title">New Task</string>
-    <string name="menu_activity_new_task_action_next">NEXT</string>
-    <string name="activity_new_task_title_label">Title</string>
-    <string name="activity_new_task_title_hint">Add a title</string>
-    <string name="activity_new_task_description_label">Description</string>
-    <string name="activity_new_task_description_hint">Add a description</string>
-    <string name="activity_new_task_tap_to_add_attachment_hint">Tap to add attachments</string>
-    <string name="activity_new_task_header_basic_info">Basic Info</string>
-    <string name="activity_new_task_header_attachments">Attachments</string>
-    <string name="activity_new_task_no_items">No attachments</string>
-    <string name="activity_new_task_snackbar_notice_attachments_options_hint">Long-press an attachment for more options</string>
-
-
-    <!--TO USE-->
-    <string name="activity_new_task_snackbar_error_no_title">Please add a title to the Task</string>
-    <string name="activity_new_task_snackbar_error_saving">There was an error saving the Task</string>
-    <string name="activity_new_task_snackbar_save_successful">Task saved successfully</string>
-
-
-    <string name="activity_new_task_exit_dialog_title">Discard task?</string>
-    <string name="activity_new_task_exit_dialog_message">Go back and discard Task?</string>
-    <string name="activity_new_task_exit_dialog_positive">Yes</string>
-    <string name="activity_new_task_exit_dialog_negative">Cancel</string>
-
-    <string name="activity_new_task_next_dialog_title">Add a reminder?</string>
-    <string name="activity_new_task_next_dialog_message">Add a reminder to this task or save as-is?</string>
-    <string name="activity_new_task_next_dialog_positive">Add Reminder</string>
-    <string name="activity_new_task_next_dialog_negative">Save As-is</string>
-
-
-    <string name="item_attachment_image_hint">Tap to add an image</string>
-    <string name="item_attachment_list_hint">Tap to enter a list</string>
-    <string name="item_attachment_text_hint">Tap to enter text</string>
-    <string name="item_attachment_audio_hint">Tap to record</string>
-    <string name="item_attachment_link_hint">Tap to enter a link</string>
-
-
-
-
-
-    /* Add Reminder Activity */
-    <!--KILL THESE-->
-    <string name="activity_add_reminder_title">Add Reminder</string>
-    <string name="activity_add_reminder_reminder_type">Reminder type</string>
-    <string name="menu_activity_add_reminder_save">Save</string>
-
-    <!--TO USE-->
-    <string name="activity_add_reminder_one_time_snackbar_error_invalid_date">Please add a valid date</string>
-    <string name="activity_add_reminder_one_time_snackbar_error_invalid_time">Please add a valid time</string>
-    <string name="activity_add_reminder_repeating_snackbar_error_invalid_date">Please add a valid date</string>
-    <string name="activity_add_reminder_repeating_snackbar_error_invalid_time">Please add a valid time</string>
-    <string name="activity_add_reminder_repeating_snackbar_error_invalid_interval">Please add a valid repeating interval</string>
-    <string name="activity_add_reminder_repeating_snackbar_error_invalid_number_events">Please add a valid number of events</string>
-    <string name="activity_add_reminder_repeating_snackbar_error_invalid_end_date">Please add a valid end date</string>
-    <string name="activity_add_reminder_repeating_snackbar_error_end_date_before_date">End date must be after reminder date</string>
-
-    <string name="activity_add_reminder_save_dialog_title">Save task?</string>
-    <string name="activity_add_reminder_save_dialog_message">Save task and reminder?</string>
-    <string name="activity_add_reminder_save_dialog_positive">Save</string>
-    <string name="activity_add_reminder_save_dialog_negative">Cancel</string>
-
-    <string name="activity_add_reminder_back_dialog_title">Discard or keep?</string>
-    <string name="activity_add_reminder_back_dialog_message">Go back and discard or keep reminder?</string>
-    <string name="activity_add_reminder_back_dialog_positive">Keep</string>
-    <string name="activity_add_reminder_back_dialog_negative">Discard</string>
-
     //Edit One-Time reminder fragment
     <string name="fragment_edit_one_time_reminder_date_title">Date</string>
     <string name="fragment_edit_one_time_reminder_date_hint">Enter a date</string>
@@ -355,19 +249,19 @@
 
 
     /* Fragment Reminders */
-    <string name="fragment_reminder_list_no_items">There are no tasks here!</string>
+    <string name="fragment_reminder_list_no_items">There are no Tasks</string>
     <string name="fragment_reminder_list_place_anywhere">Anywhere</string>
 
 
 
 
     /* Transitions */
-    <string name="transition_task_list_title">title</string>
-    <string name="transition_task_list_category">category</string>
-    <string name="transition_task_list_description">description</string>
+    <string name="transition_task_list_title" translatable="false">title</string>
+    <string name="transition_task_list_category" translatable="false">category</string>
+    <string name="transition_task_list_description" translatable="false">description</string>
 
     /* Transitions */
-    <string name="transition_image_attachment_image">image_attachment_image</string>
+    <string name="transition_image_attachment_image" translatable="false">image_attachment_image</string>
 
 
     /* ENUM TaskCategory */
@@ -376,11 +270,6 @@
     <string name="task_category_health">Health</string>
     <string name="task_category_repairs">Repairs</string>
     <string name="task_category_shopping">Shopping</string>
-
-    /* ENUM ReminderDateType */
-    <string name="reminder_date_type_anyday">Anyday</string>
-    <string name="reminder_date_type_single_day">Single day</string>
-    <string name="reminder_date_type_interval">Interval</string>
 
     /* ENUM TaskSortType */
     <string name="task_sort_type_date">Date</string>
@@ -399,10 +288,6 @@
     <string name="reminder_type_repeating">Repeating</string>
     <string name="reminder_type_location_based">Location-based</string>
 
-    /* ENUM ReminderTimeType */
-    <string name="reminder_time_type_anytime">Anytime</string>
-    <string name="reminder_time_type_single_time">Single time</string>
-    <string name="reminder_time_type_interval">Interval</string>
 
     /* ENUM ReminderRepeatType */
     <string name="reminder_repeat_type_daily">Daily</string>
@@ -470,6 +355,18 @@
     <string name="dialog_image_attachment_options_edit">Edit image</string>
     <string name="dialog_image_attachment_options_delete">Delete attachment</string>
     <string name="image_attachment_snackbar_warning_no_permissons">This app needs camera permissions to continue</string>
+
+
+    /* Attachment misc */
+    <string name="item_attachment_image_hint">Tap to add an image</string>
+    <string name="item_attachment_list_hint">Tap to enter a list</string>
+    <string name="item_attachment_text_hint">Tap to enter text</string>
+    <string name="item_attachment_audio_hint">Tap to record</string>
+    <string name="item_attachment_link_hint">Tap to enter a link</string>
+
+
+
+
 
     /* Record Audio Dialog */
     <string name="dialog_record_audio_tap_to_record">Tap to start recording</string>
@@ -573,9 +470,9 @@
     <string name="notification_service_geofence_dwell">You\'ve been a while at</string>
 
 
-    <string name="notification_service_geofence_title">%1$s %2$s</string>
+    <string name="notification_service_geofence_title" translatable="false">%1$s %2$s</string>
     <string name="notification_service_geofence_text">Remember tasks: %1$s</string>
 
-    <string name="notification_service_normal_title">"Task '%1$s' is due.</string>
+    <string name="notification_service_normal_title">"Task '%1$s' is due</string>
     <string name="notification_service_normal_text">In %1$d minutes or less</string>
 </resources>
