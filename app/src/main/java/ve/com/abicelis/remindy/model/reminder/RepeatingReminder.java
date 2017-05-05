@@ -66,16 +66,16 @@ public class RepeatingReminder extends Reminder implements Serializable {
         String result = context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_interval_every) + " ";
         switch (getRepeatType()) {
             case DAILY:
-                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_days);
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_interval_days);
                 break;
             case WEEKLY:
-                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_weeks);
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_interval_weeks);
                 break;
             case MONTHLY:
-                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_months);
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_interval_months);
                 break;
             case YEARLY:
-                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.activity_reminder_simple_repeat_interval_years);
+                result  += getRepeatInterval() + " " + context.getResources().getString(R.string.fragment_edit_repeating_reminder_repeat_interval_years);
                 break;
         }
 
