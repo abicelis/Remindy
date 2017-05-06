@@ -393,6 +393,9 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
 
+        //Scroll to added item
+        if(mAdapter.getItemCount() > 0)
+            mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
     }
 
 
