@@ -242,6 +242,7 @@
     <string name="activity_edit_image_attachment_snackbar_error_no_camera_installed">Cannot take image, no camera app in device</string>
     <string name="activity_edit_image_attachment_snackbar_error_no_permissions">Please grant Remindy the required permissions</string>
     <string name="activity_edit_image_attachment_snackbar_error_loading_cropped_image">Could not load cropped image</string>
+    <string name="activity_edit_image_attachment_snackbar_error_loading_gallery_image">Could not load image from gallery</string>
     <string name="activity_edit_image_attachment_snackbar_error_image_deleted_from_device">Image deleted from device, using low-res thumbnail</string>
 
     /* Activity View Image Attachment*/
@@ -406,6 +407,11 @@
     <string name="dialog_edit_list_item_error_empty_text">Please enter some text</string>
 
 
+    /* Camera Gallery Selector Dialog */
+    <string name="dialog_image_source_select_gallery">Gallery</string>
+    <string name="dialog_image_source_select_camera">Camera</string>
+    <string name="dialog_image_source_select_title">Select a source</string>
+    <string name="dialog_image_source_select_cancel">CANCEL</string>
 
     /* Generic error/status toast/snackbar messages */
     <string name="error_problem_getting_tasks_from_database">There was an error getting the task list</string>

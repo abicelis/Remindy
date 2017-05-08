@@ -287,4 +287,9 @@
     <string name="task_status_programmed">PROGRAMADO</string>
     <string name="task_status_unprogrammed">NO PROGRAMADO</string>
     <string name="unknown_geofence_error">Error desconocido de Geofence</string>
+    <string name="activity_edit_image_attachment_snackbar_error_loading_gallery_image">No pudo cargar imagen de galeria</string>
+    <string name="dialog_image_source_select_camera">Camara</string>
+    <string name="dialog_image_source_select_cancel">CANCELAR</string>
+    <string name="dialog_image_source_select_gallery">Galeria</string>
+    <string name="dialog_image_source_select_title">Seleccione una opcion</string>
 </resources>
