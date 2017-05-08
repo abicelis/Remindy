@@ -17,6 +17,7 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -35,6 +36,8 @@ import java.util.List;
 import java.util.UUID;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.dialogs.SelectImageSourceDialogFragment;
+import ve.com.abicelis.remindy.enums.ImageSourceType;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.ImageUtil;
@@ -56,6 +59,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
     private static final int IMAGE_COMPRESSION_PERCENTAGE = 30;
     private static final int THUMBNAIL_COMPRESSION_PERCENTAGE = 60;
     private static final int REQUEST_IMAGE_CAPTURE = 123;
+    private static final int REQUEST_PICK_IMAGE_GALLERY = 124;
 
 
     public static final String IMAGE_ATTACHMENT_EXTRA = "IMAGE_ATTACHMENT_EXTRA";
@@ -124,7 +128,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
                 } else {
                     mImageAttachment = new ImageAttachment();
                     mImageAttachment.setImageFilename(UUID.randomUUID().toString() + IMAGE_FILE_EXTENSION);
-                    handleImageCapture();
+                    handleShowCameraGalleryDialog();
                 }
             } else {
                 BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -204,8 +208,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
                 break;
 
             case R.id.activity_edit_image_attachment_camera:
-                applyPendingRotation();
-                handleImageCapture();
+                handleShowCameraGalleryDialog();
                 break;
 
             case R.id.activity_edit_image_attachment_ok:
@@ -226,6 +229,36 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
                 finish();
                 break;
         }
+    }
+
+    private void handleShowCameraGalleryDialog() {
+            FragmentManager fm = this.getSupportFragmentManager();
+
+        SelectImageSourceDialogFragment dialog = SelectImageSourceDialogFragment.newInstance();
+            dialog.setListener(new SelectImageSourceDialogFragment.SelectImageSourceSelectedListener() {
+                @Override
+                public void onSourceSelected(ImageSourceType imageSourceType) {
+                    switch (imageSourceType) {
+                        case CAMERA:
+                            applyPendingRotation();
+                            handleImageCapture();
+                            break;
+                        case GALLERY:
+                            applyPendingRotation();
+                            handlePickImageUsingGallery();
+                            break;
+                        case NONE:
+                            if(!mEditingExistingImageAttachment) {
+                                setResult(RESULT_CANCELED);
+                                finish();
+                            }
+                            handlePickImageUsingGallery();
+                            break;
+                    }
+                }
+            });
+            dialog.show(fm, "SelectImageSourceDialogFragment");
+
     }
 
 
@@ -374,7 +407,10 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
         }
     }
 
-
+    private void handlePickImageUsingGallery() {
+        Intent gallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, REQUEST_PICK_IMAGE_GALLERY);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -399,6 +435,18 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
                 Log.e(TAG, getResources().getString(R.string.activity_edit_image_attachment_snackbar_error_loading_cropped_image) + result.getError().toString());
                 SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_edit_image_attachment_snackbar_error_loading_cropped_image, SnackbarUtil.SnackbarDuration.LONG, null);
             }
+        } else if (requestCode == REQUEST_PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            try {
+                Bitmap newImage = ImageUtil.getBitmap(imageUri, this);
+                mImage.setImageBitmap(newImage);
+                ImageUtil.saveBitmapAsJpeg(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()), newImage, IMAGE_COMPRESSION_PERCENTAGE);
+
+
+            }catch (IOException e) {
+                SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_edit_image_attachment_snackbar_error_loading_gallery_image, SnackbarUtil.SnackbarDuration.LONG, null);
+            }
+            mImage.setImageURI(imageUri);
         }
 
     }
