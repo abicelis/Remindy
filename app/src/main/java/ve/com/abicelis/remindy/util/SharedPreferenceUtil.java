@@ -23,7 +23,7 @@ public class SharedPreferenceUtil {
         DateFormat pref;
         try {
             pref = DateFormat.valueOf(dfPref);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             pref = null;
         }
 
@@ -52,7 +52,7 @@ public class SharedPreferenceUtil {
         TimeFormat pref;
         try {
             pref = TimeFormat.valueOf(tfPref);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             pref = null;
         }
 
@@ -80,7 +80,7 @@ public class SharedPreferenceUtil {
         TriggerMinutesBeforeNotificationType pref;
         try {
             pref = TriggerMinutesBeforeNotificationType.valueOf(tmPref);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             pref = null;
         }
 
