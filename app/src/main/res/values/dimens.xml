@@ -42,4 +42,9 @@
     <dimen name="dialog_record_audio_width">280dp</dimen>
 
 
+    /* Dialog Select Camera Gallery */
+
+    <dimen name="dialog_select_image_source_height">180dp</dimen>
+    <dimen name="dialog_select_image_source_width">280dp</dimen>
+
 </resources>
