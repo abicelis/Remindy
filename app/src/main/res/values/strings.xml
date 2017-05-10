@@ -366,6 +366,11 @@
     <string name="item_attachment_link_hint">Tap to enter a link</string>
 
 
+    /* Home contextual menu options */
+    <string name="home_contextual_menu_delete">Delete</string>
+    <string name="home_contextual_menu_done">Done</string>
+    <string name="home_contextual_menu_not_done">Not done</string>
+
 
 
 
