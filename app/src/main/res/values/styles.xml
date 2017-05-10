@@ -7,6 +7,9 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="@android:editTextStyle">@style/AppThemeEditTextStyle</item>    <!--TODO: check this code, it doesnt work-->
+
+        <item name="windowActionModeOverlay">true</item>                    <!--Put contextual action bar over toolbar, not above it-->
+        <item name="android:actionModeBackground">@color/primary</item>     <!--Contextual action bar background color-->
     </style>
 
     <!--TODO: check this code, it doesnt work-->
