@@ -9,7 +9,7 @@
         android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:background="?attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         >
 
         <ImageView

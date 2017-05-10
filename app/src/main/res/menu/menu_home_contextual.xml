@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home_contextual_done"
+        android:icon="@drawable/icon_check"
+        android:title="@string/home_contextual_menu_done"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/home_contextual_not_done"
+        android:icon="@drawable/icon_cross"
+        android:title="@string/home_contextual_menu_not_done"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/home_contextual_delete"
+        android:icon="@drawable/icon_delete"
+        android:title="@string/home_contextual_menu_delete"
+        app:showAsAction="always"/>
+
+</menu>
