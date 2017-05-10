@@ -112,6 +112,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mHomeViewPagerAdapter = new HomeViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList);
         mViewpager.setAdapter(mHomeViewPagerAdapter);
         mViewpager.setCurrentItem(1);     //Start at page 2
+        mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+              // if(mHomeViewPagerAdapter.getRegisteredFragment(position).mActionMode != null)
+              //      mHomeViewPagerAdapter.getRegisteredFragment(position).mActionMode.finish(); //If changing tabs, hide actionMode (ContextMenu)
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //If changing tabs, hide actionMode (ContextMenu)
+                for(int i = 0; i < mHomeViewPagerAdapter.getRegisteredFragments().size(); i++) {
+                    int key = mHomeViewPagerAdapter.getRegisteredFragments().keyAt(i);
+
+                    if(mHomeViewPagerAdapter.getRegisteredFragments().get(key).mActionMode != null)
+                        mHomeViewPagerAdapter.getRegisteredFragments().get(key).mActionMode.finish();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
         mTabLayout.setupWithViewPager(mViewpager);
     }
 
