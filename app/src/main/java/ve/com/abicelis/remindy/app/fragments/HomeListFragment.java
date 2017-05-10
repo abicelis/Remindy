@@ -1,17 +1,21 @@
 package ve.com.abicelis.remindy.app.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -22,7 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.adapters.HomeAdapter;
+import ve.com.abicelis.remindy.app.interfaces.ViewHolderClickListener;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.enums.TaskSortType;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
@@ -36,7 +42,7 @@ import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
  * Created by abice on 13/3/2017.
  */
 
-public class HomeListFragment extends Fragment {
+public class HomeListFragment extends Fragment implements ViewHolderClickListener {
 
     public static final String ARGUMENT_TASK_TYPE_TO_DISPLAY = "ARGUMENT_TASK_TYPE_TO_DISPLAY";
     public static final String TAG = HomeListFragment.class.getSimpleName();
@@ -53,6 +59,8 @@ public class HomeListFragment extends Fragment {
     private HomeAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefresh;
     private RelativeLayout mNoItemsContainer;
+    private ActionModeCallback mActionModeCallback = new ActionModeCallback();
+    private ActionMode actionMode;
 
 
     @Override
@@ -194,4 +202,93 @@ public class HomeListFragment extends Fragment {
 
 
 
+
+
+
+    /**
+     * Toggle the selection state of an item.
+     *
+     * If the item was the last one in the selection and is unselected, the selection is stopped.
+     * Note that the selection must already be started (actionMode must not be null).
+     *
+     * @param position Position of the item to toggle the selection state
+     */
+    private void toggleSelection(int position) {
+        mAdapter.toggleSelection(position);
+        int count = mAdapter.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.valueOf(count));
+            actionMode.invalidate();
+        }
+    }
+
+    @Override
+    public void onItemClicked(int position, @Nullable Intent optionalIntent, @Nullable Bundle optionalBundle) {
+        if (actionMode != null) {
+            toggleSelection(position);
+        } else {
+            //Open task detail activity
+            getActivity().startActivityForResult(optionalIntent, TaskDetailActivity.TASK_DETAIL_REQUEST_CODE, optionalBundle);
+        }
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        if (actionMode == null) {
+            actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(mActionModeCallback);
+        }
+
+        toggleSelection(position);
+
+        return true;
+    }
+
+
+    private class ActionModeCallback implements ActionMode.Callback {
+        @SuppressWarnings("unused")
+        private final String TAG = ActionModeCallback.class.getSimpleName();
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate (R.menu.menu_home_contextual, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.home_contextual_delete:
+                    Log.d(TAG, "menu_remove");
+                    mode.finish();
+                    return true;
+
+                case R.id.home_contextual_done:
+                    Log.d(TAG, "home_contextual_done");
+                    mode.finish();
+                    return true;
+
+                case R.id.home_contextual_not_done:
+                    Log.d(TAG, "home_contextual_not_done");
+                    mode.finish();
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mAdapter.clearSelection();
+            actionMode = null;
+        }
+    }
 }
