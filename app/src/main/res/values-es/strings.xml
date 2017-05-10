@@ -292,4 +292,7 @@
     <string name="dialog_image_source_select_cancel">CANCELAR</string>
     <string name="dialog_image_source_select_gallery">Galeria</string>
     <string name="dialog_image_source_select_title">Seleccione una opcion</string>
+    <string name="home_contextual_menu_delete">Eliminar</string>
+    <string name="home_contextual_menu_done">Listo</string>
+    <string name="home_contextual_menu_not_done">No Listo</string>
 </resources>

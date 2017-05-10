@@ -6,12 +6,14 @@
         android:id="@+id/home_contextual_done"
         android:icon="@drawable/icon_check"
         android:title="@string/home_contextual_menu_done"
+        android:visible="false"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/home_contextual_not_done"
         android:icon="@drawable/icon_cross"
         android:title="@string/home_contextual_menu_not_done"
+        android:visible="false"
         app:showAsAction="always"/>
 
     <item
