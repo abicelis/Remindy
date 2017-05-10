@@ -1,13 +1,11 @@
 package ve.com.abicelis.remindy.app.fragments;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.io.InvalidClassException;
 import java.util.ArrayList;
@@ -30,10 +27,15 @@ import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.adapters.HomeAdapter;
 import ve.com.abicelis.remindy.app.interfaces.ViewHolderClickListener;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskSortType;
+import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.enums.ViewPagerTaskDisplayType;
+import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
+import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
+import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
@@ -60,7 +62,7 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
     private SwipeRefreshLayout mSwipeRefresh;
     private RelativeLayout mNoItemsContainer;
     private ActionModeCallback mActionModeCallback = new ActionModeCallback();
-    private ActionMode actionMode;
+    public ActionMode mActionMode;
 
 
     @Override
@@ -128,12 +130,12 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
     private void setUpSwipeRefresh() {
         mSwipeRefresh.setColorSchemeResources(R.color.swipe_refresh_green, R.color.swipe_refresh_red, R.color.swipe_refresh_yellow);
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                                                    @Override
-                                                    public void onRefresh() {
-                                                        refreshRecyclerView();
-                                                        mSwipeRefresh.setRefreshing(false);
-                                                    }
-                                                }
+                                               @Override
+                                               public void onRefresh() {
+                                                   refreshRecyclerView();
+                                                   mSwipeRefresh.setRefreshing(false);
+                                               }
+                                           }
         );
     }
 
@@ -209,7 +211,7 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
      * Toggle the selection state of an item.
      *
      * If the item was the last one in the selection and is unselected, the selection is stopped.
-     * Note that the selection must already be started (actionMode must not be null).
+     * Note that the selection must already be started (mActionMode must not be null).
      *
      * @param position Position of the item to toggle the selection state
      */
@@ -218,16 +220,16 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
         int count = mAdapter.getSelectedItemCount();
 
         if (count == 0) {
-            actionMode.finish();
+            mActionMode.finish();
         } else {
-            actionMode.setTitle(String.valueOf(count));
-            actionMode.invalidate();
+            mActionMode.setTitle(String.valueOf(count));
+            mActionMode.invalidate();
         }
     }
 
     @Override
     public void onItemClicked(int position, @Nullable Intent optionalIntent, @Nullable Bundle optionalBundle) {
-        if (actionMode != null) {
+        if (mActionMode != null) {
             toggleSelection(position);
         } else {
             //Open task detail activity
@@ -237,8 +239,8 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
 
     @Override
     public boolean onItemLongClicked(int position) {
-        if (actionMode == null) {
-            actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(mActionModeCallback);
+        if (mActionMode == null) {
+            mActionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(mActionModeCallback);
         }
 
         toggleSelection(position);
@@ -254,6 +256,8 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater().inflate (R.menu.menu_home_contextual, menu);
+            menu.findItem(R.id.home_contextual_done).setVisible( (mReminderTypeToDisplay == ViewPagerTaskDisplayType.PROGRAMMED) );
+            menu.findItem(R.id.home_contextual_not_done).setVisible( (mReminderTypeToDisplay == ViewPagerTaskDisplayType.DONE) );
             return true;
         }
 
@@ -266,18 +270,47 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.home_contextual_delete:
-                    Log.d(TAG, "menu_remove");
-                    mode.finish();
+                    try {
+                        for(int i : mAdapter.getSelectedItems())
+                            mDao.deleteTask(mTasks.get(i).getTask().getId());
+
+                        mAdapter.removeItems(mAdapter.getSelectedItems());
+                        mode.finish();
+                    } catch (CouldNotDeleteDataException e) {
+                        SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_deleting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
+                    }
                     return true;
 
                 case R.id.home_contextual_done:
-                    Log.d(TAG, "home_contextual_done");
-                    mode.finish();
+                    try {
+                        for(int i : mAdapter.getSelectedItems()) {
+                            Task taskToUpdate = mTasks.get(i).getTask();
+                            taskToUpdate.setStatus(TaskStatus.DONE);
+                            taskToUpdate.setDoneDate(CalendarUtil.getNewInstanceZeroedCalendar());
+                            mDao.updateTask(taskToUpdate);
+                        }
+
+                        mAdapter.removeItems(mAdapter.getSelectedItems());
+                        mode.finish();
+                    } catch (CouldNotUpdateDataException e) {
+                        SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_deleting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
+                    }
                     return true;
 
                 case R.id.home_contextual_not_done:
-                    Log.d(TAG, "home_contextual_not_done");
-                    mode.finish();
+                    try {
+                        for(int i : mAdapter.getSelectedItems()) {
+                            Task taskToUpdate = mTasks.get(i).getTask();
+                            taskToUpdate.setStatus( (taskToUpdate.getReminderType() == ReminderType.NONE ? TaskStatus.UNPROGRAMMED : TaskStatus.PROGRAMMED) );
+                            taskToUpdate.setDoneDate(null);
+                            mDao.updateTask(taskToUpdate);
+                        }
+
+                        mAdapter.removeItems(mAdapter.getSelectedItems());
+                        mode.finish();
+                    } catch (CouldNotUpdateDataException e) {
+                        SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_deleting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
+                    }
                     return true;
 
                 default:
@@ -288,7 +321,7 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             mAdapter.clearSelection();
-            actionMode = null;
+            mActionMode = null;
         }
     }
 }
