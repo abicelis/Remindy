@@ -1,15 +1,17 @@
 package ve.com.abicelis.remindy.app.adapters;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
 import ve.com.abicelis.remindy.app.holders.ProgrammedLocationBasedTaskViewHolder;
 import ve.com.abicelis.remindy.app.holders.ProgrammedOneTimeTaskViewHolder;
 import ve.com.abicelis.remindy.app.holders.ProgrammedRepeatingTaskViewHolder;
@@ -22,18 +24,17 @@ import ve.com.abicelis.remindy.viewmodel.TaskViewModel;
  * Created by abice on 13/3/2017.
  */
 
-public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HomeAdapter extends SelectableAdapter<RecyclerView.ViewHolder> {
 
     //DATA
     private List<TaskViewModel> mTasks;
     private LayoutInflater mInflater;
-    private Fragment mFragment;
+    private HomeListFragment mFragment;
 
-    public HomeAdapter(Fragment fragment, List<TaskViewModel> tasks) {
+    public HomeAdapter(HomeListFragment fragment, List<TaskViewModel> tasks) {
         mTasks = tasks;
         mFragment = fragment;
         mInflater = LayoutInflater.from(fragment.getActivity());
-
     }
 
     @Override
@@ -50,13 +51,13 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case HEADER:
                 return new TaskHeaderViewHolder(mInflater.inflate(R.layout.list_item_task_header, parent, false));
             case UNPROGRAMMED_REMINDER:
-                return new UnprogrammedTaskViewHolder(mInflater.inflate(R.layout.list_item_task_unprogrammed, parent, false));
+                return new UnprogrammedTaskViewHolder(mInflater.inflate(R.layout.list_item_task_unprogrammed, parent, false), mFragment);
             case ONE_TIME_REMINDER:
-                return new ProgrammedOneTimeTaskViewHolder(mInflater.inflate(R.layout.list_item_task_programmed_one_time, parent, false));
+                return new ProgrammedOneTimeTaskViewHolder(mInflater.inflate(R.layout.list_item_task_programmed_one_time, parent, false), mFragment);
             case REPEATING_REMINDER:
-                return new ProgrammedRepeatingTaskViewHolder(mInflater.inflate(R.layout.list_item_task_programmed_repeating, parent, false));
+                return new ProgrammedRepeatingTaskViewHolder(mInflater.inflate(R.layout.list_item_task_programmed_repeating, parent, false), mFragment);
             case LOCATION_BASED_REMINDER:
-                return new ProgrammedLocationBasedTaskViewHolder(mInflater.inflate(R.layout.list_item_task_programmed_location_based, parent, false));
+                return new ProgrammedLocationBasedTaskViewHolder(mInflater.inflate(R.layout.list_item_task_programmed_location_based, parent, false), mFragment);
             default:
                 throw new InvalidParameterException("Wrong viewType passed to onCreateViewHolder in HomeAdapter");
         }
@@ -80,25 +81,25 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             case UNPROGRAMMED_REMINDER:
                 UnprogrammedTaskViewHolder uHolder = (UnprogrammedTaskViewHolder) holder;
-                uHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
+                uHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, isSelected(position), nextItemIsATask);
                 uHolder.setListeners();
                 break;
 
             case ONE_TIME_REMINDER:
                 ProgrammedOneTimeTaskViewHolder poHolder = (ProgrammedOneTimeTaskViewHolder) holder;
-                poHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
+                poHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, isSelected(position), nextItemIsATask);
                 poHolder.setListeners();
                 break;
 
             case REPEATING_REMINDER:
                 ProgrammedRepeatingTaskViewHolder prHolder = (ProgrammedRepeatingTaskViewHolder) holder;
-                prHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
+                prHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, isSelected(position), nextItemIsATask);
                 prHolder.setListeners();
                 break;
 
             case LOCATION_BASED_REMINDER:
                 ProgrammedLocationBasedTaskViewHolder plHolder = (ProgrammedLocationBasedTaskViewHolder) holder;
-                plHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, nextItemIsATask);
+                plHolder.setData(this, mFragment, mTasks.get(position).getTask(), position, isSelected(position), nextItemIsATask);
                 plHolder.setListeners();
                 break;
 
