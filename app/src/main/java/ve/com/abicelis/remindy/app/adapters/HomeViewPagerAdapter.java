@@ -52,6 +52,10 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
         return mRegisteredFragmentList.get(position);
     }
 
+    public SparseArray<HomeListFragment> getRegisteredFragments() {
+        return mRegisteredFragmentList;
+    }
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
