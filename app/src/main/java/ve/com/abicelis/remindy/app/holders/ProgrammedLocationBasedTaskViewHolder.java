@@ -1,6 +1,7 @@
 package ve.com.abicelis.remindy.app.holders;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +16,7 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.adapters.HomeAdapter;
 import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
+import ve.com.abicelis.remindy.app.interfaces.ViewHolderClickListener;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.model.Task;
@@ -25,7 +27,7 @@ import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
  * Created by abice on 13/3/2017.
  */
 
-public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
     private HomeAdapter mAdapter;
     private Fragment mFragment;
@@ -46,13 +48,16 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
 
     private View mItemDecoration;
 
+    private ViewHolderClickListener mClickListener;
 
     //DATA
     private Task mCurrent;
     private int mReminderPosition;
 
-    public ProgrammedLocationBasedTaskViewHolder(View itemView) {
+    public ProgrammedLocationBasedTaskViewHolder(View itemView, ViewHolderClickListener listener) {
         super(itemView);
+
+        mClickListener = listener;
 
         mContainer = (RelativeLayout) itemView.findViewById(R.id.item_task_programmed_location_based_container);
         mCategoryIcon = (ImageView) itemView.findViewById(R.id.item_task_programmed_location_based_category_icon);
@@ -72,13 +77,15 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
     }
 
 
-    public void setData(HomeAdapter adapter, Fragment fragment, Task current, int position, boolean nextItemIsATask) {
+    public void setData(HomeAdapter adapter, Fragment fragment, Task current, int position, boolean isSelected, boolean nextItemIsATask) {
         mAdapter = adapter;
         mFragment = fragment;
         mCurrent = current;
         mReminderPosition = position;
 
         mCategoryIcon.setImageResource(mCurrent.getCategory().getIconRes());
+
+        mContainer.setBackgroundColor((isSelected ? ContextCompat.getColor(fragment.getActivity(), R.color.gray_200) : Color.TRANSPARENT ));
 
         mAttachmentList.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
         mAttachmentLink.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
@@ -112,6 +119,7 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
 
     public void setListeners() {
         mContainer.setOnClickListener(this);
+        mContainer.setOnLongClickListener(this);
     }
 
     @Override
@@ -121,16 +129,35 @@ public class ProgrammedLocationBasedTaskViewHolder extends RecyclerView.ViewHold
             case R.id.item_task_programmed_location_based_container:
                 Pair[] pairs = new Pair[1];
                 pairs[0] = new Pair<View, String>(mCategoryIcon, mFragment.getResources().getString(R.string.transition_task_list_category));
-                //pairs[1] = new Pair<View, String>(mTitle, mActivity.getResources().getString(R.string.transition_task_list_title));
-                //pairs[2] = new Pair<View, String>(mDescription, mActivity.getResources().getString(R.string.transition_task_list_description));
+                //pairs[1] = new Pair<View, String>(mTitle, mFragment.getResources().getString(R.string.transition_task_list_title));
+                //pairs[2] = new Pair<View, String>(mDescription, mFragment.getResources().getString(R.string.transition_task_list_description));
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mFragment.getActivity(), pairs);
 
                 Intent openTaskDetailActivity = new Intent(mFragment.getActivity(), TaskDetailActivity.class);
                 openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_TO_DISPLAY, mCurrent);
                 openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_POSITION, mReminderPosition);
-                mFragment.getActivity().startActivityForResult(openTaskDetailActivity, TaskDetailActivity.TASK_DETAIL_REQUEST_CODE, options.toBundle());
+                //mFragment.getActivity().startActivityForResult(openTaskDetailActivity, TaskDetailActivity.TASK_DETAIL_REQUEST_CODE, options.toBundle());
+
+                if (mClickListener != null) {
+                    mClickListener.onItemClicked(mReminderPosition, openTaskDetailActivity, options.toBundle());
+                }
+
                 break;
         }
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+
+        int id = view.getId();
+        switch (id) {
+            case R.id.item_task_programmed_location_based_container:
+                if (mClickListener != null) {
+                    mClickListener.onItemLongClicked(mReminderPosition);
+                }
+                break;
+        }
+
+        return false;
+    }
 }
