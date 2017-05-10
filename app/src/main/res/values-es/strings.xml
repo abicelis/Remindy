@@ -295,4 +295,6 @@
     <string name="home_contextual_menu_delete">Eliminar</string>
     <string name="home_contextual_menu_done">Listo</string>
     <string name="home_contextual_menu_not_done">No Listo</string>
+    <string name="error_problem_deleting_tasks_from_database">Hubo un error al eliminar las tareas</string>
+    <string name="error_problem_updating_tasks_from_database">Hubo un error al actualizar las tareas</string>
 </resources>
