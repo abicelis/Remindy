@@ -173,6 +173,10 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
 
         mAdapter.notifyDataSetChanged();
 
+        toggleNoItemsContainer();
+    }
+
+    private void toggleNoItemsContainer() {
         if(mTasks.size() == 0) {
             mNoItemsContainer.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
@@ -276,6 +280,7 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
 
                         mAdapter.removeItems(mAdapter.getSelectedItems());
                         mode.finish();
+                        toggleNoItemsContainer();
                     } catch (CouldNotDeleteDataException e) {
                         SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_deleting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
                     }
@@ -292,6 +297,7 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
 
                         mAdapter.removeItems(mAdapter.getSelectedItems());
                         mode.finish();
+                        toggleNoItemsContainer();
                     } catch (CouldNotUpdateDataException e) {
                         SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_deleting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
                     }
@@ -308,6 +314,7 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
 
                         mAdapter.removeItems(mAdapter.getSelectedItems());
                         mode.finish();
+                        toggleNoItemsContainer();
                     } catch (CouldNotUpdateDataException e) {
                         SnackbarUtil.showSnackbar(mRecyclerView, SnackbarUtil.SnackbarType.ERROR, R.string.error_problem_deleting_tasks_from_database, SnackbarUtil.SnackbarDuration.LONG, null);
                     }
@@ -316,6 +323,8 @@ public class HomeListFragment extends Fragment implements ViewHolderClickListene
                 default:
                     return false;
             }
+
+
         }
 
         @Override
