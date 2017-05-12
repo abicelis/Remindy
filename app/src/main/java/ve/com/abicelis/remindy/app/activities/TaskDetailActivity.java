@@ -394,7 +394,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         }
 
         //Scroll to added item
-        if(mAdapter.getItemCount() > 0)
+        if(mAdapter != null && mAdapter.getItemCount() > 0)
             mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
     }
 
