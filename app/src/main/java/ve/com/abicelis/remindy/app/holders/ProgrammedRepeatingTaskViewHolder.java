@@ -87,7 +87,7 @@ public class ProgrammedRepeatingTaskViewHolder extends RecyclerView.ViewHolder i
 
         mCategoryIcon.setImageResource(mCurrent.getCategory().getIconRes());
 
-        mContainer.setBackgroundColor((isSelected ? ContextCompat.getColor(fragment.getActivity(), R.color.gray_200) : Color.TRANSPARENT ));
+        mContainer.setBackgroundColor((isSelected ? ContextCompat.getColor(fragment.getActivity(), R.color.gray_300) : Color.TRANSPARENT ));
 
         mAttachmentList.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LIST) ? R.color.icons_enabled : R.color.icons_disabled)));
         mAttachmentLink.setColorFilter(ContextCompat.getColor(mFragment.getActivity(), (hasAttachmentsOfType(AttachmentType.LINK) ? R.color.icons_enabled : R.color.icons_disabled)));
