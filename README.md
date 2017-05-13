@@ -38,9 +38,7 @@ This app is available at the Google Play Store!
 
 ## Screens
 
-<img alt='Screen 1' src='https://raw.githubusercontent.com/abicelis/Remindy/master/graphics/play_store/screens/v1.0.6/xperiaZ3c/1.png' width="260px"/>
-<img alt='Screen 2' src='https://raw.githubusercontent.com/abicelis/Remindy/master/graphics/play_store/screens/v1.0.6/xperiaZ3c/3a.png' width="260px"/>
-<img alt='Screen 3' src='https://raw.githubusercontent.com/abicelis/Remindy/master/graphics/play_store/screens/v1.0.6/xperiaZ3c/5.png' width="260px"/>
+<img alt='Screen 1' src='https://raw.githubusercontent.com/abicelis/Remindy/master/graphics/play_store/FeatureGraphic.png'/>
 
 ## Code dependencies
 
