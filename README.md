@@ -1,28 +1,32 @@
 # Remindy #
 
-THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT
-
+THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT.
 
 ## About the app
-THE android app for power-users wanting set any kind of tasks, and reminders of those tasks. Rich metadata can be attached to any task.
-Some of the available attachments include: Lists, Text, Images, Recordings and Links!
 
-Supports all kinds of reminders:
+Set and track as many tasks as you want, be them long term or short. Organize your life goals and TODO lists with Remindy! Add images, text, lists and more to your Tasks. Want to set deadlines to your tasks? Remindy has you covered with -for now- three types of reminders:
 
-* Daily, Weekly, Monthly and yearly reminders? Yes.
-* Location-based reminders? Yes.
-* Geofences? Yes. 
-* Timed reminders? Yes.
-* Reminders ending at a specific date? Yes.
-* Reminders which repeat a set amount of times? Yes.
+- One-time reminders. For tasks which have a set deadline.
+- Repeating reminders. For tasks which repeat either daily, weekly, monthly or yearly.
+- Location-based reminders. Remindy will notify you about these whenever you get or leave a set place -like your Home, or your Work- anywhere in the world!
 
+Remindy allows for rich multimedia to be attached to any Task. Some of the available attachments include: Lists, Text, Images, Recordings and Links!
+
+Use Remindy to organize the stuff you need to get done:
+
+- Daily, Weekly, Monthly and yearly reminders? Yes.
+- Location-based reminders? Yes.
+- Geofences? Yes.
+- Timed reminders? Yes.
+- Reminders ending at a specific date? Yes.
+- Reminders which repeat a set amount of times? Yes.
 
 
 This app will be available at the Google Play Store, soon!
 
-<!---
+
 <a target="_blank" href='https://play.google.com/store/apps/details?id=ve.com.abicelis.remindy&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="240px"/></a>
--->
+
 
 ## Features
 
@@ -41,17 +45,19 @@ This app will be available at the Google Play Store, soon!
 -->
 ## Code dependencies
 
-This Project uses external SDK's
+This Project uses external dependencies and SDK's
 
 * [Preference-v7-fix](https://github.com/Gericop/Android-Support-Preference-V7-Fix) - Fixes for preference-v7 support library
 * [BetterPickers](https://github.com/code-troopers/android-betterpickers) - Datepicker library by code-troopers
 * [TransitionsEverywhere](https://github.com/andkulikov/Transitions-Everywhere) - Backported Transitions library by andkulikov
 * [FloatingActionButton](https://github.com/Clans/FloatingActionButton) - Custom Fab Button by Clans
+* [Gson](https://github.com/google/gson) - Json serialization/deserialization library by Google
 * [Image Cropper](https://github.com/ArthurHub/Android-Image-Cropper) - Image Cropping Library by ArthurHub
+* [PhotoView](https://github.com/chrisbanes/PhotoView) - ImageView with zoom support by Chrisbanes
 
 ## Software used
 
-* [Android Studio 2.3 IDE](https://developer.android.com/studio/index.html) - IDE
+* [Android Studio IDE](https://developer.android.com/studio/index.html) - IDE
 
 ## Authors
 
