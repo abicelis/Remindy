@@ -22,8 +22,7 @@ Use Remindy to organize the stuff you need to get done:
 - Reminders which repeat a set amount of times? Yes.
 
 
-This app will be available at the Google Play Store, soon!
-
+This app is available at the Google Play Store!
 
 <a target="_blank" href='https://play.google.com/store/apps/details?id=ve.com.abicelis.remindy&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="240px"/></a>
 
