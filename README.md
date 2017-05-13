@@ -35,13 +35,13 @@ This app is available at the Google Play Store!
 - Ad-free
 
 
-<!---
+
 ## Screens
 
-<img alt='Widgets' src='https://github.com/abicelis/PingWidget/blob/master/graphics/play_store/screens/v1.3.0\xperiaZ3c/pingwidget_1.png ' width="260px"/>
-<img alt='Home Activity' src='https://github.com/abicelis/PingWidget/blob/master/graphics/play_store/screens/v1.3.0\xperiaZ3c/pingwidget_2.png ' width="260px"/>
-<img alt='Configuration activity' src='https://github.com/abicelis/PingWidget/blob/master/graphics/play_store/screens/v1.3.0\xperiaZ3c/pingwidget_3.png ' width="260px"/>
--->
+<img alt='Screen 1' src='https://github.com/abicelis/Remindy/tree/master/graphics/play_store/screens/v1.0.6/xperiaZ3c/1.png ' width="260px"/>
+<img alt='Screen 2' src='https://github.com/abicelis/Remindy/tree/master/graphics/play_store/screens/v1.0.6/xperiaZ3c/3a.png ' width="260px"/>
+<img alt='Screen 3' src='https://github.com/abicelis/Remindy/tree/master/graphics/play_store/screens/v1.0.6/xperiaZ3c/5.png ' width="260px"/>
+
 ## Code dependencies
 
 This Project uses external dependencies and SDK's
