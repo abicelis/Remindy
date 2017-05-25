@@ -23,7 +23,9 @@ public class ImageUtil {
      * @param imgInBytes The image in a byte[]
      */
     public static Bitmap getBitmap(byte[] imgInBytes) {
-        return BitmapFactory.decodeByteArray(imgInBytes, 0, imgInBytes.length);
+        //TODO: Check NullPointerException bug here.
+        int length = imgInBytes.length;
+        return BitmapFactory.decodeByteArray(imgInBytes, 0, length);
     }
 
     /**
