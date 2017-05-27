@@ -318,8 +318,11 @@ public class RemindyDAO {
 
                     if(nextTaskToTrigger == null) {
                         nextTaskToTrigger = current;
-                        triggerDate = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getDate() : ((RepeatingReminder)current.getReminder() ).getDate() );
-                        triggerTime = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getTime() : ((RepeatingReminder)current.getReminder() ).getTime() );
+                        triggerDate = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getDate() : TaskUtil.getRepeatingReminderNextCalendar( (RepeatingReminder)current.getReminder()) );
+                        triggerDate.set(Calendar.HOUR_OF_DAY, 0);
+                        triggerDate.set(Calendar.MINUTE, 0);
+
+                        triggerTime = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getTime() : ((RepeatingReminder)current.getReminder()).getTime() );
                         continue;
                     }
 
