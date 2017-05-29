@@ -489,4 +489,26 @@
 
     <string name="notification_service_normal_title">"Task '%1$s' is due</string>
     <string name="notification_service_normal_text">In %1$d minutes or less</string>
+
+
+
+
+    /* TapTargetSequenceUtil Strings */
+    <string name="ttsu_activity_edit_image_attachment_crop_title">Crop</string>
+    <string name="ttsu_activity_edit_image_attachment_crop_description">Tap this button to crop the image</string>
+    <string name="ttsu_activity_edit_image_attachment_rotate_title">Rotate</string>
+    <string name="ttsu_activity_edit_image_attachment_rotate_description">Tap this button to rotate the image clockwise</string>
+    <string name="ttsu_activity_edit_image_attachment_camera_title">Replace image</string>
+    <string name="ttsu_activity_edit_image_attachment_camera_description">Tap this button to replace the image</string>
+
+    <string name="ttsu_activity_place_list_no_items_container_title">Manage your Places</string>
+    <string name="ttsu_activity_place_list_no_items_container_description">Add places such as \'Home\' or \'Work\' or any other place you want Remindy to keep track of</string>
+    <string name="ttsu_activity_place_list_fab_title">Add a Place</string>
+    <string name="ttsu_activity_place_list_fab_description">Tap this to add a new Place</string>
+
+    <string name="ttsu_activity_place_map_container_title">Selecting a Place</string>
+    <string name="ttsu_activity_place_map_container_description">To select a Place, you can long-tap anywhere on the map</string>
+    <string name="ttsu_activity_place_autocomplete_fragment_title">Selecting a Place</string>
+    <string name="ttsu_activity_place_autocomplete_fragment_description">Or you can also search for it</string>
+
 </resources>

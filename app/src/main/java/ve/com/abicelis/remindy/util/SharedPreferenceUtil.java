@@ -9,13 +9,25 @@ import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.TimeFormat;
 import ve.com.abicelis.remindy.enums.TriggerMinutesBeforeNotificationType;
-import ve.com.abicelis.remindy.model.Time;
+import ve.com.abicelis.remindy.enums.TapTargetSequenceType;
 
 /**
  * Created by abice on 1/4/2017.
  */
 
 public class SharedPreferenceUtil {
+
+    public static boolean doShowTapTargetSequenceFor(Context context, TapTargetSequenceType tapTargetSequenceType) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        //boolean flag = preferences.getBoolean(tapTargetSequenceType.name(), true);
+        boolean flag = true;
+
+        //if(flag)
+        //    preferences.edit().putBoolean(tapTargetSequenceType.name(), false).apply();
+
+        return flag;
+    }
 
     public static DateFormat getDateFormat(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

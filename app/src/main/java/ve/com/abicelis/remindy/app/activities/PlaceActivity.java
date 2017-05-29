@@ -59,6 +59,7 @@ import ve.com.abicelis.remindy.app.dialogs.EditPlaceDialogFragment;
 import ve.com.abicelis.remindy.app.services.AddressResultReceiver;
 import ve.com.abicelis.remindy.app.services.FetchAddressIntentService;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.TapTargetSequenceType;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.exception.CouldNotInsertDataException;
@@ -68,6 +69,7 @@ import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.util.ConversionUtil;
 import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
+import ve.com.abicelis.remindy.util.TapTargetSequenceUtil;
 
 /**
  * Created by abice on 30/3/2017.
@@ -142,7 +144,7 @@ public class PlaceActivity extends AppCompatActivity implements
                 .build();
         mGoogleApiClient.connect();
 
-        mAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        mAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.activity_place_autocomplete_fragment);
         mAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(com.google.android.gms.location.places.Place place) {
@@ -198,6 +200,8 @@ public class PlaceActivity extends AppCompatActivity implements
         mAliasAddressContainer = (LinearLayout) findViewById(R.id.activity_place_alias_address_container);
 
         setUpToolbar();
+        TapTargetSequenceUtil.showTapTargetSequenceFor(this, TapTargetSequenceType.PLACE_ACTIVITY);
+
     }
 
     private void setUpToolbar() {

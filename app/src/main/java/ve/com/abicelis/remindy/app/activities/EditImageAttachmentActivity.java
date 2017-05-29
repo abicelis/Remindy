@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +26,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.transitionseverywhere.Rotate;
 import com.transitionseverywhere.TransitionManager;
@@ -38,11 +42,14 @@ import java.util.UUID;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.dialogs.SelectImageSourceDialogFragment;
 import ve.com.abicelis.remindy.enums.ImageSourceType;
+import ve.com.abicelis.remindy.enums.TapTargetSequenceType;
 import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.util.FileUtil;
 import ve.com.abicelis.remindy.util.ImageUtil;
 import ve.com.abicelis.remindy.util.PermissionUtil;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
+import ve.com.abicelis.remindy.util.TapTargetSequenceUtil;
 
 /**
  * Created by abice on 18/4/2017.
@@ -96,21 +103,25 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
         mOk = (Button) findViewById(R.id.activity_edit_image_attachment_ok);
         mCancel = (Button) findViewById(R.id.activity_edit_image_attachment_cancel);
 
-
-        if (savedInstanceState != null) {   //Rotated screen!
+        //If screen was rotated, for example
+        if (savedInstanceState != null) {
+            //Load values from savedInstanceState
             mImageAttachment = (ImageAttachment) savedInstanceState.getSerializable(IMAGE_ATTACHMENT_EXTRA);
             mHolderPosition = savedInstanceState.getInt(HOLDER_POSITION_EXTRA);
             mEditingExistingImageAttachment = savedInstanceState.getBoolean(EDITING_ATTACHMENT_EXTRA);
 
+            //Get jpeg from SD Card
             mImageBackup = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
-            if(mImageBackup == null) {  //IF image was deleted from device
+            if(mImageBackup == null) {  //If jpeg was deleted from device, use thumbnail
                 mImageBackup = ImageUtil.getBitmap(mImageAttachment.getThumbnail());
                 saveThumbnailAsImageFile(mImageBackup);
             }
 
             mImage.setImageBitmap(mImageBackup);
+            showTapTargetSequence();
         } else {
 
+            //Coming from another activity: Check if intent has required extras
             if(getIntent().hasExtra(HOLDER_POSITION_EXTRA) && getIntent().hasExtra(IMAGE_ATTACHMENT_EXTRA)) {
                 mHolderPosition = getIntent().getIntExtra(HOLDER_POSITION_EXTRA, -1);
                 mImageAttachment = (ImageAttachment) getIntent().getSerializableExtra(IMAGE_ATTACHMENT_EXTRA);
@@ -124,7 +135,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
 
                     mEditingExistingImageAttachment = true;
                     mImage.setImageBitmap(mImageBackup);
-
+                    showTapTargetSequence();
                 } else {
                     mImageAttachment = new ImageAttachment();
                     mImageAttachment.setImageFilename(UUID.randomUUID().toString() + IMAGE_FILE_EXTENSION);
@@ -159,6 +170,12 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
         mOk.setOnClickListener(this);
         mCancel.setOnClickListener(this);
     }
+
+    private void showTapTargetSequence() {
+        TapTargetSequenceUtil.showTapTargetSequenceFor(this, TapTargetSequenceType.EDIT_IMAGE_ATTACHMENT_ACTIVITY);
+    }
+
+
 
     private void saveThumbnailAsImageFile(Bitmap thumbnail) {
         File imageFile = new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename());
@@ -252,7 +269,6 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
                                 setResult(RESULT_CANCELED);
                                 finish();
                             }
-                            handlePickImageUsingGallery();
                             break;
                     }
                 }
@@ -420,6 +436,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
             checkExifAndFixImageRotation();
             Bitmap newImage = ImageUtil.getBitmap(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()));
             mImage.setImageBitmap(newImage);
+            showTapTargetSequence();
 
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
@@ -441,7 +458,7 @@ public class EditImageAttachmentActivity extends AppCompatActivity implements Vi
                 Bitmap newImage = ImageUtil.getBitmap(imageUri, this);
                 mImage.setImageBitmap(newImage);
                 ImageUtil.saveBitmapAsJpeg(new File(FileUtil.getImageAttachmentDir(this), mImageAttachment.getImageFilename()), newImage, IMAGE_COMPRESSION_PERCENTAGE);
-
+                showTapTargetSequence();
 
             }catch (IOException e) {
                 SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_edit_image_attachment_snackbar_error_loading_gallery_image, SnackbarUtil.SnackbarDuration.LONG, null);

@@ -21,8 +21,10 @@ import java.util.List;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.adapters.PlaceAdapter;
 import ve.com.abicelis.remindy.database.RemindyDAO;
+import ve.com.abicelis.remindy.enums.TapTargetSequenceType;
 import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
+import ve.com.abicelis.remindy.util.TapTargetSequenceUtil;
 
 /**
  * Created by abice on 30/3/2017.
@@ -62,7 +64,10 @@ public class PlaceListActivity extends AppCompatActivity implements View.OnClick
         setUpToolbar();
         setUpRecyclerView();
         refreshRecyclerView();
+        //TapTargetSequenceUtil.showTapTargetSequenceFor(this, TapTargetSequenceType.PLACE_LIST_ACTIVITY);
     }
+
+
 
     private void setUpToolbar() {
 
