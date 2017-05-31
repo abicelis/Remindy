@@ -139,7 +139,7 @@
     <string name="remindy_settings_contact_title">Contact developer</string>
     <string name="remindy_settings_contact_summary">Having trouble using this app? Questions? Email me at alejandro@alejandrobicelis.com.ve</string>
 
-
+    <string name="settings_triggered_task_list_key" translatable="false">remindy_settings_triggered_task_list_key</string>
 
     /* Task Activity */
     <string name="activity_task_toolbar_title_new">New Task</string>
