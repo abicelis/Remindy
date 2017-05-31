@@ -73,7 +73,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFab.setOnClickListener(this);
 
         setupViewPagerAndTabLayout();
-        startNotificationService();
+        //startNotificationService();
     }
 
     private void setupViewPagerAndTabLayout() {
