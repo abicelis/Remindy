@@ -1,5 +1,6 @@
 package ve.com.abicelis.remindy.util;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.provider.Settings;
@@ -24,6 +25,7 @@ public class NotificationUtil {
                 .setLights(ContextCompat.getColor(context, R.color.primary), 3000, 3000)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setContentTitle(contentTitle)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setContentText(contentText);
 
         // Sets an ID for the notification
