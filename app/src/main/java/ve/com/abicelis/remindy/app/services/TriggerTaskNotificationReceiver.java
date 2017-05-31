@@ -32,7 +32,6 @@ public class TriggerTaskNotificationReceiver extends BroadcastReceiver {
     //CONSTS
     private static final String TAG = TriggerTaskNotificationReceiver.class.getSimpleName();
     public static final String TASK_EXTRA = "TASK_EXTRA";
-    private static final int NOTIFICATION_ID_NORMAL = 999;
 
 
     @Override
@@ -54,7 +53,7 @@ public class TriggerTaskNotificationReceiver extends BroadcastReceiver {
             int triggerMinutesBeforeNotification = SharedPreferenceUtil.getTriggerMinutesBeforeNotification(context).getMinutes();
             String contentText = String.format(Locale.getDefault(), context.getResources().getString(R.string.notification_service_normal_text), triggerMinutesBeforeNotification);
 
-            NotificationUtil.displayNotification(context, NOTIFICATION_ID_NORMAL, contentTitle, contentText);
+            NotificationUtil.displayNotification(context, task.getTask().getId(), contentTitle, contentText);
 
             //Add task to triggeredTasks list
             List<Integer> triggeredTasks = SharedPreferenceUtil.getTriggeredTaskList(context);
