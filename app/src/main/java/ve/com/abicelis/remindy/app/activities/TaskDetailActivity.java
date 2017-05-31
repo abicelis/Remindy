@@ -33,6 +33,8 @@ import com.google.gson.Gson;
 import com.transitionseverywhere.TransitionManager;
 
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
@@ -58,6 +60,7 @@ import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
+import ve.com.abicelis.remindy.util.AlarmManagerUtil;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
@@ -307,6 +310,16 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 //Update geofences
                 if(mUpdateGeofences || mTask.getReminderType().equals(ReminderType.LOCATION_BASED))
                     GeofenceUtil.updateGeofences(getApplicationContext(), mGoogleApiClient);
+
+                //Update alarms
+                if(mTask.getReminderType().equals(ReminderType.ONE_TIME) || mTask.getReminderType().equals(ReminderType.REPEATING)) {
+
+                    //Remove task from triggeredTasks list
+                    SharedPreferenceUtil.removeIdFromTriggeredTasks(getApplicationContext(), mTask.getId());
+
+                    //Update alarms
+                    AlarmManagerUtil.updateAlarms(getApplicationContext());
+                }
 
                 //See if reminder was edited, in which case refresh the whole home viewpager
                 String newReminderJson = new Gson().toJson(mTask.getReminder());
