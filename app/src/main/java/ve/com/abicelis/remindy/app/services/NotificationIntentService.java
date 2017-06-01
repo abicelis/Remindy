@@ -1,21 +1,28 @@
 package ve.com.abicelis.remindy.app.services;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.database.RemindyDAO;
 import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
+import ve.com.abicelis.remindy.util.AlarmManagerUtil;
 import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.GeofenceUtil;
 import ve.com.abicelis.remindy.util.NotificationUtil;
@@ -26,31 +33,18 @@ import ve.com.abicelis.remindy.viewmodel.TaskTriggerViewModel;
  * Created by abice on 29/4/2017.
  */
 
-public class NotificationIntentService extends IntentService implements
+public class NotificationIntentService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-
-    //CONSTS
-    private static final int SLEEP_MILLIS = 10 * 60 * 1000;
-    private static final int SLEEP_MILLIS_IDLE = 1 * 60 * 1000;
-    private static final int NOTIFICATION_ID_NORMAL = 999;
-
+    //CONST
+    private static final String TAG = NotificationIntentService.class.getSimpleName();
 
     //DATA
-    private RemindyDAO mDao;
     private GoogleApiClient mGoogleApiClient;
-    private TaskTriggerViewModel mNextTaskToTrigger;
-    private long mSleepTime;
-    private Integer mLastTaskTriggered = null;
-
-
-    public NotificationIntentService() {
-        super("NotificationIntentService");
-    }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        mDao = new RemindyDAO(getApplicationContext());
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand()");
 
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
@@ -62,90 +56,27 @@ public class NotificationIntentService extends IntentService implements
             mGoogleApiClient.connect();
         }
 
+        //Reset triggered tasks
+        SharedPreferenceUtil.setTriggeredTaskList(new ArrayList<Integer>(), getApplicationContext());
+
+        //Update Alarms
+        AlarmManagerUtil.updateAlarms(getApplicationContext());
 
 
-
-        while (true) {
-
-            //Refresh task to trigger, avoiding last triggered task if exists
-            loadNextTaskToTrigger(mLastTaskTriggered);
-
-            if(mNextTaskToTrigger != null) {
-                Calendar now = Calendar.getInstance();
-                int triggerMinutesBeforeNotification = SharedPreferenceUtil.getTriggerMinutesBeforeNotification(getApplicationContext()).getMinutes();
-
-                long differenceInMinutes = CalendarUtil.getDifferenceMinutesBetween(mNextTaskToTrigger.getTriggerDateWithTime(), now);
-
-                if(differenceInMinutes < triggerMinutesBeforeNotification ) {
-                    handleNotification(triggerMinutesBeforeNotification);
-                    mLastTaskTriggered = mNextTaskToTrigger.getTask().getId();
-                } else {
-                    mSleepTime = SLEEP_MILLIS_IDLE;
-                }
-
-            } else {
-                //Idle sleep
-                mSleepTime = SLEEP_MILLIS_IDLE;
-            }
-
-
-
-            try {
-                Thread.sleep(mSleepTime);
-            } catch (InterruptedException e) { /* Do nothing */ }
-
-
-
-
-
-
-
-//            try {
-//                mNextTaskToTrigger = mDao.getNextTaskToTrigger(null);
-//            } catch (CouldNotGetDataException e ) {
-//                mNextTaskToTrigger = null;
-//            }
-//
-//            if(mNextTaskToTrigger != null) {
-//                String contentTitle = "Task '" + mNextTaskToTrigger.getTask().getTitle() + "'";
-//                String contentText = "Will trigger " +
-//                        SharedPreferenceUtil.getDateFormat(getApplicationContext()).formatCalendar(mNextTaskToTrigger.getTriggerDate()) +
-//                        " at " +
-//                        mNextTaskToTrigger.getTriggerTime().toString();
-//
-//                NotificationUtil.displayNotification(this, NOTIFICATION_ID_NORMAL, contentTitle, contentText);
-//            }
-//
-//            try {
-//                Thread.sleep(SLEEP_MILLIS);
-//            } catch (InterruptedException e) { /* Do nothing */ }
-        }
+        return Service.START_NOT_STICKY;
     }
-
-
-
-    private void loadNextTaskToTrigger(Integer exceptForThisTaskId ) {
-        try {
-            mNextTaskToTrigger = mDao.getNextTaskToTrigger(exceptForThisTaskId);
-        } catch (CouldNotGetDataException e ) {
-            mNextTaskToTrigger = null;
-        }
-    }
-
-    private void handleNotification(int triggerMinutesBeforeNotification) {
-        String contentTitle = String.format(Locale.getDefault(), getResources().getString(R.string.notification_service_normal_title), mNextTaskToTrigger.getTask().getTitle());
-        String contentText = String.format(Locale.getDefault(), getResources().getString(R.string.notification_service_normal_text), triggerMinutesBeforeNotification);
-        NotificationUtil.displayNotification(this, NOTIFICATION_ID_NORMAL, contentTitle, contentText);
-    }
-
-
-
 
     @Override
     public void onDestroy() {
-        GeofenceUtil.removeGeofences(getApplicationContext(), mGoogleApiClient);
+        Log.d(TAG, "onDestroy()");
         mGoogleApiClient.disconnect();
         super.onDestroy();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
 
@@ -153,13 +84,21 @@ public class NotificationIntentService extends IntentService implements
     /* GoogleApiClient callbacks */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected()");
         GeofenceUtil.addGeofences(getApplicationContext(), mGoogleApiClient);
+        stopSelf();
     }
 
     @Override
-    public void onConnectionSuspended(int i) {}
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionSuspended()");
+
+    }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed()");
+
+    }
 
 }
