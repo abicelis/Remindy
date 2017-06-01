@@ -33,8 +33,6 @@ import com.google.gson.Gson;
 import com.transitionseverywhere.TransitionManager;
 
 import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import ve.com.abicelis.remindy.R;
@@ -48,6 +46,7 @@ import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.ReminderType;
 import ve.com.abicelis.remindy.enums.TaskStatus;
 import ve.com.abicelis.remindy.exception.CouldNotDeleteDataException;
+import ve.com.abicelis.remindy.exception.CouldNotGetDataException;
 import ve.com.abicelis.remindy.exception.CouldNotUpdateDataException;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.Time;
@@ -57,9 +56,6 @@ import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.model.attachment.LinkAttachment;
 import ve.com.abicelis.remindy.model.attachment.ListAttachment;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
-import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
-import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
-import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
 import ve.com.abicelis.remindy.util.AlarmManagerUtil;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.CalendarUtil;
@@ -77,7 +73,7 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     //CONST
-    public static final String TASK_TO_DISPLAY = "TASK_TO_DISPLAY";
+    public static final String TASK_ID_TO_DISPLAY = "TASK_ID_TO_DISPLAY";
     public static final String TASK_POSITION = "TASK_POSITION";
 
     public static final int TASK_DETAIL_REQUEST_CODE = 491;
@@ -135,10 +131,25 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
         mContainer = (LinearLayout) findViewById(R.id.activity_task_detail_container);
 
-        if(getIntent().hasExtra(TASK_TO_DISPLAY) && getIntent().hasExtra(TASK_POSITION)) {
-            mTask = (Task) getIntent().getSerializableExtra(TASK_TO_DISPLAY);
+
+        if(getIntent().hasExtra(TASK_ID_TO_DISPLAY)) {
+            int taskId = getIntent().getIntExtra(TASK_ID_TO_DISPLAY, -1);
+            try {
+                mTask = new RemindyDAO(getApplicationContext()).getTask(taskId);
+            } catch (CouldNotGetDataException e) {
+                BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        finish();
+                    }
+                };
+                SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_no_task, SnackbarUtil.SnackbarDuration.LONG, callback);
+                finish();
+                return;
+            }
             mOldReminderJson = new Gson().toJson(mTask.getReminder());
-            mPosition = getIntent().getIntExtra(TASK_POSITION, -1);
+            mPosition = getIntent().getIntExtra(TASK_POSITION, -1);     //If intent came from a notification, expect position to be -1. This is normal.
             mUpdateGeofences = mTask.getReminderType().equals(ReminderType.LOCATION_BASED);
         } else {
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -149,6 +160,8 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
                 }
             };
             SnackbarUtil.showSnackbar(mContainer, SnackbarUtil.SnackbarType.ERROR, R.string.activity_task_snackbar_error_no_task, SnackbarUtil.SnackbarDuration.LONG, callback);
+            finish();
+            return;
         }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
