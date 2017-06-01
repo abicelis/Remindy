@@ -70,7 +70,7 @@ public class GeofenceNotificationIntentService extends IntentService {
                     String notificationText = getGeofenceNotificationText(tasks);
 
                     // Send notification and log the transition details.
-                    NotificationUtil.displayNotification(this, Integer.valueOf(geofence.getRequestId()), notificationTitle, notificationText);
+                    NotificationUtil.displayLocationBasedNotification(this, Integer.valueOf(geofence.getRequestId()), notificationTitle, notificationText);
                     Log.i(TAG, notificationTitle + notificationText);
                 }
 

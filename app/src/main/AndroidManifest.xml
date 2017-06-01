@@ -75,7 +75,12 @@
 
         <activity
             android:name=".app.activities.TaskDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".app.activities.HomeActivity">
+            <!--Preserving navigation-->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.activities.HomeActivity"/>
         </activity>
 
         <activity
@@ -113,6 +118,9 @@
         <!-- SERVICES -->
         <!--Notification Service-->
         <service android:name=".app.services.NotificationIntentService" />
+
+        <!--TaskAction IntentService-->
+        <service android:name=".app.services.TaskActionsIntentService" />
 
         <!--Geofencing Service-->
         <service android:name=".app.services.GeofenceNotificationIntentService"/>

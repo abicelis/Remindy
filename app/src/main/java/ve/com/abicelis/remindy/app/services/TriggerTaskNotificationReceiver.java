@@ -53,7 +53,7 @@ public class TriggerTaskNotificationReceiver extends BroadcastReceiver {
             int triggerMinutesBeforeNotification = SharedPreferenceUtil.getTriggerMinutesBeforeNotification(context).getMinutes();
             String contentText = String.format(Locale.getDefault(), context.getResources().getString(R.string.notification_service_normal_text), triggerMinutesBeforeNotification);
 
-            NotificationUtil.displayNotification(context, task.getTask().getId(), contentTitle, contentText);
+            NotificationUtil.displayNotification(context, task.getTask(), contentTitle, contentText);
 
             //Add task to triggeredTasks list
             List<Integer> triggeredTasks = SharedPreferenceUtil.getTriggeredTaskList(context);
