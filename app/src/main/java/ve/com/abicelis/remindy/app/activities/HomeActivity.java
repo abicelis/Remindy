@@ -239,12 +239,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == TaskDetailActivity.TASK_DETAIL_REQUEST_CODE && resultCode == RESULT_OK) {     //Task has been deleted or edited
 
             //Try to get TASK_DETAIL_RETURN_TASK_POSITION and TASK_DETAIL_RETURN_ACTION_TYPE
-            if (data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_POSITION) &&
-                    data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_TYPE) &&
-                    data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX)) {
+            if (data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_TYPE) && data.hasExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX)) {
 
                 int position = data.getIntExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_POSITION, -1);
                 int viewPagerIndex = data.getIntExtra(TaskDetailActivity.TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX, -1);
+
+                if(position == -1) { //If TaskDetailActivity was called from an android notification, impossible to tell position so refresh all.
+                    setupViewPagerAndTabLayout();   //Just refresh everything
+                    return;
+                }
 
                 switch (data.getIntExtra(TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_TYPE, -1)) {
                     case TaskDetailActivity.TASK_DETAIL_RETURN_ACTION_DELETED:
@@ -263,7 +266,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                 }
             } else {
-                Log.d(TAG, "Error! TASK_DETAIL_RETURN_TASK_POSITION or TASK_DETAIL_RETURN_ACTION_TYPE or TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX == null");
+                Log.d(TAG, "Error! TASK_DETAIL_RETURN_ACTION_TYPE or TASK_DETAIL_RETURN_TASK_VIEWPAGER_INDEX == null");
                 SnackbarUtil.showSnackbar(mViewpager, SnackbarUtil.SnackbarType.ERROR, R.string.error_unexpected, SnackbarUtil.SnackbarDuration.LONG, null);
             }
         }
