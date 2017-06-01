@@ -483,6 +483,12 @@
     <string name="notification_service_geofence_exit">You just left</string>
     <string name="notification_service_geofence_dwell">You\'ve been a while at</string>
 
+    <string name="notification_big_view_set_done">Done</string>
+
+
+    <string name="task_actions_service_could_not_set_done">Error: Could not set task as DONE</string>
+
+
 
     <string name="notification_service_geofence_title" translatable="false">%1$s %2$s</string>
     <string name="notification_service_geofence_text">Remember tasks: %1$s</string>
