@@ -50,7 +50,7 @@ public class AlarmManagerUtil {
 
             //Build intent
             Intent triggerIntent =  new Intent(context, TriggerTaskNotificationReceiver.class);
-            triggerIntent.putExtra(TriggerTaskNotificationReceiver.TASK_EXTRA, task);
+            triggerIntent.putExtra(TriggerTaskNotificationReceiver.TASK_ID_EXTRA, task.getTask().getId());
 
             if(triggerTime.compareTo(Calendar.getInstance()) <= 0) {
                 //Trigger now

@@ -70,8 +70,8 @@ public class GeofenceNotificationIntentService extends IntentService {
                     String notificationText = getGeofenceNotificationText(tasks);
 
                     // Send notification and log the transition details.
-                    NotificationUtil.displayLocationBasedNotification(this, Integer.valueOf(geofence.getRequestId()), notificationTitle, notificationText);
-                    Log.i(TAG, notificationTitle + notificationText);
+                    NotificationUtil.displayLocationBasedNotification(this, Integer.valueOf(geofence.getRequestId()), notificationTitle, notificationText, tasks);
+                    Log.i(TAG, notificationTitle + " " + notificationText);
                 }
 
             }
@@ -130,14 +130,15 @@ public class GeofenceNotificationIntentService extends IntentService {
         String tasksStr = "";
 
         for (Task task: tasks)
-            tasksStr += task.getTitle() + "\n\r";
+            tasksStr += task.getTitle() + ",";
+
+        tasksStr = tasksStr.substring(0, tasksStr.length()-1);
 
 
         return String.format(Locale.getDefault(),
                 getResources().getString(R.string.notification_service_geofence_text),
                 tasksStr);
     }
-
 }
 
 
