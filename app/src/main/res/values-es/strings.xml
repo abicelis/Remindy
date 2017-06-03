@@ -219,9 +219,9 @@
     <string name="notification_service_geofence_dwell">Ha estado un rato en</string>
     <string name="notification_service_geofence_enter">Esta en</string>
     <string name="notification_service_geofence_exit">Se fue de</string>
-    <string name="notification_service_geofence_text">Recordar Tareas: %1$s</string>
-    <string name="notification_service_normal_text">En %1$d minutos o menos</string>
-    <string name="notification_service_normal_title">\"Tarea \'%1$s\' está pendiente</string>
+    <string name="notification_service_geofence_text">Tareas: %1$s</string>
+    <string name="notification_service_normal_text">En %1$d minutos o menos, a las %2$s</string>
+    <string name="notification_service_normal_title">%1$s\</string>
     <string name="reminder_repeat_end_type_for_x_events">Por un número de eventos</string>
     <string name="reminder_repeat_end_type_forever">Por siempre</string>
     <string name="reminder_repeat_end_type_until_date">Hasta una fecha</string>
@@ -298,6 +298,7 @@
     <string name="error_problem_deleting_tasks_from_database">Hubo un error al eliminar las tareas</string>
     <string name="error_problem_updating_tasks_from_database">Hubo un error al actualizar las tareas</string>
     <string name="notification_big_view_set_done">Listo</string>
+    <string name="notification_big_view_postpone">Posponer</string>
     <string name="task_actions_service_could_not_set_done">Error al cambiar status de Tarea</string>
 
 </resources>

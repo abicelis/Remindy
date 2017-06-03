@@ -484,6 +484,7 @@
     <string name="notification_service_geofence_dwell">You\'ve been a while at</string>
 
     <string name="notification_big_view_set_done">Done</string>
+    <string name="notification_big_view_postpone">Postpone</string>
 
 
     <string name="task_actions_service_could_not_set_done">Error: Could not set task as DONE</string>
@@ -491,8 +492,8 @@
 
 
     <string name="notification_service_geofence_title" translatable="false">%1$s %2$s</string>
-    <string name="notification_service_geofence_text">Remember tasks: %1$s</string>
+    <string name="notification_service_geofence_text">Task: %1$s</string>
 
-    <string name="notification_service_normal_title">"Task '%1$s' is due</string>
-    <string name="notification_service_normal_text">In %1$d minutes or less</string>
+    <string name="notification_service_normal_title">%1$s</string>
+    <string name="notification_service_normal_text">Due in %1$d minutes or less, at %2$s</string>
 </resources>
