@@ -45,8 +45,12 @@ public class TaskActionsIntentService extends IntentService {
             int taskId = intent.getIntExtra(PARAM_TASK_ID, -1);
 
             if(taskId != -1) {
-                RemindyDAO dao = new RemindyDAO(getApplicationContext());
 
+                //Dismiss the notification
+                NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+                mNotifyMgr.cancel(taskId);
+
+                RemindyDAO dao = new RemindyDAO(getApplicationContext());
                 try{
                     Task task = dao.getTask(taskId);
                     task.setDoneDate(CalendarUtil.getNewInstanceZeroedCalendar());
@@ -57,16 +61,16 @@ public class TaskActionsIntentService extends IntentService {
                     Toast.makeText(this, getResources().getString(R.string.task_actions_service_could_not_set_done), Toast.LENGTH_SHORT).show();
                 }
 
-                //Dismiss the notification
-                NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-                mNotifyMgr.cancel(taskId);
             }
         } else if (intent.getAction().equals(ACTION_POSTPONE_TASK)) {
             int taskId = intent.getIntExtra(PARAM_TASK_ID, -1);
 
             if(taskId != -1) {
-                RemindyDAO dao = new RemindyDAO(getApplicationContext());
+                //Dismiss the notification
+                NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+                mNotifyMgr.cancel(taskId);
 
+                RemindyDAO dao = new RemindyDAO(getApplicationContext());
                 try {
                     Task task = dao.getTask(taskId);
 
@@ -101,10 +105,6 @@ public class TaskActionsIntentService extends IntentService {
                 } catch (CouldNotGetDataException | CouldNotUpdateDataException e) {
                     Toast.makeText(this, getResources().getString(R.string.task_actions_service_could_not_set_done), Toast.LENGTH_SHORT).show();
                 }
-
-                //Dismiss the notification
-                NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-                mNotifyMgr.cancel(taskId);
             }
         }
     }
