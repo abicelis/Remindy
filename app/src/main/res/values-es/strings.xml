@@ -80,8 +80,8 @@
     <string name="activity_task_toolbar_title_edit">Editar Tarea</string>
     <string name="activity_task_toolbar_title_new">Nueva Tarea</string>
     <string name="activity_task_warn_no_reminder_dialog_message">Agregar un recordatorio o guardar así?</string>
-    <string name="activity_task_warn_no_reminder_dialog_negative">Guardar asi</string>
-    <string name="activity_task_warn_no_reminder_dialog_positive">Agregar Recordatorio</string>
+    <string name="activity_task_warn_no_reminder_dialog_negative">Agregar Recordatorio</string>
+    <string name="activity_task_warn_no_reminder_dialog_positive">Guardar asi</string>
     <string name="activity_task_warn_no_reminder_dialog_title">Tarea no tiene recordatorio</string>
     <string name="activity_view_image_attachment_title">Imagen Adjunta</string>
     <string name="address_found">Dirección encontrada</string>

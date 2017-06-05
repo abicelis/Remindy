@@ -199,16 +199,15 @@ public class TaskActivity extends AppCompatActivity implements
                                 .setPositiveButton(getResources().getString(R.string.activity_task_warn_no_reminder_dialog_positive),  new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mViewpager.setCurrentItem(1, true); //Go to Reminder page
                                         dialog.dismiss();
+                                        handleTaskSave();
                                     }
                                 })
                                 .setNegativeButton(getResources().getString(R.string.activity_task_warn_no_reminder_dialog_negative), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        handleTaskSave();
-
+                                        mViewpager.setCurrentItem(1, true); //Go to Reminder tab
                                     }
                                 })
                                 .create();
