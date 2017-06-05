@@ -297,4 +297,20 @@
     <string name="home_contextual_menu_not_done">No Listo</string>
     <string name="error_problem_deleting_tasks_from_database">Hubo un error al eliminar las tareas</string>
     <string name="error_problem_updating_tasks_from_database">Hubo un error al actualizar las tareas</string>
+    <string name="ttsu_activity_edit_image_attachment_camera_description">Use este boton para reemplazar la imagen</string>
+    <string name="ttsu_activity_edit_image_attachment_camera_title">Reemplazar imagen</string>
+    <string name="ttsu_activity_edit_image_attachment_crop_description">Use este boton para recortar la imagen</string>
+    <string name="ttsu_activity_edit_image_attachment_crop_title">Recortar</string>
+    <string name="ttsu_activity_edit_image_attachment_rotate_description">Use este boton para rotar la imagen</string>
+    <string name="ttsu_activity_edit_image_attachment_rotate_title">Rotar</string>
+    <string name="ttsu_activity_place_autocomplete_search_button_description">Busque un lugar por su nombre</string>
+    <string name="ttsu_activity_place_autocomplete_search_button_title">Seleccionar un Lugar</string>
+    <string name="ttsu_activity_place_list_fab_description">Toque aqui para agregar un Lugar</string>
+    <string name="ttsu_activity_place_list_fab_title">Agregar un Lugar</string>
+    <string name="ttsu_activity_place_list_no_items_container_description">Agregar lugares como \"Casar\" o \"Trabajo\" o cualquier otro lugar</string>
+    <string name="ttsu_activity_place_list_no_items_container_title">Administracion de Lugares</string>
+    <string name="ttsu_activity_place_map_container_description">O, seleccione un lugar en el mapa</string>
+    <string name="ttsu_activity_place_map_container_title">Seleccionar un Lugar</string>
+    <string name="ttsu_activity_place_radius_icon_description">Utilice el slider para modificar el radio de deteccion</string>
+    <string name="ttsu_activity_place_radius_icon_title">Ajustar el area</string>
 </resources>
