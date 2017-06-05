@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +40,19 @@ import ve.com.abicelis.remindy.model.attachment.ImageAttachment;
 import ve.com.abicelis.remindy.model.reminder.LocationBasedReminder;
 import ve.com.abicelis.remindy.model.reminder.OneTimeReminder;
 import ve.com.abicelis.remindy.model.reminder.RepeatingReminder;
+import ve.com.abicelis.remindy.util.AlarmManagerUtil;
 import ve.com.abicelis.remindy.util.AttachmentUtil;
 import ve.com.abicelis.remindy.util.FileUtil;
+import ve.com.abicelis.remindy.util.GeofenceUtil;
+import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.SnackbarUtil;
 
 /**
  * Created by abice on 24/4/2017.
  */
 
-public class TaskActivity extends AppCompatActivity {
+public class TaskActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     //CONST
     public static final String TASK_TO_EDIT = "TASK_TO_EDIT";
@@ -63,6 +72,8 @@ public class TaskActivity extends AppCompatActivity {
     private boolean editingTask;
     private List<String> mTitleList = new ArrayList<>();
     private List<Fragment> mFragmentList = new ArrayList<>();
+    private GoogleApiClient mGoogleApiClient;
+
 
 
     @Override
@@ -84,6 +95,13 @@ public class TaskActivity extends AppCompatActivity {
 
         setUpToolbar();
         setupViewPagerAndTabLayout();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
     }
 
     private void setUpToolbar() {
@@ -181,16 +199,15 @@ public class TaskActivity extends AppCompatActivity {
                                 .setPositiveButton(getResources().getString(R.string.activity_task_warn_no_reminder_dialog_positive),  new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mViewpager.setCurrentItem(1, true); //Go to Reminder page
                                         dialog.dismiss();
+                                        handleTaskSave();
                                     }
                                 })
                                 .setNegativeButton(getResources().getString(R.string.activity_task_warn_no_reminder_dialog_negative), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        handleTaskSave();
-
+                                        mViewpager.setCurrentItem(1, true); //Go to Reminder tab
                                     }
                                 })
                                 .create();
@@ -313,8 +330,26 @@ public class TaskActivity extends AppCompatActivity {
         try {
             RemindyDAO dao = new RemindyDAO(this);
 
-            if(!editingTask)
+            if (!editingTask) {
+
+                //Insert the task
                 dao.insertTask(mTask);
+
+                //Update geofences
+                if(mTask.getReminderType().equals(ReminderType.LOCATION_BASED))
+                    GeofenceUtil.updateGeofences(getApplicationContext(), mGoogleApiClient);
+
+                //Update alarms
+                if(mTask.getReminderType().equals(ReminderType.ONE_TIME) || mTask.getReminderType().equals(ReminderType.REPEATING)) {
+
+                    //Remove task from triggeredTasks list
+                    SharedPreferenceUtil.removeIdFromTriggeredTasks(getApplicationContext(), mTask.getId());
+
+                    //Update alarms
+                    AlarmManagerUtil.updateAlarms(getApplicationContext());
+                }
+
+            }
             //If editing, Caller activity TaskDetailActivity will save the task.
 
             BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -364,4 +399,21 @@ public class TaskActivity extends AppCompatActivity {
         }
     }
 
+
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

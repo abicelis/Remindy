@@ -80,8 +80,8 @@
     <string name="activity_task_toolbar_title_edit">Editar Tarea</string>
     <string name="activity_task_toolbar_title_new">Nueva Tarea</string>
     <string name="activity_task_warn_no_reminder_dialog_message">Agregar un recordatorio o guardar así?</string>
-    <string name="activity_task_warn_no_reminder_dialog_negative">Guardar asi</string>
-    <string name="activity_task_warn_no_reminder_dialog_positive">Agregar Recordatorio</string>
+    <string name="activity_task_warn_no_reminder_dialog_negative">Agregar Recordatorio</string>
+    <string name="activity_task_warn_no_reminder_dialog_positive">Guardar asi</string>
     <string name="activity_task_warn_no_reminder_dialog_title">Tarea no tiene recordatorio</string>
     <string name="activity_view_image_attachment_title">Imagen Adjunta</string>
     <string name="address_found">Dirección encontrada</string>
@@ -297,6 +297,9 @@
     <string name="home_contextual_menu_not_done">No Listo</string>
     <string name="error_problem_deleting_tasks_from_database">Hubo un error al eliminar las tareas</string>
     <string name="error_problem_updating_tasks_from_database">Hubo un error al actualizar las tareas</string>
+    <string name="notification_big_view_set_done">Listo</string>
+    <string name="notification_big_view_postpone">Posponer</string>
+    <string name="task_actions_service_could_not_set_done">Error al cambiar status de Tarea</string>
     <string name="ttsu_activity_edit_image_attachment_camera_description">Use este boton para reemplazar la imagen</string>
     <string name="ttsu_activity_edit_image_attachment_camera_title">Reemplazar imagen</string>
     <string name="ttsu_activity_edit_image_attachment_crop_description">Use este boton para recortar la imagen</string>
@@ -313,4 +316,5 @@
     <string name="ttsu_activity_place_map_container_title">Seleccionar un Lugar</string>
     <string name="ttsu_activity_place_radius_icon_description">Utilice el slider para modificar el radio de deteccion</string>
     <string name="ttsu_activity_place_radius_icon_title">Ajustar el area</string>
+
 </resources>

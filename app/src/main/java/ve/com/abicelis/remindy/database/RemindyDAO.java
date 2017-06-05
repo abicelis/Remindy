@@ -45,6 +45,7 @@ import ve.com.abicelis.remindy.model.Place;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.attachment.TextAttachment;
 import ve.com.abicelis.remindy.model.Time;
+import ve.com.abicelis.remindy.util.CalendarUtil;
 import ve.com.abicelis.remindy.util.SharedPreferenceUtil;
 import ve.com.abicelis.remindy.util.TaskUtil;
 import ve.com.abicelis.remindy.util.sorting.TaskSortingUtil;
@@ -284,10 +285,10 @@ public class RemindyDAO {
 
     /**
      * Returns the next PROGRAMMED task(With ONE-TIME or REPEATING reminder) to occur
-     * @param exceptForThisTaskId an optional task id to not include in the search
+     * @param alreadyTriggeredTaskList an optional task list to not include in the search
      * @return A single TaskTriggerViewModel or null of there are no tasks
      */
-    public TaskTriggerViewModel getNextTaskToTrigger(@Nullable Integer exceptForThisTaskId) throws CouldNotGetDataException {
+    public TaskTriggerViewModel getNextTaskToTrigger(@NonNull List<Integer> alreadyTriggeredTaskList) throws CouldNotGetDataException {
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
         Task nextTaskToTrigger = null;
         Calendar triggerDate = null;
@@ -301,7 +302,7 @@ public class RemindyDAO {
             while (cursor.moveToNext()) {
                 Task current = getTaskFromCursor(cursor);
 
-                if(exceptForThisTaskId != null && current.getId() == exceptForThisTaskId)   //Skip exceptForThisTaskId
+                if(alreadyTriggeredTaskList.contains(current.getId()))   //Skip
                     continue;
 
                 try {
@@ -319,24 +320,17 @@ public class RemindyDAO {
                     if(nextTaskToTrigger == null) {
                         nextTaskToTrigger = current;
                         triggerDate = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getDate() : TaskUtil.getRepeatingReminderNextCalendar( (RepeatingReminder)current.getReminder()) );
-                        triggerDate.set(Calendar.HOUR_OF_DAY, 0);
-                        triggerDate.set(Calendar.MINUTE, 0);
-
                         triggerTime = (current.getReminderType().equals(ReminderType.ONE_TIME) ? ((OneTimeReminder)current.getReminder() ).getTime() : ((RepeatingReminder)current.getReminder()).getTime() );
                         continue;
                     }
 
                     if(current.getReminderType().equals(ReminderType.ONE_TIME)) {
                         OneTimeReminder otr = (OneTimeReminder)current.getReminder();
-                        if(otr.getDate().compareTo(triggerDate) < 0 ) {
+                        Calendar currentDate = CalendarUtil.getCalendarFromDateAndTime(otr.getDate(), otr.getTime());
+
+                        if(currentDate.compareTo(triggerDate) < 0 ) {
                             nextTaskToTrigger = current;
-                            triggerDate = otr.getDate();
-                            triggerTime = otr.getTime();
-                            continue;
-                        }
-                        if(otr.getDate().compareTo(triggerDate) == 0 && otr.getTime().compareTo(triggerTime) < 0) {
-                            nextTaskToTrigger = current;
-                            triggerDate = otr.getDate();
+                            triggerDate = currentDate;
                             triggerTime = otr.getTime();
                             continue;
                         }
@@ -349,12 +343,6 @@ public class RemindyDAO {
                         if(currentDate == null) continue;   //Overdue
 
                         if(currentDate.compareTo(triggerDate) < 0 ) {
-                            nextTaskToTrigger = current;
-                            triggerDate = currentDate;
-                            triggerTime = rr.getTime();
-                            continue;
-                        }
-                        if(currentDate.compareTo(triggerDate) == 0 && rr.getTime().compareTo(triggerTime) < 0) {
                             nextTaskToTrigger = current;
                             triggerDate = currentDate;
                             triggerTime = rr.getTime();

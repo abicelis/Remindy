@@ -139,7 +139,7 @@
     <string name="remindy_settings_contact_title">Contact developer</string>
     <string name="remindy_settings_contact_summary">Having trouble using this app? Questions? Email me at alejandro@alejandrobicelis.com.ve</string>
 
-
+    <string name="settings_triggered_task_list_key" translatable="false">remindy_settings_triggered_task_list_key</string>
 
     /* Task Activity */
     <string name="activity_task_toolbar_title_new">New Task</string>
@@ -168,8 +168,8 @@
 
     <string name="activity_task_warn_no_reminder_dialog_title">Task has no reminder</string>
     <string name="activity_task_warn_no_reminder_dialog_message">Add a reminder to this task or save as-is?</string>
-    <string name="activity_task_warn_no_reminder_dialog_positive">Add Reminder</string>
-    <string name="activity_task_warn_no_reminder_dialog_negative">Save As-is</string>
+    <string name="activity_task_warn_no_reminder_dialog_positive">Save As-isA</string>
+    <string name="activity_task_warn_no_reminder_dialog_negative">dd Reminder</string>
 
     <string name="activity_task_save_dialog_title">Save?</string>
     <string name="activity_task_save_dialog_message">Save this task?</string>
@@ -483,15 +483,19 @@
     <string name="notification_service_geofence_exit">You just left</string>
     <string name="notification_service_geofence_dwell">You\'ve been a while at</string>
 
+    <string name="notification_big_view_set_done">Done</string>
+    <string name="notification_big_view_postpone">Postpone</string>
+
+
+    <string name="task_actions_service_could_not_set_done">Error: Could not set task as DONE</string>
+
+
 
     <string name="notification_service_geofence_title" translatable="false">%1$s %2$s</string>
-    <string name="notification_service_geofence_text">Remember tasks: %1$s</string>
+    <string name="notification_service_geofence_text">Task: %1$s</string>
 
-    <string name="notification_service_normal_title">"Task '%1$s' is due</string>
-    <string name="notification_service_normal_text">In %1$d minutes or less</string>
-
-
-
+    <string name="notification_service_normal_title">%1$s</string>
+    <string name="notification_service_normal_text">Due in %1$d minutes or less, at %2$s</string>
 
     /* TapTargetSequenceUtil Strings */
     <string name="ttsu_activity_edit_image_attachment_crop_title">Crop</string>
@@ -515,5 +519,6 @@
 
     <string name="ttsu_activity_place_radius_icon_title">Adjust the radius</string>
     <string name="ttsu_activity_place_radius_icon_description">Use the slider to tweak the detection radius</string>
+
 
 </resources>

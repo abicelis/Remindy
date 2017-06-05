@@ -5,6 +5,14 @@ import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.enums.DateFormat;
 import ve.com.abicelis.remindy.enums.TimeFormat;
@@ -84,7 +92,39 @@ public class SharedPreferenceUtil {
     }
 
 
+    public static List<Integer> getTriggeredTaskList(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String json = preferences.getString(context.getResources().getString(R.string.settings_triggered_task_list_key), null);
 
+
+        List<Integer> tasks = new ArrayList<>();
+        try {
+                Type listType = new TypeToken<List<Integer>>() {}.getType();
+                Gson gson = new Gson();
+                tasks = gson.fromJson(json, listType);
+        } catch (Exception e) { /* Do nothing */}
+
+        return tasks;
+    }
+
+    public static void setTriggeredTaskList(List<Integer> tasks, Context context) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString(context.getResources().getString(R.string.settings_triggered_task_list_key), new Gson().toJson(tasks));
+        editor.apply();
+    }
+
+
+    public static void removeIdFromTriggeredTasks(Context context, int taskId) {
+        List<Integer> triggeredTasks = getTriggeredTaskList(context);
+        Iterator<Integer> iter = triggeredTasks.iterator();
+        while(iter.hasNext()) {
+            if (iter.next().equals(taskId)) {
+                iter.remove();
+            }
+        }
+
+        setTriggeredTaskList(triggeredTasks, context);
+    }
 
     public static TriggerMinutesBeforeNotificationType getTriggerMinutesBeforeNotification(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

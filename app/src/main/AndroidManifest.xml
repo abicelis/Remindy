@@ -31,19 +31,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
-        <!--Notification Service-->
-        <receiver android:name=".app.services.BootCompletedBroadcastReceiver" android:enabled="true" android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
-        <service android:name=".app.services.NotificationIntentService" />
-
-
-        <!--Geofencing Service-->
-        <service android:name=".app.services.GeofenceNotificationIntentService"/>
-
         <activity
             android:name=".app.activities.HomeActivity"
             android:label="@string/app_name"
@@ -88,7 +75,12 @@
 
         <activity
             android:name=".app.activities.TaskDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".app.activities.HomeActivity">
+            <!--Preserving navigation-->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.activities.HomeActivity"/>
         </activity>
 
         <activity
@@ -114,7 +106,26 @@
         </provider>
 
 
+        <!-- RECEIVERS -->
+        <receiver android:name=".app.services.BootCompletedBroadcastReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".app.services.TriggerTaskNotificationReceiver" />
+
+
         <!-- SERVICES -->
+        <!--Notification Service-->
+        <service android:name=".app.services.NotificationIntentService" />
+
+        <!--TaskAction IntentService-->
+        <service android:name=".app.services.TaskActionsIntentService" />
+
+        <!--Geofencing Service-->
+        <service android:name=".app.services.GeofenceNotificationIntentService"/>
+
+        <!-- FetchAddress Service -->
         <service
             android:name=".app.services.FetchAddressIntentService"
             android:exported="false"/>

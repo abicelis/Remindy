@@ -15,7 +15,6 @@ import android.widget.TextView;
 import ve.com.abicelis.remindy.R;
 import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.adapters.HomeAdapter;
-import ve.com.abicelis.remindy.app.fragments.HomeListFragment;
 import ve.com.abicelis.remindy.app.interfaces.ViewHolderClickListener;
 import ve.com.abicelis.remindy.enums.AttachmentType;
 import ve.com.abicelis.remindy.enums.DateFormat;
@@ -140,7 +139,7 @@ public class ProgrammedOneTimeTaskViewHolder extends RecyclerView.ViewHolder imp
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(mFragment.getActivity(), pairs);
 
                 Intent openTaskDetailActivity = new Intent(mFragment.getActivity(), TaskDetailActivity.class);
-                openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_TO_DISPLAY, mCurrent);
+                openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_ID_TO_DISPLAY, mCurrent.getId());
                 openTaskDetailActivity.putExtra(TaskDetailActivity.TASK_POSITION, mReminderPosition);
                 //mFragment.getActivity().startActivityForResult(openTaskDetailActivity, TaskDetailActivity.TASK_DETAIL_REQUEST_CODE, options.toBundle());
 

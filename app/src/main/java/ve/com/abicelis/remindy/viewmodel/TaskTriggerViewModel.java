@@ -2,10 +2,9 @@ package ve.com.abicelis.remindy.viewmodel;
 
 import android.support.annotation.NonNull;
 
-import java.security.InvalidParameterException;
+import java.io.Serializable;
 import java.util.Calendar;
 
-import ve.com.abicelis.remindy.enums.TaskViewModelType;
 import ve.com.abicelis.remindy.model.Task;
 import ve.com.abicelis.remindy.model.Time;
 import ve.com.abicelis.remindy.util.CalendarUtil;
@@ -14,7 +13,7 @@ import ve.com.abicelis.remindy.util.CalendarUtil;
  * Created by abice on 26/3/2017.
  */
 
-public class TaskTriggerViewModel {
+public class TaskTriggerViewModel implements Serializable {
 
     //DATA
     private Task task = null;
