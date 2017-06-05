@@ -168,8 +168,8 @@
 
     <string name="activity_task_warn_no_reminder_dialog_title">Task has no reminder</string>
     <string name="activity_task_warn_no_reminder_dialog_message">Add a reminder to this task or save as-is?</string>
-    <string name="activity_task_warn_no_reminder_dialog_positive">Save As-isA</string>
-    <string name="activity_task_warn_no_reminder_dialog_negative">dd Reminder</string>
+    <string name="activity_task_warn_no_reminder_dialog_positive">Save As-is</string>
+    <string name="activity_task_warn_no_reminder_dialog_negative">Add Reminder</string>
 
     <string name="activity_task_save_dialog_title">Save?</string>
     <string name="activity_task_save_dialog_message">Save this task?</string>
