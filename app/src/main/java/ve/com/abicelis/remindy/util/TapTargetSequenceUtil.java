@@ -36,16 +36,20 @@ public class TapTargetSequenceUtil {
                 targets.add(TapTarget.forView(activity.findViewById(R.id.activity_edit_image_attachment_camera), activity.getResources().getString(R.string.ttsu_activity_edit_image_attachment_camera_title), activity.getResources().getString(R.string.ttsu_activity_edit_image_attachment_camera_description)).transparentTarget(true).cancelable(false));
                 doShowTapTargetSequenceFor(activity, targets, null);
                 break;
+
             case PLACE_LIST_ACTIVITY:
                 targets.add(TapTarget.forView(activity.findViewById(R.id.activity_place_list_no_items_container), activity.getResources().getString(R.string.ttsu_activity_place_list_no_items_container_title), activity.getResources().getString(R.string.ttsu_activity_place_list_no_items_container_description)).transparentTarget(true).cancelable(false).targetRadius(100));
                 targets.add(TapTarget.forView(activity.findViewById(R.id.activity_place_list_fab), activity.getResources().getString(R.string.ttsu_activity_place_list_fab_title), activity.getResources().getString(R.string.ttsu_activity_place_list_fab_description)).transparentTarget(true).cancelable(false));
                 doShowTapTargetSequenceFor(activity, targets, null);
                 break;
+
             case PLACE_ACTIVITY:
-                targets.add(TapTarget.forView(activity.findViewById(R.id.activity_place_map_container), activity.getResources().getString(R.string.ttsu_activity_place_map_container_title), activity.getResources().getString(R.string.ttsu_activity_place_map_container_description)).transparentTarget(true).cancelable(false).targetRadius(100));
-                targets.add(TapTarget.forView(activity.findViewById(R.id.activity_place_autocomplete_fragment), activity.getResources().getString(R.string.ttsu_activity_place_autocomplete_fragment_title), activity.getResources().getString(R.string.ttsu_activity_place_autocomplete_fragment_description)).transparentTarget(true).cancelable(false));
+                targets.add(TapTarget.forView(activity.findViewById(R.id.place_autocomplete_search_button), activity.getResources().getString(R.string.ttsu_activity_place_autocomplete_search_button_title), activity.getResources().getString(R.string.ttsu_activity_place_autocomplete_search_button_description)).transparentTarget(true).cancelable(false));
+                targets.add(TapTarget.forView(activity.findViewById(R.id.activity_place_map), activity.getResources().getString(R.string.ttsu_activity_place_map_container_title), activity.getResources().getString(R.string.ttsu_activity_place_map_container_description)).transparentTarget(true).cancelable(false).targetRadius(100));
+                targets.add(TapTarget.forView(activity.findViewById(R.id.activity_place_radius_icon), activity.getResources().getString(R.string.ttsu_activity_place_radius_icon_title), activity.getResources().getString(R.string.ttsu_activity_place_radius_icon_description)).transparentTarget(true).cancelable(false));
                 doShowTapTargetSequenceFor(activity, targets, null);
                 break;
+
             default:
                 Toast.makeText(activity, "TapTargetSequenceUtil(): Invalid TapTargetSequenceType", Toast.LENGTH_SHORT).show();
         }
