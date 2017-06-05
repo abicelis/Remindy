@@ -24,7 +24,7 @@ import ve.com.abicelis.remindy.util.ClipboardUtil;
  * Created by abice on 13/3/2017.
  */
 
-public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, EditListItemAttachmentDialogFragment.EditListItemAttachmentDialogDismissListener {
+public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, EditListItemAttachmentDialogFragment.EditListItemAttachmentDialogDismissListener {
 
     private ListItemAttachmentAdapter mAdapter;
     private Activity mActivity;
@@ -34,7 +34,7 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
     private CheckBox mCheckBox;
     private ImageView mTapToAdd;
     private TextView mText;
-    private ImageButton mMoreBtn;
+    //private ImageButton mMoreBtn;
 
 
     //DATA
@@ -45,11 +45,11 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
     public ListItemAttachmentViewHolder(View itemView) {
         super(itemView);
 
-        mContainer = (LinearLayout) itemView.findViewById(R.id.item_attachment_list_container);
+        mContainer = (LinearLayout) itemView.findViewById(R.id.item_attachment_list_item_container);
         mCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_attachment_list_item_checkbox);
         mTapToAdd = (ImageView) itemView.findViewById(R.id.list_item_attachment_list_item_tap_to_add);
         mText = (TextView) itemView.findViewById(R.id.list_item_attachment_list_item_text);
-        mMoreBtn = (ImageButton) itemView.findViewById(R.id.list_item_attachment_list_item_more);
+        //mMoreBtn = (ImageButton) itemView.findViewById(R.id.list_item_attachment_list_item_more);
     }
 
 
@@ -65,14 +65,15 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
 
     private void setupViewHolder() {
         mContainer.setOnClickListener(null);
-        mMoreBtn.setOnClickListener(null);
+        mContainer.setOnLongClickListener(null);
+        //mMoreBtn.setOnClickListener(null);
 
         if(mCurrent.getText() == null || mCurrent.getText().isEmpty()) {
             mCheckBox.setVisibility(View.GONE);
             mTapToAdd.setVisibility(View.VISIBLE);
 
-            mMoreBtn.setEnabled(false);
-            mMoreBtn.setColorFilter(ContextCompat.getColor(mActivity,  R.color.gray_300));
+            //mMoreBtn.setEnabled(false);
+            //mMoreBtn.setColorFilter(ContextCompat.getColor(mActivity,  R.color.gray_300));
             mContainer.setOnClickListener(this);
 
             mText.setText("");
@@ -81,9 +82,11 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
             mCheckBox.setVisibility(View.VISIBLE);
             mTapToAdd.setVisibility(View.GONE);
 
-            mMoreBtn.setEnabled(true);
-            mMoreBtn.setColorFilter(ContextCompat.getColor(mActivity,  R.color.primary_dark));
-            mMoreBtn.setOnClickListener(this);
+            //mMoreBtn.setEnabled(true);
+            //mMoreBtn.setColorFilter(ContextCompat.getColor(mActivity,  R.color.primary_dark));
+            //mMoreBtn.setOnClickListener(this);
+            mContainer.setOnLongClickListener(this);
+
 
             mText.setText(mCurrent.getText());
             mCheckBox.setChecked(mCurrent.isChecked());
@@ -96,14 +99,14 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
     public void setListeners() { /*Done in setData*/ }
 
     @Override
-    public void onClick(View view) {
+    public boolean onLongClick(View view) {
         int id = view.getId();
         switch (id) {
-            case R.id.list_item_attachment_list_item_more:
+            case R.id.item_attachment_list_item_container:
                 CharSequence items[] = new CharSequence[]{
-                            mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_copy),
-                            mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_edit),
-                            mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_delete)};
+                        mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_copy),
+                        mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_edit),
+                        mActivity.getResources().getString(R.string.dialog_list_item_attachment_options_delete)};
 
                 AlertDialog dialog = new AlertDialog.Builder(mActivity)
                         .setItems(items, new DialogInterface.OnClickListener() {
@@ -120,7 +123,7 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
 
                                     case 2:
                                         mAdapter.deleteItem(mPosition);
-                                        if(mRealTimeDataPersistence)
+                                        if (mRealTimeDataPersistence)
                                             mAdapter.triggerAttachmentDataUpdatedListener();
                                         break;
                                 }
@@ -129,14 +132,22 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
                         })
                         .create();
                 dialog.show();
-                break;
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id) {
             case R.id.list_item_attachment_list_item_checkbox:
                 mCurrent.setChecked(!mCurrent.isChecked());
                 if(mRealTimeDataPersistence)
                     mAdapter.triggerAttachmentDataUpdatedListener();
                 break;
 
-            case R.id.item_attachment_list_container:
+            case R.id.item_attachment_list_item_container:
                 handleListItemEdit(true);
                 break;
         }
@@ -163,4 +174,6 @@ public class ListItemAttachmentViewHolder extends RecyclerView.ViewHolder implem
         if(mRealTimeDataPersistence)
             mAdapter.triggerAttachmentDataUpdatedListener();
     }
+
+
 }

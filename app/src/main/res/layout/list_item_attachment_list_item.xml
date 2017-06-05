@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/item_attachment_list_container"
+    android:id="@+id/item_attachment_list_item_container"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="40dp"
@@ -10,9 +10,8 @@
     android:paddingRight="8dp"
     android:paddingEnd="8dp"
     android:gravity="center_vertical"
-    android:background="@color/gray_50"
+    android:background="?attr/selectableItemBackground"
     >
-    <!--android:background="?attr/selectableItemBackground"-->
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/list_item_attachment_list_item_checkbox"
@@ -41,12 +40,12 @@
         android:hint="@string/list_item_attachment_text_hint"
         />
 
-    <ImageButton
-        android:id="@+id/list_item_attachment_list_item_more"
-        android:layout_width="30dp"
-        android:layout_height="match_parent"
-        android:src="@drawable/icon_more"
-        android:tint="@color/primary_dark"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        />
+    <!--<ImageButton-->
+        <!--android:id="@+id/list_item_attachment_list_item_more"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:src="@drawable/icon_more"-->
+        <!--android:tint="@color/primary_dark"-->
+        <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+        <!--/>-->
 </LinearLayout>
