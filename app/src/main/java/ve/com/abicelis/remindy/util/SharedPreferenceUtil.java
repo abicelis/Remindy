@@ -20,11 +20,11 @@ public class SharedPreferenceUtil {
     public static boolean doShowTapTargetSequenceFor(Context context, TapTargetSequenceType tapTargetSequenceType) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        //boolean flag = preferences.getBoolean(tapTargetSequenceType.name(), true);
-        boolean flag = true;
+        boolean flag = preferences.getBoolean(tapTargetSequenceType.name(), true);
+        //boolean flag = true;
 
-        //if(flag)
-        //    preferences.edit().putBoolean(tapTargetSequenceType.name(), false).apply();
+        if(flag)
+            preferences.edit().putBoolean(tapTargetSequenceType.name(), false).apply();
 
         return flag;
     }
