@@ -277,14 +277,15 @@ public class PlaceActivity extends AppCompatActivity implements
     @SuppressWarnings({"MissingPermission"})
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
-        mMap.setPadding(0, ConversionUtil.dpToPx(68, getResources()), 0, 0);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+       // mMap.setPadding(0, ConversionUtil.dpToPx(68, getResources()), 0, 0);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setCompassEnabled(false);
 
         if(mPlaceToEdit == null) {
             moveCameraToLastKnownLocation();        //If creating a new place, go to user current location
             mRadius.setProgress(1);
             mRadiusDisplay.setText("100 m");
-            SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_help, SnackbarUtil.SnackbarDuration.SHORT, null);
+            //SnackbarUtil.showSnackbar(mMapContainer, SnackbarUtil.SnackbarType.NOTICE, R.string.activity_place_snackbar_help, SnackbarUtil.SnackbarDuration.SHORT, null);
 
         } else {
             drawMarkerWithCircle(new LatLng(mPlace.getLatitude(), mPlace.getLongitude()), mPlace.getRadius());        //If editing a place, go to that place and add a marker, circle
