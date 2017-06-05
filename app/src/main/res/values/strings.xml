@@ -506,9 +506,14 @@
     <string name="ttsu_activity_place_list_fab_title">Add a Place</string>
     <string name="ttsu_activity_place_list_fab_description">Tap this to add a new Place</string>
 
+
+    <string name="ttsu_activity_place_autocomplete_search_button_title">Selecting a Place</string>
+    <string name="ttsu_activity_place_autocomplete_search_button_description">Search for places by name</string>
+
     <string name="ttsu_activity_place_map_container_title">Selecting a Place</string>
-    <string name="ttsu_activity_place_map_container_description">To select a Place, you can long-tap anywhere on the map</string>
-    <string name="ttsu_activity_place_autocomplete_fragment_title">Selecting a Place</string>
-    <string name="ttsu_activity_place_autocomplete_fragment_description">Or you can also search for it</string>
+    <string name="ttsu_activity_place_map_container_description">Or, long-press a spot on the map to set a place</string>
+
+    <string name="ttsu_activity_place_radius_icon_title">Adjust the radius</string>
+    <string name="ttsu_activity_place_radius_icon_description">Use the slider to tweak the detection radius</string>
 
 </resources>
