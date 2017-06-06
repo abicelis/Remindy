@@ -95,14 +95,15 @@ public class SharedPreferenceUtil {
     public static List<Integer> getTriggeredTaskList(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String json = preferences.getString(context.getResources().getString(R.string.settings_triggered_task_list_key), null);
-
-
         List<Integer> tasks = new ArrayList<>();
-        try {
+
+        if(json != null) {
+            try {
                 Type listType = new TypeToken<List<Integer>>() {}.getType();
                 Gson gson = new Gson();
                 tasks = gson.fromJson(json, listType);
-        } catch (Exception e) { /* Do nothing */}
+            } catch (Exception e) { /* Do nothing */}
+        }
 
         return tasks;
     }
