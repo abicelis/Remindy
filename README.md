@@ -1,9 +1,5 @@
 # Remindy #
 
-THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT.
-
-## About the app
-
 Set and track as many tasks as you want, be them long term or short. Organize your life goals and TODO lists with Remindy! Add images, text, lists and more to your Tasks. Want to set deadlines to your tasks? Remindy has you covered with -for now- three types of reminders:
 
 - One-time reminders. For tasks which have a set deadline.
