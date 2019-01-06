@@ -2,12 +2,15 @@ package ve.com.abicelis.remindy.util;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import java.util.List;
 
 import ve.com.abicelis.remindy.R;
+import ve.com.abicelis.remindy.app.Constants;
 import ve.com.abicelis.remindy.app.activities.HomeActivity;
 import ve.com.abicelis.remindy.app.activities.TaskDetailActivity;
 import ve.com.abicelis.remindy.app.services.TaskActionsIntentService;
@@ -30,6 +34,12 @@ import static ve.com.abicelis.remindy.app.activities.TaskDetailActivity.TASK_ID_
 public class NotificationUtil {
 
     public static void displayNotification(Context context, Task task, String contentTitle, String contentText) {
+
+        //Create notification channel if running Android O
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            createNotificationChannel(notificationManager, Constants.NOTIFICATION_CHANNEL_ID, Constants.NOTIFICATION_CHANNEL_NAME, Constants.NOTIFICATION_CHANNEL_DESCRIPTION);
+        }
 
         //Intent for "DONE" button on BigView style
         Intent setTaskDoneIntent = new Intent(context, TaskActionsIntentService.class);
@@ -90,14 +100,19 @@ public class NotificationUtil {
         mNotifyMgr.notify(task.getId(), mBuilder.build());
     }
 
+
     public static void displayLocationBasedNotification(Context context, int notificationId, String contentTitle, String contentText,
                                                         List<Task> triggeredTasks) {
 
-
+        //Create notification channel if running Android O
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            createNotificationChannel(notificationManager, Constants.NOTIFICATION_CHANNEL_ID, Constants.NOTIFICATION_CHANNEL_NAME, Constants.NOTIFICATION_CHANNEL_DESCRIPTION);
+        }
 
 
         NotificationCompat.Builder mBuilder;
-        mBuilder = new NotificationCompat.Builder(context)
+        mBuilder = new NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_remindy_notification_small)
                 .setColor(ContextCompat.getColor(context, R.color.primary))
                 .setVibrate(new long[] { 50, 50, 200, 50 })
@@ -169,5 +184,23 @@ public class NotificationUtil {
 
         // Builds the notification and issues it.
         mNotifyMgr.notify(triggeredTasks.get(0).getId(), mBuilder.build());
+    }
+
+
+
+
+
+    //Needed for Android 8 Oreo +
+    private static void createNotificationChannel(NotificationManager notificationManager, @NonNull String channelId, String channelName, String channelDescription) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(channelDescription);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
