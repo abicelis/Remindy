@@ -63,7 +63,9 @@ public class GeofenceNotificationIntentService extends IntentService {
                 List<Task> tasks = new ArrayList<>();
                 try {
                     tasks = new RemindyDAO(this).getLocationBasedTasksAssociatedWithPlace(Integer.valueOf(geofence.getRequestId()), geofenceTransition);
-                }catch (CouldNotGetDataException e) {/* Do nothing */}
+                }catch (CouldNotGetDataException e) {
+                    Log.e("TAG", "Could not get data, geofence notification service.", e);
+                }
 
                 if(tasks.size() > 0) {
                     String notificationTitle = getGeofenceNotificationTitle(geofenceTransition, geofence);

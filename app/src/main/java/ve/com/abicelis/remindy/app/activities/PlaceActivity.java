@@ -228,9 +228,13 @@ public class PlaceActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
     }
     @Override
-    public void onConnectionSuspended(int i) {Toast.makeText(this, "Connection suspended " + i, Toast.LENGTH_SHORT).show();}
+    public void onConnectionSuspended(int i) {
+        Toast.makeText(this, "Connection suspended " + i, Toast.LENGTH_SHORT).show();
+    }
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {Toast.makeText(this, "Connection failed " + connectionResult.toString(), Toast.LENGTH_SHORT).show();}
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this, "Connection failed " + connectionResult.toString(), Toast.LENGTH_SHORT).show();
+    }
 
 
 
